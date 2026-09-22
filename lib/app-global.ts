@@ -13,6 +13,19 @@ export type AppGlobal = {
   openCookieSettings?: () => void;
   toggleChatWidget?: () => void;
   openConcierge?: () => void;
+  resetMarketplaceFilters?: () => void;
+  switchJobTab?: (tab: "browse" | "brand") => void;
+  goToBrandDashboard?: () => void;
+  submitNewJob?: (event: Event) => void;
+  handleCheckout?: (plan: string) => void;
+  openOrderIntent?: (plan: string) => void;
+  goToCreatorDashboard?: () => void;
+  generateRealProfile?: () => void;
+  addStagingPackage?: () => void;
+  submitUpload?: () => void;
+  submitPackageForm?: (event: Event) => void;
+  cancelPackageEdit?: () => void;
+  submitContact?: (event: Event) => void;
 };
 
 export function invokeAppGlobal<Name extends keyof AppGlobal>(
@@ -23,4 +36,9 @@ export function invokeAppGlobal<Name extends keyof AppGlobal>(
   if (typeof fn === "function") {
     (fn as (...params: unknown[]) => void)(...args);
   }
+}
+
+/** Volání handlerů z app.js, které ještě nemají typ v AppGlobal. */
+export function callAppHandler(name: keyof AppGlobal, ...args: unknown[]): void {
+  invokeAppGlobal(name, ...(args as Parameters<NonNullable<AppGlobal[typeof name]>>));
 }

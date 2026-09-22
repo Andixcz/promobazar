@@ -7,7 +7,6 @@
 @source "../components/**/*.{js,ts,jsx,tsx}";
 @source "../app/**/*.{js,ts,jsx,tsx}";
 @source "../lib/**/*.{js,ts}";
-@source "../public/site-body.html";
 @source "../public/app.js";
 
 @theme {

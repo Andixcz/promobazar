@@ -17,7 +17,11 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
           '<span class="dd-value truncate">' + sel.label + '</span><span class="dd-chevron shrink-0 text-xs text-mist transition-transform duration-200 [.open_&]:rotate-180">▾</span></button>' +
         '<div class="dd-panel absolute top-[calc(100%+6px)] left-0 right-0 z-[100] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] shadow-[0_16px_40px_-12px_rgba(0,0,0,0.55)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100">' + optionsHtml + '</div></div>';
   }
-  function mountDropdown(mountId, ddId, options, selectedValue){ document.getElementById(mountId).innerHTML = ddMarkup(ddId, options, selectedValue); }
+  function mountDropdown(mountId, ddId, options, selectedValue){
+    const mount = document.getElementById(mountId);
+    if(!mount) return;
+    mount.innerHTML = ddMarkup(ddId, options, selectedValue);
+  }
   function closeAllDropdowns(){
     document.querySelectorAll('.dd').forEach(d=>{
       d.classList.remove('open');

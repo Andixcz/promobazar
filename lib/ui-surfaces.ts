@@ -1,4 +1,4 @@
-/** Sdílené Tailwind třídy pro landing (React + site-body.html + app.js — drž v sync). */
+/** Sdílené Tailwind třídy pro landing (React + app.js — drž v sync u tlačítek). */
 
 export const section = "px-5 md:px-8 py-16 md:py-24";
 export const sectionX = "px-5 md:px-8";
@@ -63,7 +63,7 @@ export const htmlButtonPill = `${btnBase} text-xs border-transparent bg-transpar
 export const audienceSwitcherActive =
   "[&.active]:border-transparent [&.active]:bg-cyan [&.active]:text-void";
 
-/** Pole formuláře — odpovídá inputům v site-body.html */
+/** Pole formuláře v landing sekcích */
 export const fieldControl =
   "w-full min-w-0 rounded-sm border border-white/[0.09] bg-white/[0.065] text-sm text-white transition-all duration-200 placeholder:text-white/40 outline-none focus-visible:border-magenta/30 focus-visible:bg-white/[0.12] focus-visible:ring-2 focus-visible:ring-magenta/40 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-white/[0.03] disabled:opacity-50 aria-invalid:border-destructive/50 aria-invalid:ring-2 aria-invalid:ring-destructive/35 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-white";
 

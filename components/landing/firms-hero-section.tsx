@@ -18,7 +18,7 @@ function syncBudgetRangeFill(el: HTMLInputElement) {
   );
 }
 
-/** Hero + vyhledávací shell pro značky. Mount pointy dropdownů musí zůstat pro app.js. */
+/** Hero + vyhledávací filtry pro značky (mount pointy pro dropdowny z app.js). */
 export function FirmsHeroSection() {
   const budgetRef = useRef<HTMLInputElement>(null);
 
