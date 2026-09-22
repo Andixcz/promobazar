@@ -1,227 +1,245 @@
 "use client";
 
-import { legacyInvoke } from "@/lib/legacy-bridge";
+import type { ReactNode } from "react";
+import { ChevronDownIcon, UserIcon } from "lucide-react";
+
 import { BrandMark } from "@/components/ui/brand-mark";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { legacyInvoke } from "@/lib/legacy-bridge";
+import { cn } from "@/lib/utils";
+
+const ddPanelClass =
+  "dd-panel absolute top-[calc(100%+10px)] right-0 z-[100] min-w-[190px] max-h-[280px] overflow-y-auto rounded-md border border-white/[0.14] bg-dd-panel p-2 opacity-0 pointer-events-none invisible transition-all duration-200 [&.open]:visible [&.open]:pointer-events-auto [&.open]:opacity-100";
+
+const ddOptionClass =
+  "dd-option cursor-pointer rounded-[0.7rem] px-4 py-3 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.09] hover:text-white [&.active]:bg-magenta/[0.16] [&.active]:text-white";
+
+function NavMoreDropdown({
+  id,
+  children,
+}: {
+  id: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="dd relative [&.open]:z-[100]" id={id}>
+      <Button
+        type="button"
+        variant="ghost"
+        size="default"
+        className="dd-trigger inline-flex h-auto items-center gap-1 p-0"
+        onClick={(e) => legacyInvoke("toggleUserMenu", id, e.nativeEvent)}
+      >
+        Více
+        <ChevronDownIcon
+          className="dd-chevron size-3.5 text-mist transition-transform duration-200 [.open_&]:rotate-180"
+          aria-hidden
+        />
+      </Button>
+      <div className={ddPanelClass}>{children}</div>
+    </div>
+  );
+}
+
+function AuthIconTrigger({
+  menuId,
+  className,
+}: {
+  menuId: string;
+  className?: string;
+}) {
+  return (
+    <Button
+      type="button"
+      variant="default"
+      size="icon"
+      aria-label="Účet"
+      className={cn("dd-trigger shrink-0", className)}
+      onClick={(e) => legacyInvoke("toggleUserMenu", menuId, e.nativeEvent)}
+    >
+      <UserIcon className="size-4 text-void" aria-hidden />
+    </Button>
+  );
+}
+
+function AudienceActionButtons({
+  firmsId,
+  creatorsId,
+  className,
+}: {
+  firmsId: string;
+  creatorsId: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn("flex items-center gap-1.5 shrink-0", className)}>
+      <Button
+        type="button"
+        id={firmsId}
+        size="sm"
+        variant="outline"
+        className="switcher-pill active px-2.5 text-xs sm:px-4 sm:text-sm"
+        onClick={() => {
+          legacyInvoke("switchView", "firms");
+          legacyInvoke("scrollToId", "marketplace");
+        }}
+      >
+        <span className="sm:hidden">Promo</span>
+        <span className="hidden sm:inline">Najít promo</span>
+      </Button>
+      <Button
+        type="button"
+        id={creatorsId}
+        size="sm"
+        variant="outline"
+        className="switcher-pill px-2.5 text-xs sm:px-4 sm:text-sm"
+        onClick={() => {
+          legacyInvoke("switchView", "creators");
+          legacyInvoke("scrollToId", "propojeni");
+        }}
+      >
+        <span className="sm:hidden">Tvůrci</span>
+        <span className="hidden sm:inline">Pro tvůrce</span>
+      </Button>
+    </div>
+  );
+}
 
 export function SiteHeader() {
   return (
-    <header className="fixed top-0 inset-x-0 z-40">
-      <div className="max-w-7xl mx-auto px-5 md:px-8 mt-4">
-        <div className="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl px-5 md:px-6 py-3.5 flex items-center justify-between gap-3">
-          <a
-            href="#top"
-            className="flex items-center gap-2.5 shrink-0"
-            onClick={(e) => {
-              e.preventDefault();
-              legacyInvoke("switchView", "firms");
-            }}
-          >
-            <BrandMark />
-          </a>
+    <header className="fixed top-0 inset-x-0 z-40 px-5 md:px-8 pt-4">
+      <div
+        className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 overflow-visible rounded-md border border-white/[0.09] bg-panel px-3 py-3 sm:px-4 md:px-6 md:gap-4"
+      >
+        <a
+          href="#top"
+          className="col-start-1 flex items-center gap-2.5 shrink-0"
+          onClick={(e) => {
+            e.preventDefault();
+            legacyInvoke("switchView", "firms");
+          }}
+        >
+          <BrandMark />
+        </a>
 
+        <div className="col-start-2 hidden min-w-0 justify-center lg:flex">
           <nav
             id="nav-firms"
-            className="hidden xl:flex items-center gap-6 text-sm text-mist font-medium"
+            className="flex items-center gap-5 text-sm font-medium text-mist overflow-visible"
           >
-            <a href="#marketplace" className="hover:text-white transition">
+            <a href="#marketplace" className={buttonVariants({ variant: "ghost", className: "h-auto p-0 font-medium text-mist hover:bg-transparent" })}>
               Tržiště
             </a>
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              className="h-auto p-0 font-medium text-mist hover:bg-transparent"
               onClick={() => legacyInvoke("goToJobBoardBrowse")}
-              className="hover:text-white transition"
             >
               Poptávky
-            </button>
-            <a href="#cenik" className="hover:text-white transition">
-              Ceník
-            </a>
-            <a href="#faq" className="hover:text-white transition">
-              FAQ
-            </a>
+            </Button>
+            <NavMoreDropdown id="nav-more-firms-dd">
+              <a href="#cenik" className={cn(ddOptionClass, "block")}>
+                Ceník
+              </a>
+              <a href="#faq" className={cn(ddOptionClass, "block")}>
+                FAQ
+              </a>
+              <a href="#kontakt" className={cn(ddOptionClass, "block")}>
+                Kontakt
+              </a>
+            </NavMoreDropdown>
           </nav>
           <nav
             id="nav-creators"
-            className="hidden xl:flex items-center gap-6 text-sm text-mist font-medium"
+            className="view-hidden flex items-center gap-5 text-sm font-medium text-mist overflow-visible"
           >
-            <a href="#propojeni" className="hover:text-white transition">
+            <a href="#propojeni" className={buttonVariants({ variant: "ghost", className: "h-auto p-0 font-medium text-mist hover:bg-transparent" })}>
               Propojení
             </a>
-            <a href="#balicky" className="hover:text-white transition">
+            <a href="#balicky" className={buttonVariants({ variant: "ghost", className: "h-auto p-0 font-medium text-mist hover:bg-transparent" })}>
               Balíčky
             </a>
-            <a href="#creator-pro" className="hover:text-white transition">
-              Creator PRO
-            </a>
-            <a href="#kontakt" className="hover:text-white transition">
-              Kontakt
-            </a>
+            <NavMoreDropdown id="nav-more-creators-dd">
+              <a href="#creator-pro" className={cn(ddOptionClass, "block")}>
+                Creator PRO
+              </a>
+              <a href="#faq" className={cn(ddOptionClass, "block")}>
+                FAQ
+              </a>
+              <a href="#kontakt" className={cn(ddOptionClass, "block")}>
+                Kontakt
+              </a>
+            </NavMoreDropdown>
           </nav>
+        </div>
 
-          <div className="flex items-center gap-2">
-            <div className="auth-buttons-group flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => legacyInvoke("openAuth", "creator")}
-                className="hidden md:inline-block text-sm font-semibold text-white/80 hover:text-white transition whitespace-nowrap"
-              >
-                Přihlásit se
-              </button>
-              <button
-                type="button"
-                onClick={() => legacyInvoke("openAuth", "creator")}
-                className="hidden sm:inline-block bg-white/[0.04] border border-white/[0.14] transition-all duration-300 hover:bg-white/[0.09] hover:border-white/[0.24] text-sm font-semibold px-4 py-2.5 rounded-xl text-white whitespace-nowrap"
-              >
-                Registrace
-              </button>
+        <div className="col-start-3 flex justify-end">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <AudienceActionButtons
+              firmsId="switch-firms"
+              creatorsId="switch-creators"
+            />
+
+            <div
+              className="auth-buttons-group dd relative [&.open]:z-[100]"
+              id="auth-menu-dd"
+            >
+              <AuthIconTrigger menuId="auth-menu-dd" />
+              <div className={ddPanelClass}>
+                <div
+                  className={ddOptionClass}
+                  onClick={() => legacyInvoke("openAuth", "creator")}
+                >
+                  Přihlásit se
+                </div>
+                <div
+                  className={ddOptionClass}
+                  onClick={() => legacyInvoke("openAuth", "creator")}
+                >
+                  Registrace
+                </div>
+              </div>
             </div>
 
-            <div className="hidden sm:flex items-center gap-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-full p-1">
-              <button
-                type="button"
-                id="switch-firms"
-                onClick={() => legacyInvoke("switchView", "firms")}
-                className="switcher-pill rounded-full transition-all duration-300 [&.active]:bg-gradient-to-r [&.active]:from-violet [&.active]:via-magenta [&.active]:to-cyan [&.active]:text-white [&.active]:shadow-[0_6px_24px_-6px_rgba(160,60,255,0.6)] active text-xs font-semibold px-3.5 py-1.5 rounded-full"
-              >
-                Chci promo
-              </button>
-              <button
-                type="button"
-                id="switch-creators"
-                onClick={() => legacyInvoke("switchView", "creators")}
-                className="switcher-pill rounded-full transition-all duration-300 [&.active]:bg-gradient-to-r [&.active]:from-violet [&.active]:via-magenta [&.active]:to-cyan [&.active]:text-white [&.active]:shadow-[0_6px_24px_-6px_rgba(160,60,255,0.6)] text-xs font-semibold px-3.5 py-1.5 rounded-full text-mist"
-              >
-                Pro tvůrce
-              </button>
-            </div>
-            <button
-              type="button"
-              id="nav-cta-firms"
-              onClick={() => {
-                legacyInvoke("switchView", "firms");
-                legacyInvoke("scrollToId", "marketplace");
-              }}
-              className="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none text-sm font-semibold px-4 md:px-5 py-2.5 rounded-xl text-white whitespace-nowrap"
+            <div
+              className="dd relative [&.open]:z-[100] user-menu-group hidden"
+              id="user-menu-dd"
             >
-              Najít promo
-            </button>
-            <button
-              type="button"
-              id="nav-cta-creators"
-              onClick={() => {
-                legacyInvoke("switchView", "creators");
-                legacyInvoke("scrollToId", "propojeni");
-              }}
-              className="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none text-sm font-semibold px-4 md:px-5 py-2.5 rounded-xl text-white whitespace-nowrap hidden"
-            >
-              Propojit profil
-            </button>
-
-            <div className="dd relative [&.open]:z-[100] user-menu-group hidden" id="user-menu-dd">
-              <button
+              <Button
                 type="button"
-                className="dd-trigger flex w-full cursor-pointer items-center justify-between gap-2 text-left bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-full pl-1.5 pr-3 py-1.5 flex items-center gap-2"
+                variant="outline"
+                size="icon"
+                aria-label="Můj účet"
+                className="dd-trigger shrink-0 p-0 overflow-hidden"
                 onClick={(e) =>
                   legacyInvoke("toggleUserMenu", "user-menu-dd", e.nativeEvent)
                 }
               >
-                <span className="user-avatar-initials w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center font-display font-bold text-white text-[10px]">
+                <span className="user-avatar-initials flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 font-display text-[10px] font-bold text-white">
                   ?
                 </span>
-                <span className="user-menu-email hidden md:inline text-xs font-medium max-w-[120px] truncate" />
-                <span className="dd-chevron text-xs text-mist transition-transform duration-200 [.open_&]:rotate-180 text-mist">▾</span>
-              </button>
-              <div
-                className="dd-panel absolute top-[calc(100%+10px)] left-0 right-0 z-[100] max-h-[280px] overflow-y-auto rounded-2xl border border-white/[0.14] bg-dd-panel p-2 opacity-0 pointer-events-none -translate-y-2 scale-[0.98] shadow-[0_25px_60px_-12px_rgba(0,0,0,0.65)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100"
-                style={{ left: "auto", right: 0, minWidth: 190 }}
-              >
+              </Button>
+              <div className={ddPanelClass}>
+                <p className="user-menu-email px-4 pt-2 pb-1 text-xs font-medium text-zinc-200 truncate max-w-[200px] empty:hidden" />
                 <div
-                  className="dd-option cursor-pointer rounded-[0.7rem] px-4 py-3 text-sm leading-snug transition-colors duration-150 hover:bg-white/[0.09] [&.active]:bg-magenta/[0.16] [&.active]:text-white"
+                  className={ddOptionClass}
                   onClick={() => legacyInvoke("goToMyDashboard")}
                 >
                   Můj dashboard
                 </div>
                 <div
-                  className="dd-option cursor-pointer rounded-[0.7rem] px-4 py-3 text-sm leading-snug transition-colors duration-150 hover:bg-white/[0.09] [&.active]:bg-magenta/[0.16] [&.active]:text-white"
+                  className={ddOptionClass}
                   onClick={() => legacyInvoke("openAccountSettings")}
                 >
                   Nastavení účtu
                 </div>
                 <div
-                  className="dd-option cursor-pointer rounded-[0.7rem] px-4 py-3 text-sm leading-snug transition-colors duration-150 hover:bg-white/[0.09] [&.active]:bg-magenta/[0.16] [&.active]:text-white"
+                  className={ddOptionClass}
                   onClick={() => legacyInvoke("handleLogout")}
                 >
                   Odhlásit se
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="sm:hidden flex justify-center items-center gap-2 mt-3">
-          <div className="flex items-center gap-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-full p-1">
-            <button
-              type="button"
-              onClick={() => legacyInvoke("switchView", "firms")}
-              id="switch-firms-m"
-              className="switcher-pill rounded-full transition-all duration-300 [&.active]:bg-gradient-to-r [&.active]:from-violet [&.active]:via-magenta [&.active]:to-cyan [&.active]:text-white [&.active]:shadow-[0_6px_24px_-6px_rgba(160,60,255,0.6)] active text-xs font-semibold px-4 py-1.5 rounded-full"
-            >
-              Chci promo
-            </button>
-            <button
-              type="button"
-              onClick={() => legacyInvoke("switchView", "creators")}
-              id="switch-creators-m"
-              className="switcher-pill text-xs font-semibold px-4 py-1.5 rounded-full text-mist"
-            >
-              Pro tvůrce
-            </button>
-          </div>
-          <button
-            type="button"
-            onClick={() => legacyInvoke("openAuth", "creator")}
-            className="auth-buttons-group bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] text-xs font-semibold px-3.5 py-2 rounded-full text-white/85"
-          >
-            Účet
-          </button>
-
-          <div className="dd relative [&.open]:z-[100] user-menu-group hidden" id="user-menu-dd-mobile">
-            <button
-              type="button"
-              className="dd-trigger flex w-full cursor-pointer items-center justify-between gap-2 text-left bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-full pl-1.5 pr-3 py-1.5 flex items-center gap-2"
-              onClick={(e) =>
-                legacyInvoke(
-                  "toggleUserMenu",
-                  "user-menu-dd-mobile",
-                  e.nativeEvent,
-                )
-              }
-            >
-              <span className="user-avatar-initials w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center font-display font-bold text-white text-[9px]">
-                ?
-              </span>
-              <span className="dd-chevron text-xs text-mist transition-transform duration-200 [.open_&]:rotate-180 text-mist">▾</span>
-            </button>
-            <div
-              className="dd-panel absolute top-[calc(100%+10px)] left-0 right-0 z-[100] max-h-[280px] overflow-y-auto rounded-2xl border border-white/[0.14] bg-dd-panel p-2 opacity-0 pointer-events-none -translate-y-2 scale-[0.98] shadow-[0_25px_60px_-12px_rgba(0,0,0,0.65)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100"
-              style={{ left: "auto", right: 0, minWidth: 180 }}
-            >
-              <div
-                className="dd-option cursor-pointer rounded-[0.7rem] px-4 py-3 text-sm leading-snug transition-colors duration-150 hover:bg-white/[0.09] [&.active]:bg-magenta/[0.16] [&.active]:text-white"
-                onClick={() => legacyInvoke("goToMyDashboard")}
-              >
-                Můj dashboard
-              </div>
-              <div
-                className="dd-option cursor-pointer rounded-[0.7rem] px-4 py-3 text-sm leading-snug transition-colors duration-150 hover:bg-white/[0.09] [&.active]:bg-magenta/[0.16] [&.active]:text-white"
-                onClick={() => legacyInvoke("openAccountSettings")}
-              >
-                Nastavení účtu
-              </div>
-              <div
-                className="dd-option cursor-pointer rounded-[0.7rem] px-4 py-3 text-sm leading-snug transition-colors duration-150 hover:bg-white/[0.09] [&.active]:bg-magenta/[0.16] [&.active]:text-white"
-                onClick={() => legacyInvoke("handleLogout")}
-              >
-                Odhlásit se
               </div>
             </div>
           </div>
