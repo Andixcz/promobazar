@@ -79,6 +79,14 @@
       var(--color-void);
   }
 
+  body.dashboard-app {
+    background: var(--color-void);
+  }
+
+  body.dashboard-app.grain::before {
+    content: none;
+  }
+
   .grain::before {
     content: "";
     @apply pointer-events-none fixed inset-0 z-[1] opacity-[0.035];
