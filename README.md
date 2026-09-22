@@ -11,7 +11,15 @@ npm run dev
 
 Otevři [http://localhost:3000](http://localhost:3000).
 
-Proměnné prostředí: zkopíruj `.env.example` → `.env.local` a doplň hodnoty (Postgres, Better Auth, Stripe).
+Proměnné prostředí: zkopíruj `.env.example` → `.env.local` (nebo `.env`) a doplň hodnoty.
+
+### Neon (Postgres)
+
+1. [Neon](https://neon.tech) → nový projekt → **Connect** → zkopíruj **Pooled** connection string do `DATABASE_URL` v `.env.local`.
+2. Pro schéma: `bun run db:push` (když push zlobí, dej **Direct** string do `DATABASE_URL_MIGRATE` — viz `.env.example`).
+3. `bun run db:studio` — tabulky `user`, `member_profile`, …
+
+Auth a dashboard jedou přes **Better Auth + Drizzle**, ne přes Supabase DB. Volitelné `NEXT_PUBLIC_SUPABASE_*` jsou jen pro legacy `public/app.js`.
 
 ## Struktura homepage
 

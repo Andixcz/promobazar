@@ -30,6 +30,10 @@ React a `app.js` sdílejí **stejná DOM id** a **styly** — při změnách v i
 | [promobazar-app-js](.cursor/skills/promobazar-app-js/SKILL.md) | `app.js`, `invokeAppGlobal`, mount pointy, id v JSX, job board / marketplace / profil |
 | [promobazar-design-system](.cursor/skills/promobazar-design-system/SKILL.md) | `globals.css`, Tailwind tokeny, tlačítka, `ui-surfaces.ts`, lucide |
 
+## Formuláře (React)
+
+Vždy `components/ui`: **`FormField`** + **`Label`** (uvnitř FormField) + **`Input`** / **`FieldSelect`** / **`Textarea`**. Nepoužívej raw `<input>`, `<select>`, `<textarea>` ani `fieldControl` v JSX — tokeny jsou jen v UI kitu. Výběr z možností = **`FieldSelect`** (stejný vzhled jako hero filtry v `app.js`), ne nativní `<select>`. Modaly: **`Modal`**.
+
 ## Rychlá pravidla
 
 1. Audience **Najít promo / Pro tvůrce** = navigace (`/` ↔ `/pro-tvurce`), ne jedna stránka se skrytými view.
