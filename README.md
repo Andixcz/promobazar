@@ -15,8 +15,12 @@ Proměnné prostředí: zkopíruj `.env.example` → `.env.local` a doplň hodno
 
 ## Struktura homepage
 
-- `components/landing/views/home-views.tsx` — sekce pro značky, tvůrce a kontakt (React)
-- `public/app.js` — klientská logika (auth, tržiště, chat, …), postupně nahrazovat
+- **`/`** — Najít promo (`FirmsView`)
+- **`/pro-tvurce`** — Pro tvůrce (`CreatorsView`)
+- `components/landing/landing-shell.tsx` — sdílený obal stránek
+- `lib/landing-routes.ts` — cesty a anchor odkazy
+- `AGENTS.md` — rozcestník pro agenty; detaily v `.cursor/skills/promobazar-*`
+- `public/app.js` — klientská logika (auth, tržiště, chat, …)
 - `app/globals.css` — Tailwind v4 + design tokeny (`@theme`)
 - `lib/ui-surfaces.ts` — sdílené Tailwind třídy pro React / `app.js`
 - `components/ui/*` — sdílené UI (shadcn, tlačítka, …)

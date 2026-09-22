@@ -1,19 +1,31 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ChevronDownIcon, UserIcon } from "lucide-react";
 
 import { BrandMark } from "@/components/ui/brand-mark";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { invokeAppGlobal } from "@/lib/app-global";
+import { goToJobBoardBrowse } from "@/lib/landing-nav";
+import {
+  isCreatorsLandingPath,
+  landingHref,
+  LANDING_FIRMS_PATH,
+} from "@/lib/landing-routes";
 import { audienceSwitcherActive } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
 const ddPanelClass =
-  "dd-panel absolute top-[calc(100%+10px)] right-0 z-[100] min-w-[190px] max-h-[280px] overflow-y-auto rounded-md border border-white/[0.14] bg-dd-panel p-2 opacity-0 pointer-events-none invisible transition-all duration-200 [&.open]:visible [&.open]:pointer-events-auto [&.open]:opacity-100";
+  "dd-panel absolute top-[calc(100%+6px)] right-0 z-[100] min-w-[190px] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 space-y-0.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] shadow-[0_16px_40px_-12px_rgba(0,0,0,0.55)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100";
 
 const ddOptionClass =
-  "dd-option cursor-pointer rounded-[0.7rem] px-4 py-3 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.09] hover:text-white [&.active]:bg-magenta/[0.16] [&.active]:text-white";
+  "dd-option cursor-pointer rounded-sm px-3 py-2 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white";
+
+/** Stejný vzhled pro odkazy i tlačítka v hlavní navigaci (bez paddingu ghost size). */
+const headerNavItemClass =
+  "h-auto gap-1.5 p-0 font-medium text-mist hover:bg-transparent hover:text-white";
 
 function NavMoreDropdown({
   id,
@@ -27,8 +39,7 @@ function NavMoreDropdown({
       <Button
         type="button"
         variant="ghost"
-        size="default"
-        className="dd-trigger inline-flex h-auto items-center gap-1 p-0"
+        className={cn("dd-trigger inline-flex items-center", headerNavItemClass)}
         onClick={(e) => invokeAppGlobal("toggleUserMenu", id, e.nativeEvent)}
       >
         Více
@@ -66,76 +77,84 @@ function AuthIconTrigger({
 function AudienceActionButtons({
   firmsId,
   creatorsId,
+  isCreators,
   className,
 }: {
   firmsId: string;
   creatorsId: string;
+  isCreators: boolean;
   className?: string;
 }) {
   return (
     <div className={cn("flex items-center gap-1.5 shrink-0", className)}>
       <Button
-        type="button"
+        asChild
         id={firmsId}
         size="sm"
         variant="outline"
-        className={cn("px-2.5 text-xs sm:px-4 sm:text-sm", audienceSwitcherActive, "active")}
-        onClick={() => {
-          invokeAppGlobal("switchView", "firms");
-          invokeAppGlobal("scrollToId", "marketplace");
-        }}
+        className={cn(
+          "px-2.5 text-xs sm:px-4 sm:text-sm",
+          audienceSwitcherActive,
+          !isCreators && "active",
+        )}
       >
-        <span className="sm:hidden">Promo</span>
-        <span className="hidden sm:inline">Najít promo</span>
+        <Link href={landingHref("firms", "marketplace")}>
+          <span className="sm:hidden">Promo</span>
+          <span className="hidden sm:inline">Najít promo</span>
+        </Link>
       </Button>
       <Button
-        type="button"
+        asChild
         id={creatorsId}
         size="sm"
         variant="outline"
-        className={cn("px-2.5 text-xs sm:px-4 sm:text-sm", audienceSwitcherActive)}
-        onClick={() => {
-          invokeAppGlobal("switchView", "creators");
-          invokeAppGlobal("scrollToId", "propojeni");
-        }}
+        className={cn(
+          "px-2.5 text-xs sm:px-4 sm:text-sm",
+          audienceSwitcherActive,
+          isCreators && "active",
+        )}
       >
-        <span className="sm:hidden">Tvůrci</span>
-        <span className="hidden sm:inline">Pro tvůrce</span>
+        <Link href={landingHref("creators", "propojeni")}>
+          <span className="sm:hidden">Tvůrci</span>
+          <span className="hidden sm:inline">Pro tvůrce</span>
+        </Link>
       </Button>
     </div>
   );
 }
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  const isCreators = isCreatorsLandingPath(pathname);
+
   return (
     <header className="fixed top-0 inset-x-0 z-40 px-5 md:px-8 pt-4">
       <div
         className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 overflow-visible rounded-md border border-white/[0.09] bg-panel px-3 py-3 sm:px-4 md:px-6 md:gap-4"
       >
-        <a
-          href="#top"
+        <Link
+          href={isCreators ? landingHref("creators", "top") : LANDING_FIRMS_PATH}
           className="col-start-1 flex items-center gap-2.5 shrink-0"
-          onClick={(e) => {
-            e.preventDefault();
-            invokeAppGlobal("switchView", "firms");
-          }}
         >
           <BrandMark />
-        </a>
+        </Link>
 
         <div className="col-start-2 hidden min-w-0 justify-center lg:flex">
           <nav
             id="nav-firms"
-            className="flex items-center gap-5 text-sm font-medium text-mist overflow-visible"
+            className={cn(
+              "flex items-center gap-5 text-sm font-medium text-mist overflow-visible",
+              isCreators && "hidden",
+            )}
           >
-            <a href="#marketplace" className={buttonVariants({ variant: "ghost", className: "h-auto p-0 font-medium text-mist hover:bg-transparent" })}>
-              Tržiště
-            </a>
+            <Button asChild variant="ghost" className={headerNavItemClass}>
+              <a href="#marketplace">Tržiště</a>
+            </Button>
             <Button
               type="button"
               variant="ghost"
-              className="h-auto p-0 font-medium text-mist hover:bg-transparent"
-              onClick={() => invokeAppGlobal("goToJobBoardBrowse")}
+              className={headerNavItemClass}
+              onClick={() => goToJobBoardBrowse()}
             >
               Poptávky
             </Button>
@@ -153,14 +172,17 @@ export function SiteHeader() {
           </nav>
           <nav
             id="nav-creators"
-            className="hidden flex items-center gap-5 text-sm font-medium text-mist overflow-visible"
+            className={cn(
+              "items-center gap-5 text-sm font-medium text-mist overflow-visible",
+              isCreators ? "flex" : "hidden",
+            )}
           >
-            <a href="#propojeni" className={buttonVariants({ variant: "ghost", className: "h-auto p-0 font-medium text-mist hover:bg-transparent" })}>
-              Propojení
-            </a>
-            <a href="#balicky" className={buttonVariants({ variant: "ghost", className: "h-auto p-0 font-medium text-mist hover:bg-transparent" })}>
-              Balíčky
-            </a>
+            <Button asChild variant="ghost" className={headerNavItemClass}>
+              <a href="#propojeni">Propojení</a>
+            </Button>
+            <Button asChild variant="ghost" className={headerNavItemClass}>
+              <a href="#balicky">Balíčky</a>
+            </Button>
             <NavMoreDropdown id="nav-more-creators-dd">
               <a href="#creator-pro" className={cn(ddOptionClass, "block")}>
                 Creator PRO
@@ -180,6 +202,7 @@ export function SiteHeader() {
             <AudienceActionButtons
               firmsId="switch-firms"
               creatorsId="switch-creators"
+              isCreators={isCreators}
             />
 
             <div

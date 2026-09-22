@@ -9,6 +9,9 @@ const strichpunktSans = Strichpunkt_Sans({
   subsets: ["latin", "latin-ext"],
   variable: "--font-strichpunkt-sans",
   display: "swap",
+  // Next.js has no size-adjust metrics for this font yet (build warning otherwise).
+  adjustFontFallback: false,
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
 const inter = Inter({

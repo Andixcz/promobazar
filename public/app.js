@@ -6,6 +6,7 @@ var PB_BTN_CTA_SM_W = PB_BTN_CTA_SM + ' w-full';
 var PB_BTN_OUTLINE = 'inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-white/[0.14] bg-white/[0.04] text-white/85 hover:bg-white/[0.09] hover:border-white/[0.24] h-auto gap-1.5 px-7 py-3.5';
 var PB_BTN_OUTLINE_W = PB_BTN_OUTLINE + ' w-full';
 var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-xs border-white/[0.14] bg-white/[0.04] text-white/85 hover:bg-white/[0.09] hover:border-white/[0.24] h-auto gap-1 px-4 py-2';
+var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
   /* ============== GENERIC CUSTOM DROPDOWN (opaque + high z-index) ============== */
   function ddMarkup(id, options, selectedValue){
     const sel = options.find(o=>o.value===selectedValue) || options[0];
@@ -13,9 +14,9 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       '<div class="dd-option cursor-pointer rounded-sm px-3 py-2 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white ' + (o.value===sel.value?'active':'') + '" data-value="' + o.value + '" onclick="selectDropdown(\'' + id + '\',\'' + o.value + '\',event)">' + o.label + '</div>'
     ).join('');
     return '<div class="dd relative [&.open]:z-[100]" id="' + id + '" data-value="' + sel.value + '">' +
-        '<button type="button" class="dd-trigger flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-sm border border-white/[0.09] bg-white/[0.065] px-3 py-2 text-left text-sm font-medium text-white shadow-none backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.09] focus-visible:border-magenta/30 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] focus-visible:outline-none [.open_&]:border-magenta/30 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(232,56,255,0.4)]" onclick="toggleDropdown(\'' + id + '\',event)">' +
-          '<span class="dd-value truncate">' + sel.label + '</span><span class="dd-chevron shrink-0 text-xs text-mist transition-transform duration-200 [.open_&]:rotate-180">▾</span></button>' +
-        '<div class="dd-panel absolute top-[calc(100%+6px)] left-0 right-0 z-[100] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] shadow-[0_16px_40px_-12px_rgba(0,0,0,0.55)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100">' + optionsHtml + '</div></div>';
+        '<button type="button" class="dd-trigger flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-sm border border-white/[0.09] bg-white/[0.065] px-3 py-2 text-left text-sm font-medium text-white shadow-none backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.09] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] focus-visible:outline-none [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(0,229,255,0.4)]" onclick="toggleDropdown(\'' + id + '\',event)">' +
+          '<span class="dd-value truncate">' + sel.label + '</span><span class="dd-chevron shrink-0 text-mist transition-transform duration-200 [.open_&]:rotate-180">' + DD_CHEVRON_SVG + '</span></button>' +
+        '<div class="dd-panel absolute top-[calc(100%+6px)] left-0 right-0 z-[100] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 space-y-0.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] shadow-[0_16px_40px_-12px_rgba(0,0,0,0.55)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100">' + optionsHtml + '</div></div>';
   }
   function mountDropdown(mountId, ddId, options, selectedValue){
     const mount = document.getElementById(mountId);
@@ -54,7 +55,11 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
     if(e.target instanceof Element && e.target.closest('.dd')) return;
     closeAllDropdowns();
   });
-  function onDropdownChange(id, value){ if(id === 'dd-platform' || id === 'dd-category' || id === 'dd-license'){ applyFilters(); } }
+  function onDropdownChange(id, value){
+    if(id === 'dd-platform' || id === 'dd-category' || id === 'dd-license'){
+      if(document.getElementById('grid')) applyFilters();
+    }
+  }
 
   const platformOptions = [
     {value:'all', label:'Všechny formáty'}, {value:'ig-story', label:'Instagram Story'}, {value:'ig-reel', label:'Instagram Reel'},
@@ -87,28 +92,8 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
   mountDropdown('dd-staging-delivery-mount','dd-staging-delivery', pkgDeliveryOptions, '7');
   mountDropdown('dd-staging-license-mount','dd-staging-license', licenseOptions, '30');
 
-  /* ============== VIEW SWITCHER ============== */
-  function switchView(view){
-    const firms = document.getElementById('view-firms'), creators = document.getElementById('view-creators');
-    const navFirms = document.getElementById('nav-firms'), navCreators = document.getElementById('nav-creators');
-    const ctaFirms = document.getElementById('nav-cta-firms'), ctaCreators = document.getElementById('nav-cta-creators');
-    const switchFirms = document.getElementById('switch-firms'), switchCreators = document.getElementById('switch-creators');
-    const switchFirmsM = document.getElementById('switch-firms-m'), switchCreatorsM = document.getElementById('switch-creators-m');
-    if(view === 'creators'){
-      firms.classList.add('hidden'); creators.classList.remove('hidden');
-      navFirms.classList.add('hidden'); navCreators.classList.remove('hidden');
-      if(ctaFirms && ctaCreators){ ctaFirms.classList.add('hidden'); ctaCreators.classList.remove('hidden'); }
-      switchFirms?.classList.remove('active'); switchCreators?.classList.add('active');
-      switchFirmsM?.classList.remove('active'); switchCreatorsM?.classList.add('active');
-    } else {
-      creators.classList.add('hidden'); firms.classList.remove('hidden');
-      navCreators.classList.add('hidden'); navFirms.classList.remove('hidden');
-      if(ctaFirms && ctaCreators){ ctaCreators.classList.add('hidden'); ctaFirms.classList.remove('hidden'); }
-      switchCreators?.classList.remove('active'); switchFirms?.classList.add('active');
-      switchCreatorsM?.classList.remove('active'); switchFirmsM?.classList.add('active');
-    }
-    window.scrollTo({top:0, behavior:'smooth'});
-  }
+  var LANDING_FIRMS_PATH = '/';
+  var LANDING_CREATORS_PATH = '/pro-tvurce';
   function scrollToId(id){ setTimeout(()=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth'}); }, 60); }
 
   /* ============== DATA — tvůrci v tržišti =============
@@ -154,11 +139,12 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="size-6"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>';
 
   function renderGrid(list){
+    if(!grid || !emptyState || !resultCount) return;
     if(list.length === 0){
       grid.classList.add('hidden'); emptyState.classList.remove('hidden');
       if(creators.length === 0){
         document.getElementById('empty-state-title').textContent = 'Zatím tu nejsou žádní tvůrci';
-        document.getElementById('empty-state-subtitle').textContent = 'Jsi influencer nebo UGC tvůrce? Vytvoř si profil a buď tu první — značky tě pak najdou podle platformy, oboru a ceny.';
+        document.getElementById('empty-state-subtitle').textContent = 'Jsi influencer nebo UGC tvůrce? Vytvoř si profil a buď mezi prvními na tržišti. Značky tě pak najdou podle platformy, oboru a ceny.';
         if(emptyStateIcon) emptyStateIcon.innerHTML = emptyIconUsers;
         emptyStateCtaCreator?.classList.remove('hidden');
         emptyStateCtaReset?.classList.add('hidden');
@@ -188,7 +174,9 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
   }
   function plural(n){ if(n === 1) return 'tvůrce'; if(n >= 2 && n <= 4) return 'tvůrci'; return 'tvůrců'; }
   function applyFilters(){
-    const platform = document.getElementById('dd-platform').dataset.value;
+    const ddPlatform = document.getElementById('dd-platform');
+    if(!ddPlatform || !grid) return;
+    const platform = ddPlatform.dataset.value;
     const category = document.getElementById('dd-category').dataset.value;
     const license = document.getElementById('dd-license').dataset.value;
     const budget = parseInt(document.getElementById('f-budget').value, 10);
@@ -220,16 +208,22 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       applyFilters();
     });
   }
-  document.getElementById('search-btn').addEventListener('click', ()=>{ applyFilters(); document.getElementById('marketplace').scrollIntoView({behavior:'smooth'}); });
-  renderGrid(creators);
+  const searchBtn = document.getElementById('search-btn');
+  if(searchBtn){
+    searchBtn.addEventListener('click', ()=>{
+      applyFilters();
+      document.getElementById('marketplace')?.scrollIntoView({behavior:'smooth'});
+    });
+  }
+  if(grid) renderGrid(creators);
 
   /* ============== MODAL BASE ============== */
   const modal = document.getElementById('modal');
   const modalContent = document.getElementById('modal-content');
-  function showModal(){ modal.classList.remove('hidden'); modal.classList.add('flex'); document.body.style.overflow = 'hidden'; }
-  function closeModal(){ modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }
-  modal.addEventListener('click', closeModal);
-  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+  function showModal(){ if(!modal) return; modal.classList.remove('hidden'); modal.classList.add('flex'); document.body.style.overflow = 'hidden'; }
+  function closeModal(){ if(!modal) return; modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }
+  if(modal) modal.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && modal) closeModal(); });
 
   function securityBadge(){
     return '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-4 flex gap-3 items-start mb-6" style="border-color: rgba(0,229,255,0.3);"><span class="text-xl">🛡️</span>' +
@@ -311,7 +305,7 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       '<p class="text-zinc-200 text-sm mb-1">' + p.name + ' · ' + p.price.toLocaleString('cs-CZ') + ' Kč · doručení do ' + p.delivery + ' dní</p>' +
       '<p class="font-mono text-[11px] tracking-wide text-[11px] text-zinc-200 mb-6">Krok 1 ze 2 · přihlášen/a jako ' + currentUser.email + '</p>' +
       '<form onsubmit="goToBriefStep(event, ' + ci + ', ' + pkgId + ')" class="space-y-4">' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">URL e-shopu</label><input type="text" id="checkout-url" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" placeholder="www.tvojeznacka.cz" required></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">URL e-shopu</label><input type="text" id="checkout-url" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" placeholder="www.tvojeznacka.cz" required></div>' +
         '<button type="submit" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Pokračovat k zadání →</button>' +
       '</form>';
     showModal();
@@ -327,7 +321,7 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       '<p class="text-zinc-200 text-sm mb-6">' + p.name + ' · ' + p.price.toLocaleString('cs-CZ') + ' Kč · doručení do ' + p.delivery + ' dní</p>' +
       securityBadge() +
       '<form onsubmit="submitOrder(event, ' + ci + ', ' + pkgId + ', \'' + email.replace(/'/g,"") + '\', \'' + shopUrl.replace(/'/g,"") + '\')" class="space-y-4">' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Zadání pro tvůrce</label><textarea class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] resize-none" rows="4" placeholder="Popiš produkt, tón komunikace a co má video zdůraznit..." required></textarea></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Zadání pro tvůrce</label><textarea class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none" rows="4" placeholder="Popiš produkt, tón komunikace a co má video zdůraznit..." required></textarea></div>' +
         '<button type="submit" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Odeslat poptávku (bezpečná platba)</button>' +
         '<p class="text-center text-[11px] text-zinc-200 font-mono text-[11px] tracking-wide">Peníze se strhnou z tvého účtu až po schválení hotového videa.</p></form>';
   }
@@ -340,8 +334,8 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       '<h3 class="font-display font-bold text-xl mb-1">Nech výběr na nás</h3>' +
       '<p class="text-zinc-200 text-sm mb-6">Popiš, co potřebuješ propagovat — do 24 hodin ti návrh 2–3 tvůrců z balíčku Growth nebo Scale pošleme na <span class="text-white">' + currentUser.email + '</span>.</p>' +
       '<form onsubmit="submitConcierge(event)" class="space-y-4">' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Přibližný rozpočet</label><input type="text" placeholder="např. 15 000 Kč / měsíc" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" required></div>' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Co potřebuješ propagovat?</label><textarea rows="3" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] resize-none" placeholder="Produkt, cílovka, preferovaná platforma..." required></textarea></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Přibližný rozpočet</label><input type="text" placeholder="např. 15 000 Kč / měsíc" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Co potřebuješ propagovat?</label><textarea rows="3" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none" placeholder="Produkt, cílovka, preferovaná platforma..." required></textarea></div>' +
         '<button type="submit" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Odeslat požadavek</button>' +
       '</form>';
     showModal();
@@ -456,7 +450,7 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
         '<span>Pokračovat přes Google</span></button>' +
       '<div class="flex items-center gap-3 mb-5"><div class="h-px bg-white/10 flex-1"></div><span class="text-mist text-xs font-mono text-[11px] tracking-wide">NEBO E-MAILEM</span><div class="h-px bg-white/10 flex-1"></div></div>' +
       '<form onsubmit="authSendCode(event)" class="space-y-4">' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">E-mail</label><input type="email" id="auth-email" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" placeholder="jmeno@email.cz" required></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">E-mail</label><input type="email" id="auth-email" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" placeholder="jmeno@email.cz" required></div>' +
         '<button type="submit" id="send-code-btn" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Poslat ověřovací kód</button>' +
       '</form>' +
       '<button onclick="fakeTestLogin()" class="w-full mt-5 text-xs text-mist hover:text-white underline transition">🧪 Testovací přihlášení bez ověření (jen pro vývoj)</button>';
@@ -467,7 +461,7 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       '<h3 class="font-display font-bold text-xl mb-1">Zadej ověřovací kód</h3>' +
       '<p class="text-zinc-200 text-sm mb-6">Poslali jsme 6místný kód na <span class="text-white">' + email + '</span>. (V demu funguje jakýkoli kód.)</p>' +
       '<form onsubmit="authVerifyCode(event)" class="space-y-4">' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Ověřovací kód</label><input type="text" id="auth-code" inputmode="numeric" maxlength="6" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] text-center tracking-[0.4em] font-semibold" placeholder="123456" required></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Ověřovací kód</label><input type="text" id="auth-code" inputmode="numeric" maxlength="6" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] text-center tracking-[0.4em] font-semibold" placeholder="123456" required></div>' +
         '<button type="submit" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Ověřit a přihlásit</button>' +
       '</form>';
   }
@@ -705,10 +699,12 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       }
     }
     isCreatorPro = localStorage.getItem('pb_creator_pro') === 'true';
+    brandPlan = readBrandPlanFromStorage();
     if(currentUser && currentUser.role === 'creator'){ myCreatorIndex = findMyCreatorIndex(currentUser.email); }
     refreshGates();
     updateHeaderAuthUI();
     renderCreatorProCta();
+    notifyBrandPlanChange();
   }
 
   /* ============== HEADER — avatar / dropdown menu po přihlášení ============== */
@@ -748,8 +744,7 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
     refreshGates();
     updateHeaderAuthUI();
     renderCreatorProCta();
-    switchView('firms');
-    scrollToId('top');
+    window.location.assign(LANDING_FIRMS_PATH);
   }
 
   /* ============== DASHBOARD GATING ============== */
@@ -779,23 +774,20 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
     }).join('');
   }
   function goToCreatorDashboard(){
-    switchView('creators');
+    if(window.location.pathname !== LANDING_CREATORS_PATH){
+      window.location.assign(LANDING_CREATORS_PATH + '#dashboard');
+      return;
+    }
     requireAuth('creator', ()=>{ scrollToId('dashboard'); });
   }
   function goToBrandDashboard(){
-    switchView('firms');
+    if(window.location.pathname !== LANDING_FIRMS_PATH){
+      window.location.assign(LANDING_FIRMS_PATH + '#job-board');
+      return;
+    }
     scrollToId('job-board');
     switchJobTab('brand');
     requireAuth('brand', ()=>{ switchJobTab('brand'); });
-  }
-  /* Oprava: "Poptávky" v menu musí VŽDY otevřít veřejný přehled nabídek
-     (tab "browse"), bez ohledu na to, na jaké záložce Tržiště poptávek
-     předtím zůstalo (např. po předchozí návštěvě Panelu pro značky).
-     Přehled poptávek je veřejný — přihlášení k němu není potřeba. */
-  function goToJobBoardBrowse(){
-    switchView('firms');
-    switchJobTab('browse');
-    scrollToId('job-board');
   }
 
   /* ============== BADGES — počítané z reálného stavu session, žádné natvrdo dané ============== */
@@ -847,12 +839,12 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       '</div>' +
 
       '<form onsubmit="submitAccountSettings(event)" class="space-y-4">' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Zobrazované jméno</label><input id="settings-display-name" type="text" value="' + (profile.name || '') + '" placeholder="' + (currentUser.role === 'creator' ? 'Jana K.' : 'Jméno / název značky') + '" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Bio</label><textarea id="settings-bio" rows="3" placeholder="' + (currentUser.role === 'creator' ? 'Pár vět o tobě a tvém obsahu...' : 'Pár vět o vaší značce...') + '" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] resize-none">' + (profile.bio || '') + '</textarea></div>' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Aktuální e-mail</label><input type="email" value="' + currentUser.email + '" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" disabled></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Zobrazované jméno</label><input id="settings-display-name" type="text" value="' + (profile.name || '') + '" placeholder="' + (currentUser.role === 'creator' ? 'Jana K.' : 'Jméno / název značky') + '" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]"></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Bio</label><textarea id="settings-bio" rows="3" placeholder="' + (currentUser.role === 'creator' ? 'Pár vět o tobě a tvém obsahu...' : 'Pár vět o vaší značce...') + '" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none">' + (profile.bio || '') + '</textarea></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Aktuální e-mail</label><input type="email" value="' + currentUser.email + '" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" disabled></div>' +
         '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Změnit e-mail</label>' +
           '<div class="flex flex-col sm:flex-row gap-2">' +
-            '<input id="settings-new-email" type="email" placeholder="novy@email.cz" class="flex-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]">' +
+            '<input id="settings-new-email" type="email" placeholder="novy@email.cz" class="flex-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]">' +
             '<button type="button" onclick="sendEmailChangeVerification()" class="bg-white/[0.04] border border-white/[0.14] transition-all duration-300 hover:bg-white/[0.09] hover:border-white/[0.24] font-semibold text-xs px-4 py-3 rounded-xl text-white/90 whitespace-nowrap">Odeslat ověřovací odkaz</button>' +
           '</div>' +
           '<p id="email-change-status" class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-2 hidden"></p>' +
@@ -862,16 +854,16 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
         (currentUser.role === 'creator' ?
           '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-2">Sociální sítě</label>' +
           '<div class="space-y-2.5">' +
-            '<input id="settings-handle-tiktok" type="text" value="' + ((profile.socialHandles && profile.socialHandles.tiktok) || '') + '" placeholder="🎵 TikTok @handle" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]">' +
-            '<input id="settings-handle-instagram" type="text" value="' + ((profile.socialHandles && profile.socialHandles.instagram) || '') + '" placeholder="📸 Instagram @handle" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]">' +
-            '<input id="settings-handle-youtube" type="text" value="' + ((profile.socialHandles && profile.socialHandles.youtube) || '') + '" placeholder="▶️ YouTube @handle" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]">' +
+            '<input id="settings-handle-tiktok" type="text" value="' + ((profile.socialHandles && profile.socialHandles.tiktok) || '') + '" placeholder="🎵 TikTok @handle" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]">' +
+            '<input id="settings-handle-instagram" type="text" value="' + ((profile.socialHandles && profile.socialHandles.instagram) || '') + '" placeholder="📸 Instagram @handle" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]">' +
+            '<input id="settings-handle-youtube" type="text" value="' + ((profile.socialHandles && profile.socialHandles.youtube) || '') + '" placeholder="▶️ YouTube @handle" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]">' +
           '</div></div>'
         : '') +
 
         (currentUser.role === 'creator' ?
           '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-2">Portfolio · ukázky práce (odkazy na TikTok / Reels / YouTube Shorts)</label>' +
           '<div class="space-y-2.5">' +
-            [0,1,2].map(idx=>'<input id="settings-portfolio-' + idx + '" type="url" value="' + ((profile.portfolio && profile.portfolio[idx]) || '') + '" placeholder="Ukázka ' + (idx+1) + ' — https://www.tiktok.com/@ucet/video/..." class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]">').join('') +
+            [0,1,2].map(idx=>'<input id="settings-portfolio-' + idx + '" type="url" value="' + ((profile.portfolio && profile.portfolio[idx]) || '') + '" placeholder="Ukázka ' + (idx+1) + ' — https://www.tiktok.com/@ucet/video/..." class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]">').join('') +
           '</div>' +
           '<p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1.5">Tyto 3 odkazy se zobrazí jako Portfolio v tvém veřejném profilu na tržišti.</p></div>'
         : '') +
@@ -997,10 +989,9 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
     const requiredRole = protectedHashRoles[hash];
     if(!requiredRole) return;
     if(currentUser && currentUser.role === requiredRole) return;
-    history.replaceState(null, '', '#top');
-    switchView('firms');
+    history.replaceState(null, '', LANDING_CREATORS_PATH + '#top');
     window.scrollTo({top:0, behavior:'auto'});
-    openAuth(requiredRole, ()=>{ switchView('creators'); scrollToId(hash); });
+    openAuth(requiredRole, ()=>{ window.location.assign(LANDING_CREATORS_PATH + '#' + hash); });
   }
   window.addEventListener('hashchange', enforceDashboardAccess);
 
@@ -1080,12 +1071,16 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
 
   /* ============== AVATAR UPLOAD ============== */
   let uploadedAvatarUrl = null;
-  document.getElementById('avatar-upload').addEventListener('change', (e)=>{
-    const file = e.target.files[0];
-    if(!file) return;
-    uploadedAvatarUrl = URL.createObjectURL(file);
-    document.getElementById('avatar-preview').outerHTML = '<img id="avatar-preview" src="' + uploadedAvatarUrl + '" class="w-full h-full rounded-full object-cover">';
-  });
+  const avatarUploadInput = document.getElementById('avatar-upload');
+  if(avatarUploadInput){
+    avatarUploadInput.addEventListener('change', (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      uploadedAvatarUrl = URL.createObjectURL(file);
+      const preview = document.getElementById('avatar-preview');
+      if(preview) preview.outerHTML = '<img id="avatar-preview" src="' + uploadedAvatarUrl + '" class="w-full h-full rounded-full object-cover">';
+    });
+  }
 
   /* ============== STAGING PACKAGES — neomezený počet balíčků pro nový profil ============== */
   const gradPool = ['from-violet-500 to-fuchsia-500','from-cyan-400 to-blue-500','from-pink-500 to-violet-500','from-fuchsia-500 to-cyan-400','from-blue-500 to-violet-600'];
@@ -1093,8 +1088,10 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
   let stagingPackages = [];
 
   function renderStagingPackages(){
-    document.getElementById('staging-count').textContent = stagingPackages.length;
+    const countEl = document.getElementById('staging-count');
     const list = document.getElementById('staging-packages-list');
+    if(!countEl || !list) return;
+    countEl.textContent = stagingPackages.length;
     if(stagingPackages.length === 0){ list.innerHTML = '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-5 text-center text-mist text-xs">Zatím žádný balíček. Přidej první vlevo.</div>'; return; }
     list.innerHTML = stagingPackages.map(p=>
       '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4"><div class="flex items-start justify-between gap-3 mb-1.5"><p class="font-semibold text-sm">' + p.name + '</p><p class="font-display font-bold text-sm bg-gradient-to-r from-accent-soft via-magenta to-cyan bg-clip-text text-transparent whitespace-nowrap">' + p.price.toLocaleString('cs-CZ') + ' Kč</p></div>' +
@@ -1208,16 +1205,18 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
   const dropzone = document.getElementById('dropzone'), fileInput = document.getElementById('file-input');
   const dzEmpty = document.getElementById('dropzone-empty'), dzFile = document.getElementById('dropzone-file');
   function handleFile(file){
-    if(!file) return;
+    if(!file || !dzEmpty || !dzFile) return;
     if(!/\.(mp4|mov)$/i.test(file.name)){ alert('Nahraj prosím soubor ve formátu MP4 nebo MOV.'); return; }
     document.getElementById('file-name').textContent = file.name;
     document.getElementById('file-size').textContent = (file.size/1024/1024).toFixed(1) + ' MB';
     dzEmpty.classList.add('hidden'); dzFile.classList.remove('hidden');
   }
-  fileInput.addEventListener('change', (e)=> handleFile(e.target.files[0]));
-  ['dragenter','dragover'].forEach(evt=> dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); e.stopPropagation(); dropzone.classList.add('drag-over'); }));
-  ['dragleave','drop'].forEach(evt=> dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); e.stopPropagation(); dropzone.classList.remove('drag-over'); }));
-  dropzone.addEventListener('drop', (e)=>{ handleFile(e.dataTransfer.files[0]); });
+  if(fileInput) fileInput.addEventListener('change', (e)=> handleFile(e.target.files[0]));
+  if(dropzone){
+    ['dragenter','dragover'].forEach(evt=> dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); e.stopPropagation(); dropzone.classList.add('drag-over'); }));
+    ['dragleave','drop'].forEach(evt=> dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); e.stopPropagation(); dropzone.classList.remove('drag-over'); }));
+    dropzone.addEventListener('drop', (e)=>{ handleFile(e.dataTransfer.files[0]); });
+  }
   function submitUpload(){
     const msg = document.getElementById('upload-msg');
     if(myOrders.length === 0){ msg.textContent = 'Zatím nemáš žádnou objednávku, ke které by šlo video přiřadit.'; msg.style.color = '#ff8fd6'; msg.classList.remove('hidden'); return; }
@@ -1287,6 +1286,9 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
   function activateGrowthPlan(){
     // Growth zatím (na rozdíl od Creator PRO) v aplikaci nic reálně neodemyká —
     // stejný platební vzor, jen zatím bez navazující business logiky pro značky.
+    brandPlan = 'growth';
+    localStorage.setItem('pb_brand_plan', 'growth');
+    notifyBrandPlanChange();
     modalContent.innerHTML = successBlock('Platba proběhla — Growth aktivní! 🎉', 'Stav účtu: SUBSCRIBED. Ozveme se s nastavením účtu podle tvého rozpočtu.');
   }
 
@@ -1344,6 +1346,13 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
   ============================================================== */
   const FREE_PACKAGE_LIMIT = 2;
   let isCreatorPro = false;
+  let brandPlan = 'starter';
+  function readBrandPlanFromStorage(){
+    return localStorage.getItem('pb_brand_plan') === 'growth' ? 'growth' : 'starter';
+  }
+  function notifyBrandPlanChange(){
+    window.dispatchEvent(new Event('pb-brand-plan-change'));
+  }
   function canAddMorePackages(){
     if(isCreatorPro) return true;
     if(myCreatorIndex !== null && creators[myCreatorIndex]) return creators[myCreatorIndex].packages.length < FREE_PACKAGE_LIMIT;
@@ -1403,6 +1412,7 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
   let editingPackageId = null;
   function renderMyPackages(){
     const list = document.getElementById('my-packages-list');
+    if(!list) return;
     if(myCreatorIndex === null || !creators[myCreatorIndex]){
       list.innerHTML = '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-6 text-center text-mist text-sm">Nejdřív si v sekci "Propoj účty a nastav si profil" vygeneruj profil do tržiště — pak tu uvidíš a upravíš jeho balíčky.</div>';
       return;
@@ -1493,6 +1503,7 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       '</div></div>';
   }
   function renderJobs(){
+    if(!jobGrid || !jobEmptyState) return;
     if(jobs.length === 0){ jobGrid.classList.add('hidden'); jobEmptyState.classList.remove('hidden'); return; }
     jobGrid.classList.remove('hidden'); jobEmptyState.classList.add('hidden');
     jobGrid.innerHTML = jobs.map(jobCardTemplate).join('');
@@ -1508,7 +1519,7 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
     modalContent.innerHTML = '<h3 class="font-display font-bold text-xl mb-1">' + j.title + '</h3><p class="text-zinc-200 text-sm mb-6">' + j.company + ' · rozpočet do ' + j.budget.toLocaleString('cs-CZ') + ' Kč</p>' +
       securityBadge() +
       '<form onsubmit="submitJobApplication(event, ' + j.id + ')" class="space-y-4">' +
-        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Proč jsi pro tuto poptávku vhodný tvůrce?</label><textarea class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] resize-none" rows="4" placeholder="Krátce popiš svůj obsah, publikum a nápad na zpracování." required></textarea></div>' +
+        '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Proč jsi pro tuto poptávku vhodný tvůrce?</label><textarea class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none" rows="4" placeholder="Krátce popiš svůj obsah, publikum a nápad na zpracování." required></textarea></div>' +
         '<button type="submit" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Odpovědět na nabídku</button>' +
       '</form>';
     showModal();
@@ -1607,12 +1618,12 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       '<div id="chat-messages" class="space-y-3 max-h-[38vh] overflow-y-auto pr-1 mb-4"></div>' +
       '<div id="chat-offer-form" class="hidden bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 mb-3">' +
         '<label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Navrhni částku (Kč)</label>' +
-        '<div class="flex gap-2"><input id="chat-offer-amount" type="number" min="0" step="100" placeholder="2500" class="flex-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-3 py-2.5 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]">' +
+        '<div class="flex gap-2"><input id="chat-offer-amount" type="number" min="0" step="100" placeholder="2500" class="flex-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-3 py-2.5 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]">' +
         '<button type="button" onclick="sendOffer(' + conv.id + ')" class="' + PB_BTN_CTA_SM + '">Poslat nabídku</button></div>' +
       '</div>' +
       '<form onsubmit="sendChatMessage(event, ' + conv.id + ')" class="flex items-center gap-2">' +
         '<button type="button" onclick="toggleOfferForm()" class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] w-11 h-11 rounded-xl flex items-center justify-center text-lg font-bold shrink-0" title="Vyjednat cenu / poslat nabídku">+</button>' +
-        '<input id="chat-input" type="text" class="flex-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" placeholder="Napiš zprávu...">' +
+        '<input id="chat-input" type="text" class="flex-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" placeholder="Napiš zprávu...">' +
         '<button type="submit" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 shrink-0">Odeslat</button>' +
       '</form>';
     showModal();
@@ -1796,12 +1807,12 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
       (conv.completed ? '<div class="w-full mb-3 rounded-lg py-2 text-xs font-semibold text-center bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px]" style="color:#a5b4fc;">🎉 Spolupráce dokončena</div>' : '') +
       '<div id="widget-chat-messages" class="space-y-2.5 mb-3"></div>' +
       '<div id="widget-offer-form" class="hidden bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-3 mb-2.5">' +
-        '<input id="widget-offer-amount" type="number" min="0" step="100" placeholder="Částka v Kč" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-3 py-2 text-xs border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] mb-2">' +
+        '<input id="widget-offer-amount" type="number" min="0" step="100" placeholder="Částka v Kč" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-3 py-2 text-xs border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] mb-2">' +
         '<button type="button" onclick="sendWidgetOffer(' + conv.id + ')" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-xs border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1 px-4 py-2.5 w-full">Poslat cenovou nabídku</button>' +
       '</div>' +
       '<div class="flex items-center gap-1.5">' +
         '<button type="button" onclick="toggleWidgetOfferForm()" class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] w-9 h-9 rounded-lg flex items-center justify-center text-base font-bold shrink-0" title="Vyjednat cenu">+</button>' +
-        '<input id="widget-chat-input" type="text" class="flex-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-3 py-2 text-xs border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" placeholder="Napiš zprávu...">' +
+        '<input id="widget-chat-input" type="text" class="flex-1 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-3 py-2 text-xs border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" placeholder="Napiš zprávu...">' +
         '<button onclick="sendWidgetMessage(' + conv.id + ')" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-xs border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1 px-4 py-2.5 shrink-0">Odeslat</button>' +
       '</div>';
     const input = document.getElementById('widget-chat-input');
@@ -1871,10 +1882,15 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
 
 
   function switchJobTab(tab){
-    document.getElementById('subtab-browse').classList.toggle('active', tab==='browse');
-    document.getElementById('subtab-brand').classList.toggle('active', tab==='brand');
-    document.getElementById('jobs-browse').classList.toggle('hidden', tab!=='browse');
-    document.getElementById('brand-panel').classList.toggle('hidden', tab!=='brand');
+    const subtabBrowse = document.getElementById('subtab-browse');
+    const subtabBrand = document.getElementById('subtab-brand');
+    const jobsBrowse = document.getElementById('jobs-browse');
+    const brandPanel = document.getElementById('brand-panel');
+    if(!subtabBrowse || !subtabBrand || !jobsBrowse || !brandPanel) return;
+    subtabBrowse.classList.toggle('active', tab==='browse');
+    subtabBrand.classList.toggle('active', tab==='brand');
+    jobsBrowse.classList.toggle('hidden', tab!=='browse');
+    brandPanel.classList.toggle('hidden', tab!=='brand');
     if(tab==='brand' && currentUser && currentUser.role === 'brand') renderMyJobs();
   }
 
@@ -1943,29 +1959,3 @@ var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounde
   restoreSession();
   enforceDashboardAccess();
   handleAuthCallback();
-
-  /* ============== COOKIE BANNER — perzistence do localStorage ============== */
-  const COOKIE_CONSENT_KEY = 'pb_cookie_consent';
-  function cookieChoice(choice){
-    localStorage.setItem(COOKIE_CONSENT_KEY, choice);
-    hideCookieBanner();
-  }
-  function hideCookieBanner(){
-    const b = document.getElementById('cookie-banner');
-    b.style.transform = 'translateY(150%)'; b.style.opacity = '0';
-    setTimeout(()=> b.classList.add('hidden'), 550);
-  }
-  function initCookieBanner(){
-    if(localStorage.getItem(COOKIE_CONSENT_KEY)){
-      document.getElementById('cookie-banner').classList.add('hidden');
-    }
-  }
-  initCookieBanner();
-  function openCookieSettings(){
-    modalContent.innerHTML = '<h3 class="font-display font-bold text-xl mb-2">Nastavení cookies</h3><p class="text-zinc-200 text-sm mb-6">Vyber, které kategorie cookies chceš povolit. Nezbytné cookies jsou vždy aktivní pro základní chod webu.</p>' +
-      '<div class="space-y-3 mb-7"><label class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 flex items-center justify-between opacity-60"><span class="text-sm font-medium">Nezbytné cookies</span><input type="checkbox" checked disabled></label>' +
-      '<label class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 flex items-center justify-between cursor-pointer"><span class="text-sm font-medium">Analytické cookies</span><input type="checkbox" checked></label>' +
-      '<label class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 flex items-center justify-between cursor-pointer"><span class="text-sm font-medium">Marketingové cookies</span><input type="checkbox"></label></div>' +
-      '<button onclick="cookieChoice(\'custom\'); closeModal();" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Uložit nastavení</button>';
-    showModal();
-  }

@@ -4,12 +4,14 @@ import type { MouseEvent, ReactNode } from "react";
 import Link from "next/link";
 
 import { BrandMark } from "@/components/ui/brand-mark";
-import { invokeAppGlobal } from "@/lib/app-global";
+import { goToJobBoardBrowse } from "@/lib/landing-nav";
+import { landingHref, LANDING_FIRMS_PATH } from "@/lib/landing-routes";
+import { scrollToSection } from "@/lib/scroll-to-section";
 import { sectionX, surface } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
 const headingClass =
-  "mb-4 font-body text-[11px] font-medium uppercase tracking-wide text-primary";
+  "mb-4 font-body text-[11px] font-medium uppercase tracking-wide text-cyan";
 
 const linkClass =
   "text-sm text-zinc-200 transition-colors hover:text-white";
@@ -62,20 +64,12 @@ export function SiteFooter() {
       <div className={cn("mx-auto max-w-7xl p-8 md:p-10 lg:p-12", surface)}>
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           <div className="sm:col-span-2 lg:col-span-5">
-            <Link
-              href="#top"
-              className="inline-flex items-center gap-2.5"
-              onClick={(e) => {
-                e.preventDefault();
-                invokeAppGlobal("switchView", "firms");
-                invokeAppGlobal("scrollToId", "top");
-              }}
-            >
+            <Link href={LANDING_FIRMS_PATH} className="inline-flex items-center gap-2.5">
               <BrandMark />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-zinc-200">
-              Tržiště influencerů a UGC tvůrců. Vyber promo, nastav rozpočet a
-              získej prodeje — s bezpečnou platbou v úschově.
+              Propojujeme značky s tvůrci, kteří umí prodat. Vyber promo, nastav rozpočet a plať
+              v klidu. Peníze držíme v úschově, dokud nebudeš s výsledkem spokojený.
             </p>
             <a
               href="mailto:podpora@promobazar.cz"
@@ -89,61 +83,44 @@ export function SiteFooter() {
             <div className="grid gap-10 sm:grid-cols-3">
               <FooterColumn title="Pro značky">
                 <li>
-                  <FooterLink href="#marketplace">Tržiště tvůrců</FooterLink>
+                  <FooterLink href={landingHref("firms", "marketplace")}>
+                    Tržiště tvůrců
+                  </FooterLink>
                 </li>
                 <li>
                   <FooterLink
-                    href="#job-board"
+                    href={landingHref("firms", "job-board")}
                     onClick={(e) => {
                       e.preventDefault();
-                      invokeAppGlobal("goToJobBoardBrowse");
+                      goToJobBoardBrowse();
                     }}
                   >
                     Poptávky
                   </FooterLink>
                 </li>
                 <li>
-                  <FooterLink href="#cenik">Ceník</FooterLink>
+                  <FooterLink href={landingHref("firms", "cenik")}>Ceník</FooterLink>
                 </li>
                 <li>
-                  <FooterLink href="#jak-to-funguje">Jak to funguje</FooterLink>
+                  <FooterLink href={landingHref("firms", "jak-to-funguje")}>
+                    Jak to funguje
+                  </FooterLink>
                 </li>
               </FooterColumn>
 
               <FooterColumn title="Pro tvůrce">
                 <li>
-                  <FooterLink
-                    href="#propojeni"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      invokeAppGlobal("switchView", "creators");
-                      invokeAppGlobal("scrollToId", "propojeni");
-                    }}
-                  >
+                  <FooterLink href={landingHref("creators", "propojeni")}>
                     Propojení profilu
                   </FooterLink>
                 </li>
                 <li>
-                  <FooterLink
-                    href="#balicky"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      invokeAppGlobal("switchView", "creators");
-                      invokeAppGlobal("scrollToId", "balicky");
-                    }}
-                  >
+                  <FooterLink href={landingHref("creators", "balicky")}>
                     Balíčky
                   </FooterLink>
                 </li>
                 <li>
-                  <FooterLink
-                    href="#creator-pro"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      invokeAppGlobal("switchView", "creators");
-                      invokeAppGlobal("scrollToId", "creator-pro");
-                    }}
-                  >
+                  <FooterLink href={landingHref("creators", "creator-pro")}>
                     Creator PRO
                   </FooterLink>
                 </li>
@@ -155,10 +132,10 @@ export function SiteFooter() {
                 </li>
                 <li>
                   <FooterLink
-                    href="#kontakt"
+                    href={landingHref("firms", "kontakt")}
                     onClick={(e) => {
                       e.preventDefault();
-                      invokeAppGlobal("scrollToId", "kontakt");
+                      scrollToSection("kontakt");
                     }}
                   >
                     Kontakt

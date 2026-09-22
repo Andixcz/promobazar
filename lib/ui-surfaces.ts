@@ -1,6 +1,6 @@
 /** Sdílené Tailwind třídy pro landing (React + app.js — drž v sync u tlačítek). */
 
-export const section = "px-5 md:px-8 py-16 md:py-24";
+export const section = "px-5 md:px-8 py-16 md:py-12";
 export const sectionX = "px-5 md:px-8";
 
 export const surface = "rounded-md border border-white/[0.09] bg-panel";
@@ -59,13 +59,13 @@ export const htmlButtonOutlineSm = `${btnBase} text-xs border-white/[0.14] bg-wh
 
 export const htmlButtonPill = `${btnBase} text-xs border-transparent bg-transparent h-auto gap-1 px-4 py-2 text-mist hover:text-white [&.active]:bg-cyan [&.active]:text-void`;
 
-/** app.js toggluje `.active` na přepínači Pro firmy / Pro tvůrce */
+/** app.js toggluje `.active` na subtabs job boardu; audience přepínač řídí React (pathname). */
 export const audienceSwitcherActive =
   "[&.active]:border-transparent [&.active]:bg-cyan [&.active]:text-void";
 
 /** Pole formuláře v landing sekcích */
 export const fieldControl =
-  "w-full min-w-0 rounded-sm border border-white/[0.09] bg-white/[0.065] text-sm text-white transition-all duration-200 placeholder:text-white/40 outline-none focus-visible:border-magenta/30 focus-visible:bg-white/[0.12] focus-visible:ring-2 focus-visible:ring-magenta/40 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-white/[0.03] disabled:opacity-50 aria-invalid:border-destructive/50 aria-invalid:ring-2 aria-invalid:ring-destructive/35 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-white";
+  "w-full min-w-0 rounded-sm border border-white/[0.09] bg-white/[0.065] text-sm text-white transition-all duration-200 placeholder:text-white/40 outline-none focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-white/[0.03] disabled:opacity-50 aria-invalid:border-destructive/50 aria-invalid:ring-2 aria-invalid:ring-destructive/35 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-white";
 
 export const fieldLabel =
   "block font-body text-[11px] font-medium uppercase tracking-wide text-mist";
