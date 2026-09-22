@@ -15,6 +15,9 @@ import {
   Video,
 } from "lucide-react";
 
+import { FormField } from "@/components/ui/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { BrandPlanCta } from "@/components/landing/brand-plan-cta";
 import { CreatorsHeroSection } from "@/components/landing/creators-hero-section";
 import { FaqSection } from "@/components/landing/faq-section";
@@ -28,8 +31,6 @@ import {
   emptyStateSubtitle,
   emptyStateTitle,
   eyebrow,
-  fieldControl,
-  fieldLabel,
   htmlButtonCta,
   htmlButtonOutline,
   pricingCard,
@@ -172,10 +173,18 @@ export function FirmsView() {
               <div className="lg:col-span-2 border border-white/[0.09] bg-panel rounded-md p-7 md:p-9">
                 <h3 className="font-display font-semibold text-lg mb-6">Publikovat novou poptávku</h3>
                 <form onSubmit={(e) => { e.preventDefault(); callAppHandler('submitNewJob', e); }} className="space-y-5">
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Název inzerátu</label><input id="job-title" type="text" placeholder="např. TikToker na 3 videa/měsíc" className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required /></div>
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Obor</label><div id="dd-job-category-mount"></div></div>
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Rozpočet (Kč)</label><input id="job-budget" type="number" min={0} step={500} placeholder="8000" className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required /></div>
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Popis požadavků</label><textarea id="job-description" rows={3} placeholder="Co má tvůrce dodat, jaký formát a tón..." className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none" required></textarea></div>
+                  <FormField label="Název inzerátu" htmlFor="job-title">
+                    <Input id="job-title" name="title" type="text" placeholder="např. TikToker na 3 videa/měsíc" required />
+                  </FormField>
+                  <FormField label="Obor">
+                    <div id="dd-job-category-mount" />
+                  </FormField>
+                  <FormField label="Rozpočet (Kč)" htmlFor="job-budget">
+                    <Input id="job-budget" name="budgetCzk" type="number" min={0} step={500} placeholder="8000" required />
+                  </FormField>
+                  <FormField label="Popis požadavků" htmlFor="job-description">
+                    <Textarea id="job-description" name="description" rows={3} placeholder="Co má tvůrce dodat, jaký formát a tón..." required />
+                  </FormField>
                   <button type="submit" className="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Publikovat poptávku</button>
                 </form>
               </div>
@@ -345,36 +354,54 @@ export function CreatorsView() {
               <span className={eyebrow}>Krok 1 — sociální sítě</span>
               <h3 className="font-display font-semibold text-xl mt-2 mb-5">Zadej své účty</h3>
               <div className="space-y-3">
-                <div>
-                  <label className={cn(fieldLabel, "mb-1.5 flex items-center gap-2")}>
-                    <Music2 className="size-3.5 text-cyan" aria-hidden />
-                    TikTok
-                  </label>
-                  <input id="handle-tiktok" type="text" placeholder="@tvuj_ucet" className={cn(fieldControl, "px-4 py-3")} />
-                </div>
-                <div>
-                  <label className={cn(fieldLabel, "mb-1.5 flex items-center gap-2")}>
-                    <Video className="size-3.5 text-cyan" aria-hidden />
-                    Instagram
-                  </label>
-                  <input id="handle-instagram" type="text" placeholder="@tvuj_ucet" className={cn(fieldControl, "px-4 py-3")} />
-                </div>
-                <div>
-                  <label className={cn(fieldLabel, "mb-1.5 flex items-center gap-2")}>
-                    <Play className="size-3.5 text-cyan" aria-hidden />
-                    YouTube
-                  </label>
-                  <input id="handle-youtube" type="text" placeholder="@tvuj_kanal" className={cn(fieldControl, "px-4 py-3")} />
-                </div>
+                <FormField
+                  label={
+                    <span className="inline-flex items-center gap-2">
+                      <Music2 className="size-3.5 text-cyan" aria-hidden />
+                      TikTok
+                    </span>
+                  }
+                  htmlFor="handle-tiktok"
+                >
+                  <Input id="handle-tiktok" type="text" placeholder="@tvuj_ucet" />
+                </FormField>
+                <FormField
+                  label={
+                    <span className="inline-flex items-center gap-2">
+                      <Video className="size-3.5 text-cyan" aria-hidden />
+                      Instagram
+                    </span>
+                  }
+                  htmlFor="handle-instagram"
+                >
+                  <Input id="handle-instagram" type="text" placeholder="@tvuj_ucet" />
+                </FormField>
+                <FormField
+                  label={
+                    <span className="inline-flex items-center gap-2">
+                      <Play className="size-3.5 text-cyan" aria-hidden />
+                      YouTube
+                    </span>
+                  }
+                  htmlFor="handle-youtube"
+                >
+                  <Input id="handle-youtube" type="text" placeholder="@tvuj_kanal" />
+                </FormField>
               </div>
               <p className="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-2.5">Vyplň jen sítě, které používáš — zobrazí se jako odkazy na tvém profilu.</p>
       
               <div className="mt-7">
                 <span className="font-body text-[11px] font-medium uppercase tracking-wide text-cyan">Statistiky (podle sebe)</span>
                 <div className="grid grid-cols-3 gap-2.5 mt-3">
-                  <div><label className="block text-[10px] font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Sledující</label><input id="stat-followers" type="number" min={0} placeholder="12000" className="w-full border border-white/[0.09] bg-panel rounded-sm px-3 py-2.5 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" /></div>
-                  <div><label className="block text-[10px] font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Zhlédnutí/video</label><input id="stat-avgviews" type="number" min={0} placeholder="3000" className="w-full border border-white/[0.09] bg-panel rounded-sm px-3 py-2.5 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" /></div>
-                  <div><label className="block text-[10px] font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Dosah/30 dní</label><input id="stat-reach" type="number" min={0} placeholder="8000" className="w-full border border-white/[0.09] bg-panel rounded-sm px-3 py-2.5 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" /></div>
+                  <FormField label="Sledující" htmlFor="stat-followers">
+                    <Input id="stat-followers" type="number" min={0} placeholder="12000" size="sm" />
+                  </FormField>
+                  <FormField label="Zhlédnutí/video" htmlFor="stat-avgviews">
+                    <Input id="stat-avgviews" type="number" min={0} placeholder="3000" size="sm" />
+                  </FormField>
+                  <FormField label="Dosah/30 dní" htmlFor="stat-reach">
+                    <Input id="stat-reach" type="number" min={0} placeholder="8000" size="sm" />
+                  </FormField>
                 </div>
               </div>
             </div>
@@ -394,11 +421,13 @@ export function CreatorsView() {
                 </div>
               </div>
       
-              <label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-2">Zobrazované jméno (např. Jana K.)</label>
-              <input id="profile-display-name" type="text" placeholder="Jana K." className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] mb-6" />
+              <FormField label="Zobrazované jméno (např. Jana K.)" htmlFor="profile-display-name" className="mb-6">
+                <Input id="profile-display-name" type="text" placeholder="Jana K." />
+              </FormField>
       
-              <label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-2">Obor</label>
-              <div id="dd-profile-category-mount" className="mb-7"></div>
+              <FormField label="Obor" className="mb-7">
+                <div id="dd-profile-category-mount" />
+              </FormField>
       
               <button onClick={() => callAppHandler('generateRealProfile')} className="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Vygenerovat profil do tržiště</button>
               <p id="profile-error" className="text-xs mt-3 hidden" style={{ color: '#ff8fd6' }}>Vyplň jméno a přidej alespoň jeden balíček níže.</p>
@@ -421,17 +450,31 @@ export function CreatorsView() {
       
             <div className="grid lg:grid-cols-5 gap-6">
               <div className="lg:col-span-3 space-y-5">
-                <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Název balíčku</label><input id="staging-name" type="text" placeholder="např. TikTok video balíček" className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" /></div>
+                <FormField label="Název balíčku" htmlFor="staging-name">
+                  <Input id="staging-name" type="text" placeholder="např. TikTok video balíček" />
+                </FormField>
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Formát</label><div id="dd-staging-format-mount"></div></div>
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Doba doručení</label><div id="dd-staging-delivery-mount"></div></div>
+                  <FormField label="Formát">
+                    <div id="dd-staging-format-mount" />
+                  </FormField>
+                  <FormField label="Doba doručení">
+                    <div id="dd-staging-delivery-mount" />
+                  </FormField>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Počet revizí</label><input id="staging-revisions" type="number" min={0} max={5} defaultValue={1} className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" /></div>
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Cena (Kč)</label><input id="staging-price" type="number" min={0} step={100} placeholder="2000" className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" /></div>
+                  <FormField label="Počet revizí" htmlFor="staging-revisions">
+                    <Input id="staging-revisions" type="number" min={0} max={5} defaultValue={1} />
+                  </FormField>
+                  <FormField label="Cena (Kč)" htmlFor="staging-price">
+                    <Input id="staging-price" type="number" min={0} step={100} placeholder="2000" />
+                  </FormField>
                 </div>
-                <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Délka licence pro reklamu (Meta/TikTok Ads)</label><div id="dd-staging-license-mount"></div></div>
-                <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Popis balíčku</label><textarea id="staging-description" rows={2} placeholder="Co přesně balíček obsahuje..." className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none"></textarea></div>
+                <FormField label="Délka licence pro reklamu (Meta/TikTok Ads)">
+                  <div id="dd-staging-license-mount" />
+                </FormField>
+                <FormField label="Popis balíčku" htmlFor="staging-description">
+                  <Textarea id="staging-description" rows={2} placeholder="Co přesně balíček obsahuje..." size="sm" />
+                </FormField>
                 <button type="button" onClick={() => callAppHandler('addStagingPackage')} className="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-white/[0.14] bg-white/[0.04] text-white/85 hover:bg-white/[0.09] hover:border-white/[0.24] h-auto gap-1.5 px-7 py-3.5 w-full py-3">+ Přidat balíček do profilu</button>
               </div>
               <div className="lg:col-span-2">
@@ -519,17 +562,31 @@ export function CreatorsView() {
             <div className="lg:col-span-3 border border-white/[0.09] bg-panel rounded-md p-7 md:p-9">
               <h3 id="pkg-form-title" className="font-display font-semibold text-lg mb-6">Nový balíček</h3>
               <form id="package-form" onSubmit={(e) => { e.preventDefault(); callAppHandler('submitPackageForm', e); }} className="space-y-5">
-                <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Název balíčku</label><input id="pkg-name" type="text" placeholder="např. Instagram Reel balíček" className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required /></div>
+                <FormField label="Název balíčku" htmlFor="pkg-name">
+                  <Input id="pkg-name" name="name" type="text" placeholder="např. Instagram Reel balíček" required />
+                </FormField>
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Typ formátu</label><div id="dd-pkg-format-mount"></div></div>
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Doba doručení</label><div id="dd-pkg-delivery-mount"></div></div>
+                  <FormField label="Typ formátu">
+                    <div id="dd-pkg-format-mount" />
+                  </FormField>
+                  <FormField label="Doba doručení">
+                    <div id="dd-pkg-delivery-mount" />
+                  </FormField>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Počet revizí</label><input id="pkg-revisions" type="number" min={0} max={5} defaultValue={1} className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required /></div>
-                  <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Cena (Kč)</label><input id="pkg-price" type="number" min={0} step={100} placeholder="2500" className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required /></div>
+                  <FormField label="Počet revizí" htmlFor="pkg-revisions">
+                    <Input id="pkg-revisions" name="revisions" type="number" min={0} max={5} defaultValue={1} required />
+                  </FormField>
+                  <FormField label="Cena (Kč)" htmlFor="pkg-price">
+                    <Input id="pkg-price" name="priceCzk" type="number" min={0} step={100} placeholder="2500" required />
+                  </FormField>
                 </div>
-                <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Délka licence pro reklamu (Meta/TikTok Ads)</label><div id="dd-pkg-license-mount"></div></div>
-                <div><label className="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Popis balíčku (rozsah, práva k reklamě...)</label><textarea id="pkg-description" rows={3} placeholder="Např. 1× Reel + 2× Story, publikace na tvém profilu." className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none" required></textarea></div>
+                <FormField label="Délka licence pro reklamu (Meta/TikTok Ads)">
+                  <div id="dd-pkg-license-mount" />
+                </FormField>
+                <FormField label="Popis balíčku (rozsah, práva k reklamě...)" htmlFor="pkg-description">
+                  <Textarea id="pkg-description" name="description" rows={3} placeholder="Např. 1× Reel + 2× Story, publikace na tvém profilu." required />
+                </FormField>
                 <div className="flex gap-3">
                   <button type="submit" id="pkg-submit-btn" className="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 flex-1">Přidat balíček</button>
                   <button type="button" id="pkg-cancel-btn" onClick={() => callAppHandler('cancelPackageEdit')} className="hidden inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-white/[0.14] bg-white/[0.04] text-white/85 hover:bg-white/[0.09] hover:border-white/[0.24] h-auto gap-1.5 px-7 py-3.5 px-6">Zrušit</button>
@@ -613,9 +670,15 @@ export function ContactSection() {
           </div>
         </div>
         <form onSubmit={(e) => { e.preventDefault(); callAppHandler('submitContact', e); }} className="space-y-4">
-          <div><label className="mb-1.5 block font-body text-sm font-medium text-zinc-200">Jméno</label><input className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required /></div>
-          <div><label className="mb-1.5 block font-body text-sm font-medium text-zinc-200">E-mail</label><input type="email" className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required /></div>
-          <div><label className="mb-1.5 block font-body text-sm font-medium text-zinc-200">Zpráva</label><textarea rows={3} className="w-full border border-white/[0.09] bg-panel rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none" required></textarea></div>
+          <FormField label="Jméno" htmlFor="contact-name">
+            <Input id="contact-name" name="name" required />
+          </FormField>
+          <FormField label="E-mail" htmlFor="contact-email">
+            <Input id="contact-email" name="email" type="email" required />
+          </FormField>
+          <FormField label="Zpráva" htmlFor="contact-message">
+            <Textarea id="contact-message" name="message" rows={3} required />
+          </FormField>
           <button type="submit" className="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Odeslat zprávu</button>
         </form>
       </div>

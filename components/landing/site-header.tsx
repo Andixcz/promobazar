@@ -3,25 +3,24 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDownIcon, UserIcon } from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 
 import { BrandMark } from "@/components/ui/brand-mark";
 import { Button } from "@/components/ui/button";
 import { invokeAppGlobal } from "@/lib/app-global";
 import { goToJobBoardBrowse } from "@/lib/landing-nav";
+import { HeaderAccountMenu } from "@/components/landing/header-account-menu";
 import {
   isCreatorsLandingPath,
   landingHref,
   LANDING_FIRMS_PATH,
 } from "@/lib/landing-routes";
-import { audienceSwitcherActive } from "@/lib/ui-surfaces";
+import {
+  audienceSwitcherActive,
+  dropdownOption,
+  dropdownPanelNav,
+} from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
-
-const ddPanelClass =
-  "dd-panel absolute top-[calc(100%+6px)] right-0 z-[100] min-w-[190px] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 space-y-0.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] shadow-[0_16px_40px_-12px_rgba(0,0,0,0.55)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100";
-
-const ddOptionClass =
-  "dd-option cursor-pointer rounded-sm px-3 py-2 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white";
 
 /** Stejný vzhled pro odkazy i tlačítka v hlavní navigaci (bez paddingu ghost size). */
 const headerNavItemClass =
@@ -48,29 +47,8 @@ function NavMoreDropdown({
           aria-hidden
         />
       </Button>
-      <div className={ddPanelClass}>{children}</div>
+      <div className={dropdownPanelNav}>{children}</div>
     </div>
-  );
-}
-
-function AuthIconTrigger({
-  menuId,
-  className,
-}: {
-  menuId: string;
-  className?: string;
-}) {
-  return (
-    <Button
-      type="button"
-      variant="default"
-      size="icon"
-      aria-label="Účet"
-      className={cn("dd-trigger shrink-0", className)}
-      onClick={(e) => invokeAppGlobal("toggleUserMenu", menuId, e.nativeEvent)}
-    >
-      <UserIcon className="size-4 text-void" aria-hidden />
-    </Button>
   );
 }
 
@@ -159,13 +137,13 @@ export function SiteHeader() {
               Poptávky
             </Button>
             <NavMoreDropdown id="nav-more-firms-dd">
-              <a href="#cenik" className={cn(ddOptionClass, "block")}>
+              <a href="#cenik" className={cn(dropdownOption, "block")}>
                 Ceník
               </a>
-              <a href="#faq" className={cn(ddOptionClass, "block")}>
+              <a href="#faq" className={cn(dropdownOption, "block")}>
                 FAQ
               </a>
-              <a href="#kontakt" className={cn(ddOptionClass, "block")}>
+              <a href="#kontakt" className={cn(dropdownOption, "block")}>
                 Kontakt
               </a>
             </NavMoreDropdown>
@@ -184,13 +162,13 @@ export function SiteHeader() {
               <a href="#balicky">Balíčky</a>
             </Button>
             <NavMoreDropdown id="nav-more-creators-dd">
-              <a href="#creator-pro" className={cn(ddOptionClass, "block")}>
+              <a href="#creator-pro" className={cn(dropdownOption, "block")}>
                 Creator PRO
               </a>
-              <a href="#faq" className={cn(ddOptionClass, "block")}>
+              <a href="#faq" className={cn(dropdownOption, "block")}>
                 FAQ
               </a>
-              <a href="#kontakt" className={cn(ddOptionClass, "block")}>
+              <a href="#kontakt" className={cn(dropdownOption, "block")}>
                 Kontakt
               </a>
             </NavMoreDropdown>
@@ -205,67 +183,7 @@ export function SiteHeader() {
               isCreators={isCreators}
             />
 
-            <div
-              className="auth-buttons-group dd relative [&.open]:z-[100]"
-              id="auth-menu-dd"
-            >
-              <AuthIconTrigger menuId="auth-menu-dd" />
-              <div className={ddPanelClass}>
-                <div
-                  className={ddOptionClass}
-                  onClick={() => invokeAppGlobal("openAuth", "creator")}
-                >
-                  Přihlásit se
-                </div>
-                <div
-                  className={ddOptionClass}
-                  onClick={() => invokeAppGlobal("openAuth", "creator")}
-                >
-                  Registrace
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="dd relative [&.open]:z-[100] user-menu-group hidden"
-              id="user-menu-dd"
-            >
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                aria-label="Můj účet"
-                className="dd-trigger shrink-0 p-0 overflow-hidden"
-                onClick={(e) =>
-                  invokeAppGlobal("toggleUserMenu", "user-menu-dd", e.nativeEvent)
-                }
-              >
-                <span className="user-avatar-initials flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 font-display text-[10px] font-bold text-white">
-                  ?
-                </span>
-              </Button>
-              <div className={ddPanelClass}>
-                <p className="user-menu-email px-4 pt-2 pb-1 text-xs font-medium text-zinc-200 truncate max-w-[200px] empty:hidden" />
-                <div
-                  className={ddOptionClass}
-                  onClick={() => invokeAppGlobal("goToMyDashboard")}
-                >
-                  Můj dashboard
-                </div>
-                <div
-                  className={ddOptionClass}
-                  onClick={() => invokeAppGlobal("openAccountSettings")}
-                >
-                  Nastavení účtu
-                </div>
-                <div
-                  className={ddOptionClass}
-                  onClick={() => invokeAppGlobal("handleLogout")}
-                >
-                  Odhlásit se
-                </div>
-              </div>
-            </div>
+            <HeaderAccountMenu />
           </div>
         </div>
       </div>

@@ -6,17 +6,21 @@ var PB_BTN_CTA_SM_W = PB_BTN_CTA_SM + ' w-full';
 var PB_BTN_OUTLINE = 'inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-white/[0.14] bg-white/[0.04] text-white/85 hover:bg-white/[0.09] hover:border-white/[0.24] h-auto gap-1.5 px-7 py-3.5';
 var PB_BTN_OUTLINE_W = PB_BTN_OUTLINE + ' w-full';
 var PB_BTN_OUTLINE_SM = 'inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-xs border-white/[0.14] bg-white/[0.04] text-white/85 hover:bg-white/[0.09] hover:border-white/[0.24] h-auto gap-1 px-4 py-2';
+/* Dropdown classes: keep in sync with lib/ui-surfaces.ts */
+var PB_DD_TRIGGER = 'dd-trigger flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-sm border border-white/[0.09] bg-white/[0.065] px-3 py-2 text-left text-sm font-medium text-white shadow-none backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.09] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] focus-visible:outline-none [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(0,229,255,0.4)]';
+var PB_DD_PANEL = 'dd-panel absolute top-[calc(100%+6px)] left-0 right-0 z-[100] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 space-y-0.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] shadow-[0_16px_40px_-12px_rgba(0,0,0,0.55)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100';
+var PB_DD_OPTION = 'dd-option cursor-pointer rounded-sm px-3 py-2 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white';
 var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
   /* ============== GENERIC CUSTOM DROPDOWN (opaque + high z-index) ============== */
   function ddMarkup(id, options, selectedValue){
     const sel = options.find(o=>o.value===selectedValue) || options[0];
     const optionsHtml = options.map(o=>
-      '<div class="dd-option cursor-pointer rounded-sm px-3 py-2 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white ' + (o.value===sel.value?'active':'') + '" data-value="' + o.value + '" onclick="selectDropdown(\'' + id + '\',\'' + o.value + '\',event)">' + o.label + '</div>'
+      '<div class="' + PB_DD_OPTION + ' ' + (o.value===sel.value?'active':'') + '" data-value="' + o.value + '" onclick="selectDropdown(\'' + id + '\',\'' + o.value + '\',event)">' + o.label + '</div>'
     ).join('');
     return '<div class="dd relative [&.open]:z-[100]" id="' + id + '" data-value="' + sel.value + '">' +
-        '<button type="button" class="dd-trigger flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-sm border border-white/[0.09] bg-white/[0.065] px-3 py-2 text-left text-sm font-medium text-white shadow-none backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.09] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] focus-visible:outline-none [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(0,229,255,0.4)]" onclick="toggleDropdown(\'' + id + '\',event)">' +
+        '<button type="button" class="' + PB_DD_TRIGGER + '" onclick="toggleDropdown(\'' + id + '\',event)">' +
           '<span class="dd-value truncate">' + sel.label + '</span><span class="dd-chevron shrink-0 text-mist transition-transform duration-200 [.open_&]:rotate-180">' + DD_CHEVRON_SVG + '</span></button>' +
-        '<div class="dd-panel absolute top-[calc(100%+6px)] left-0 right-0 z-[100] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 space-y-0.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] shadow-[0_16px_40px_-12px_rgba(0,0,0,0.55)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100">' + optionsHtml + '</div></div>';
+        '<div class="' + PB_DD_PANEL + '">' + optionsHtml + '</div></div>';
   }
   function mountDropdown(mountId, ddId, options, selectedValue){
     const mount = document.getElementById(mountId);
@@ -733,8 +737,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
   function toggleUserMenu(id, e){ toggleDropdown(id, e); }
   function goToMyDashboard(){
-    if(currentUser && currentUser.role === 'creator'){ goToCreatorDashboard(); return; }
-    if(currentUser && currentUser.role === 'brand'){ goToBrandDashboard(); return; }
+    window.location.assign('/dashboard');
   }
   function handleLogout(){
     if(supabaseClient) supabaseClient.auth.signOut();
@@ -774,19 +777,10 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     }).join('');
   }
   function goToCreatorDashboard(){
-    if(window.location.pathname !== LANDING_CREATORS_PATH){
-      window.location.assign(LANDING_CREATORS_PATH + '#dashboard');
-      return;
-    }
-    requireAuth('creator', ()=>{ scrollToId('dashboard'); });
+    window.location.assign('/dashboard?role=creator');
   }
   function goToBrandDashboard(){
-    if(window.location.pathname !== LANDING_FIRMS_PATH){
-      window.location.assign(LANDING_FIRMS_PATH + '#job-board');
-      return;
-    }
-    scrollToId('job-board');
-    switchJobTab('brand');
+    window.location.assign('/dashboard?role=brand');
     requireAuth('brand', ()=>{ switchJobTab('brand'); });
   }
 
@@ -815,6 +809,9 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
 
   function openAccountSettings(){
+    window.location.assign('/dashboard/nastaveni');
+  }
+  function openAccountSettingsLegacyModal(){
     if(!currentUser){ openAuth('creator'); return; }
     const profile = getMyProfile();
     const roleLabel = currentUser.role === 'creator' ? 'Tvůrce' : 'Značka / E-shop';
@@ -891,7 +888,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     window.__pendingProfileUpload = ()=> ({ avatarUrl: pendingAvatarUrl, bannerUrl: pendingBannerUrl });
   }
   /* ==============================================================
-     ZMĚNA E-MAILU S RE-VERIFIKACÍ
+     ZMĚNA E-MAILU S RE-VERIFIKACÍ (legacy modal — dashboard používá /dashboard/nastaveni)
      ------------------------------------------------------------
      DB schéma (Supabase, budoucí): auth.users.email se mění až po
      potvrzení. Supabase toto řeší nativně přes

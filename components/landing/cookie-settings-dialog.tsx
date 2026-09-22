@@ -16,7 +16,7 @@ import {
   COOKIE_SETTINGS_OPEN_EVENT,
   setCookieConsent,
 } from "@/lib/cookie-consent";
-import { glassPanel, htmlButtonCta } from "@/lib/ui-surfaces";
+import { htmlButtonCta } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
 function CookieToggleRow({
@@ -87,13 +87,7 @@ export function CookieSettingsDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent
-        className={cn(
-          "gap-6 sm:max-w-lg",
-          glassPanel,
-          "rounded-md border-white/[0.09] !bg-panel bg-none from-transparent to-transparent shadow-none"
-        )}
-      >
+      <DialogContent className="gap-6 sm:max-w-lg">
         <div className="flex items-start gap-4 pr-8">
           <span
             className="flex size-11 shrink-0 items-center justify-center rounded-sm bg-cyan text-void"
