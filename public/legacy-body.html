@@ -1,0 +1,442 @@
+<main id="view-firms">
+
+<!-- MARKETPLACE -->
+<section id="marketplace" class="px-5 md:px-8 py-20 md:py-28">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+      <div>
+        <h2 class="font-display font-bold text-3xl md:text-4xl">Tržiště tvůrců</h2>
+        <p class="text-mist mt-2 max-w-xl">Filtruj podle platformy, oboru a rozpočtu — výsledky se mění okamžitě, přesně jako u vyhledávače zájezdů.</p>
+      </div>
+      <div id="result-count" class="font-mono text-[11px] tracking-wide text-sm text-mist bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-2 self-start"></div>
+    </div>
+    <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+    <div id="empty-state" class="hidden text-center py-20">
+      <p id="empty-state-title" class="font-display text-xl mb-2">Žádný tvůrce neodpovídá filtru</p>
+      <p id="empty-state-subtitle" class="text-mist text-sm">Zkus zvýšit rozpočet nebo změnit platformu / obor.</p>
+    </div>
+  </div>
+</section>
+
+<!-- JOB BOARD -->
+<section id="job-board" class="px-5 md:px-8 py-20 md:py-28">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div>
+        <h2 class="font-display font-bold text-3xl md:text-4xl">Tržiště poptávek od značek</h2>
+        <p class="text-mist mt-2 max-w-xl">Značky tu vypisují konkrétní zakázky. Tvůrci se na ně hlásí přímo — bez zdlouhavého hledání.</p>
+      </div>
+      <div class="flex gap-2 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-full p-1 self-start">
+        <button id="subtab-browse" onclick="switchJobTab('browse')" class="rounded-full transition-all duration-300 [&.active]:bg-gradient-to-r [&.active]:from-violet [&.active]:via-magenta [&.active]:to-cyan [&.active]:text-white active text-xs font-semibold px-4 py-2 rounded-full">Nabídky k obsazení</button>
+        <button id="subtab-brand" onclick="switchJobTab('brand')" class="rounded-full transition-all duration-300 [&.active]:bg-gradient-to-r [&.active]:from-violet [&.active]:via-magenta [&.active]:to-cyan [&.active]:text-white text-xs font-semibold px-4 py-2 rounded-full text-mist">Panel pro značky</button>
+      </div>
+    </div>
+
+    <div id="jobs-browse">
+      <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+      <div id="job-empty-state" class="hidden bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-10 text-center text-mist text-sm">Zatím tu nejsou žádné poptávky. Jakmile nějaká značka zveřejní zakázku, objeví se tady.</div>
+    </div>
+
+    <div id="brand-panel" class="hidden">
+      <div class="brand-gate-locked bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-10 md:p-14 text-center max-w-lg mx-auto">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] flex items-center justify-center mx-auto mb-5 text-2xl">🔒</div>
+        <h3 class="font-display font-semibold text-xl mb-2">Panel pro značky je pro přihlášené</h3>
+        <p class="text-mist text-sm mb-7">Přihlas se jako značka a spravuj tu své poptávky a přihlášené tvůrce.</p>
+        <button onclick="goToBrandDashboard()" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none font-semibold text-sm px-7 py-3.5 rounded-xl text-white">Přihlásit se</button>
+      </div>
+      <div class="brand-gate-unlocked hidden grid lg:grid-cols-5 gap-6">
+        <div class="lg:col-span-2 bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-7 md:p-9">
+          <h3 class="font-display font-semibold text-lg mb-6">Publikovat novou poptávku</h3>
+          <form onsubmit="submitNewJob(event)" class="space-y-5">
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Název inzerátu</label><input id="job-title" type="text" placeholder="např. TikToker na 3 videa/měsíc" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" required></div>
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Obor</label><div id="dd-job-category-mount"></div></div>
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Rozpočet (Kč)</label><input id="job-budget" type="number" min="0" step="500" placeholder="8000" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" required></div>
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Popis požadavků</label><textarea id="job-description" rows="3" placeholder="Co má tvůrce dodat, jaký formát a tón..." class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] resize-none" required></textarea></div>
+            <button type="submit" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none w-full font-semibold text-sm py-3.5 rounded-xl text-white">Publikovat poptávku</button>
+          </form>
+        </div>
+        <div class="lg:col-span-3">
+          <h3 class="font-display font-semibold text-lg mb-5">Moje poptávky</h3>
+          <div id="my-jobs-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JAK TO FUNGUJE -->
+<section id="jak-to-funguje" class="px-5 md:px-8 py-20 md:py-28 relative">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="font-display font-bold text-3xl md:text-4xl text-center">Jak to funguje pro značky</h2>
+    <p class="text-mist text-center mt-3 max-w-xl mx-auto">Tři kroky mezi tvým produktem a hotovým promo videem na síti.</p>
+    <div class="grid md:grid-cols-3 gap-6 mt-14 relative">
+      <div class="hidden md:block absolute top-8 left-[16.6%] right-[16.6%] h-px bg-gradient-to-b from-transparent via-magenta/60 to-cyan/60"></div>
+      <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_25px_60px_-20px_rgba(124,58,237,0.5)] hover:border-magenta/40 relative"><div class="w-14 h-14 rounded-2xl bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center font-display font-bold text-xl mb-6">1</div><h3 class="font-display font-semibold text-lg mb-2">Vybereš influencera</h3><p class="text-mist text-sm leading-relaxed">Podle ceny, platformy a oboru najdeš přesně toho tvůrce, jehož publikum kupuje produkty jako ten tvůj.</p></div>
+      <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_25px_60px_-20px_rgba(124,58,237,0.5)] hover:border-magenta/40 relative"><div class="w-14 h-14 rounded-2xl bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center font-display font-bold text-xl mb-6">2</div><h3 class="font-display font-semibold text-lg mb-2">Pošleš produkt a zadání</h3><p class="text-mist text-sm leading-relaxed">Domluvíš briefing přímo v platformě — co má video ukázat, jaký tón a jaké call-to-action.</p></div>
+      <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_25px_60px_-20px_rgba(124,58,237,0.5)] hover:border-magenta/40 relative"><div class="w-14 h-14 rounded-2xl bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center font-display font-bold text-xl mb-6">3</div><h3 class="font-display font-semibold text-lg mb-2">Schválíš a získáš prodeje</h3><p class="text-mist text-sm leading-relaxed">Video zveřejní tvůrce, ty sleduješ dosah a konverze. Platba je držena v úschově až po tvém schválení.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="px-5 md:px-8 py-4">
+  <div class="max-w-6xl mx-auto bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-8 md:p-10 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="absolute -right-24 -top-24 w-72 h-72 rounded-full blur-3xl opacity-30" style="background: radial-gradient(circle, #E838FF, transparent 70%);"></div>
+    <div class="relative">
+      <span class="font-mono text-[11px] tracking-wide text-xs uppercase text-cyan-300">Jsi influencer nebo UGC tvůrce?</span>
+      <h3 class="font-display font-bold text-2xl md:text-3xl mt-2">Přepni se do Creator módu a nastav si vlastní profil</h3>
+      <p class="text-mist mt-2 max-w-lg">Propojíš účet, systém ti vygeneruje kartu do tržiště a začneš dostávat placené nabídky.</p>
+    </div>
+    <button onclick="switchView('creators')" class="relative bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none font-semibold text-sm px-7 py-3.5 rounded-xl text-white whitespace-nowrap">Přepnout na Pro tvůrce →</button>
+  </div>
+</section>
+
+<!-- CENÍK -->
+<section id="cenik" class="px-5 md:px-8 py-20 md:py-28">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="font-display font-bold text-3xl md:text-4xl text-center">Ceníkové balíčky pro značky</h2>
+    <p class="text-mist text-center mt-3 max-w-xl mx-auto">Platíš jen za realizované kampaně. Žádné skryté poplatky, žádné riziko — díky bezpečné platbě v úschově.</p>
+    <div class="flex justify-center mt-6">
+      <span class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-full px-4 py-2 text-xs font-mono text-[11px] tracking-wide text-cyan-200 inline-flex items-center gap-1.5">🏷 Licence pro placenou reklamu (Meta/TikTok Ads) v ceně na 30–90 dní</span>
+    </div>
+    <div class="grid md:grid-cols-3 gap-7 mt-10 md:items-center">
+      <div class="group relative transition-all duration-300 hover:-translate-y-2.5 hover:scale-[1.015] hover:shadow-[0_35px_70px_-20px_rgba(124,58,237,0.55)] bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-3xl p-8">
+        <div class="pointer-events-none absolute inset-[-1px] rounded-[inherit] p-px opacity-0 transition-opacity duration-300 group-hover:opacity-100 [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [-webkit-mask-composite:xor] [mask-composite:exclude] group-hover:bg-[conic-gradient(from_0deg,var(--color-violet),var(--color-cyan),#4C1D95,var(--color-violet))]"></div>
+        <div class="flex h-[52px] w-[52px] items-center justify-center rounded-2xl text-[22px] mb-6" style="background:linear-gradient(135deg, rgba(124,58,237,0.25), rgba(124,58,237,0.05)); border:1px solid rgba(124,58,237,0.35);">🚀</div>
+        <h3 class="font-display font-semibold text-xl">Starter</h3><p class="text-mist text-sm mt-1.5">Pro první test influencer marketingu</p>
+        <p class="font-display font-extrabold text-4xl mt-7">0 Kč <span class="text-sm font-normal text-mist">/ měsíc</span></p>
+        <div class="h-px bg-white/10 my-6"></div>
+        <ul class="text-sm text-white/80 space-y-3.5">
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(124,58,237,0.2); color:#B98CFF;">✓</span>Neomezené procházení tržiště</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(124,58,237,0.2); color:#B98CFF;">✓</span>Objednávka u 1 tvůrce naráz</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(124,58,237,0.2); color:#B98CFF;">✓</span>Bezpečná platba (peníze držíme v úschově do schválení videa) a chat se zadáním</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(124,58,237,0.2); color:#B98CFF;">✓</span>Základní customizace profilu (avatar, bio, základní statistiky)</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(124,58,237,0.2); color:#B98CFF;">✓</span>Poplatek 12 % z objednávky</li>
+        </ul>
+        <button disabled class="w-full mt-8 rounded-xl py-3.5 font-semibold text-sm text-mist cursor-default" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">✓ Aktivní — váš aktuální plán</button>
+      </div>
+      <div class="group relative transition-all duration-300 hover:-translate-y-2.5 hover:scale-[1.015] hover:shadow-[0_35px_70px_-20px_rgba(124,58,237,0.55)] bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-3xl p-8 md:scale-[1.07] relative z-10" style="border-color: rgba(232,56,255,0.4); box-shadow: 0 25px 70px -20px rgba(232,56,255,0.35);">
+        <span class="absolute top-[-14px] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-4 py-1.5 font-mono text-[11px] tracking-wider bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none text-white">⚡ NEJOBLÍBENĚJŠÍ</span>
+        <div class="flex h-[52px] w-[52px] items-center justify-center rounded-2xl text-[22px] mb-6" style="background:linear-gradient(135deg, rgba(232,56,255,0.3), rgba(0,229,255,0.15)); border:1px solid rgba(232,56,255,0.4);">⚡</div>
+        <h3 class="font-display font-semibold text-xl">Growth</h3><p class="text-mist text-sm mt-1.5">Pro pravidelné kampaně e-shopů</p>
+        <p class="font-display font-extrabold text-4xl mt-7 bg-gradient-to-r from-accent-soft via-magenta to-cyan bg-clip-text text-transparent">2 990 Kč <span class="text-sm font-normal text-mist" style="-webkit-text-fill-color:#A5A0BE;">/ měsíc</span></p>
+        <div class="h-px bg-white/10 my-6"></div>
+        <ul class="text-sm text-white/85 space-y-3.5">
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(232,56,255,0.25); color:#E838FF;">✓</span>Neomezené souběžné objednávky</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(232,56,255,0.25); color:#E838FF;">✓</span>Pokročilé statistiky tvůrce (detailní rozbor měsíčního dosahu, věku a demografie publika)</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(232,56,255,0.25); color:#E838FF;">✓</span>Prioritní odpovědi tvůrců a odznak "Ověřená značka"</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(232,56,255,0.25); color:#E838FF;">✓</span>Poplatek jen 7 % z objednávky</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(232,56,255,0.25); color:#E838FF;">✓</span>Reporting dosahu, prokliků a export dat</li>
+        </ul>
+        <button onclick="handleCheckout('growth')" class="w-full mt-8 bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none rounded-xl py-3.5 font-semibold text-sm text-white">Vybrat Growth</button>
+      </div>
+      <div class="group relative transition-all duration-300 hover:-translate-y-2.5 hover:scale-[1.015] hover:shadow-[0_35px_70px_-20px_rgba(124,58,237,0.55)] bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-3xl p-8">
+        <div class="pointer-events-none absolute inset-[-1px] rounded-[inherit] p-px opacity-0 transition-opacity duration-300 group-hover:opacity-100 [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [-webkit-mask-composite:xor] [mask-composite:exclude] group-hover:bg-[conic-gradient(from_0deg,var(--color-violet),var(--color-cyan),#4C1D95,var(--color-violet))]"></div>
+        <div class="flex h-[52px] w-[52px] items-center justify-center rounded-2xl text-[22px] mb-6" style="background:linear-gradient(135deg, rgba(0,229,255,0.22), rgba(0,229,255,0.05)); border:1px solid rgba(0,229,255,0.35);">🏆</div>
+        <h3 class="font-display font-semibold text-xl">Scale</h3><p class="text-mist text-sm mt-1.5">Pro značky s vlastním affiliate programem</p>
+        <p class="font-display font-extrabold text-4xl mt-7">Na míru</p>
+        <div class="h-px bg-white/10 my-6"></div>
+        <ul class="text-sm text-white/80 space-y-3.5">
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(0,229,255,0.18); color:#00E5FF;">✓</span>Dedikovaný account manager</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(0,229,255,0.18); color:#00E5FF;">✓</span>Hromadné kampaně napříč obory</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(0,229,255,0.18); color:#00E5FF;">✓</span>API napojení na e-shop</li>
+          <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(0,229,255,0.18); color:#00E5FF;">✓</span>Individuální provize</li>
+        </ul>
+        <button onclick="openOrderIntent('Scale')" class="w-full mt-8 bg-white/[0.04] border border-white/[0.14] transition-all duration-300 hover:bg-white/[0.09] hover:border-white/[0.24] rounded-xl py-3.5 font-semibold text-sm text-white">Domluvit konzultaci</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="px-5 md:px-8 py-20 md:py-28">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="font-display font-bold text-3xl md:text-4xl text-center">Časté otázky</h2>
+    <div class="mt-12 space-y-4">
+      <details class="group bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-6 group" open><summary class="flex items-center justify-between cursor-pointer list-none font-semibold">Co je to bezpečná platba a proč je bez rizika?<span class="text-2xl leading-none text-cyan transition-transform duration-300 group-open:rotate-45 text-2xl leading-none text-cyan-300">+</span></summary><p class="text-mist text-sm mt-4 leading-relaxed">Při objednání pošleš peníze na zabezpečený účet promobazar.cz, kde je držíme v úschově. Tvůrce je dostane vyplacené až ve chvíli, kdy ty osobně schválíš hotové video nebo fotky. Pokud výstup neodpovídá zadání, peníze se vrací.</p></details>
+      <details class="group bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-6 group"><summary class="flex items-center justify-between cursor-pointer list-none font-semibold">Proč nevidím přímý kontakt na tvůrce?<span class="text-2xl leading-none text-cyan transition-transform duration-300 group-open:rotate-45 text-2xl leading-none text-cyan-300">+</span></summary><p class="text-mist text-sm mt-4 leading-relaxed">Veškerá komunikace probíhá přes platformu, aby byla chráněná bezpečnou platbou v úschově a reklamačním řádem. Kontaktní údaje a přímé odkazy na sociální sítě se proto v katalogu ani v poptávce nezobrazují.</p></details>
+      <details class="group bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-6 group"><summary class="flex items-center justify-between cursor-pointer list-none font-semibold">Jak dlouho trvá realizace jedné kampaně?<span class="text-2xl leading-none text-cyan transition-transform duration-300 group-open:rotate-45 text-2xl leading-none text-cyan-300">+</span></summary><p class="text-mist text-sm mt-4 leading-relaxed">Většina tvůrců dodá hotové video do 3–14 pracovních dní podle zvoleného balíčku. Přesný termín vidíš u každého balíčku ještě před objednáním.</p></details>
+      <details class="group bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-6 group"><summary class="flex items-center justify-between cursor-pointer list-none font-semibold">Co když nejsem spokojený s výsledkem?<span class="text-2xl leading-none text-cyan transition-transform duration-300 group-open:rotate-45 text-2xl leading-none text-cyan-300">+</span></summary><p class="text-mist text-sm mt-4 leading-relaxed">V rámci zadání máš nárok na jedno kolo úprav zdarma. Pokud výstup přesto neodpovídá dohodnutému briefu, můžeš situaci nahlásit naší podpoře, která pomůže nalézt férové řešení pro obě strany.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="px-5 md:px-8 pb-24">
+  <div class="max-w-6xl mx-auto bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-10 md:p-16 text-center relative overflow-hidden">
+    <div class="absolute inset-0 opacity-30" style="background: radial-gradient(600px 300px at 50% 0%, rgba(124,58,237,0.5), transparent 70%);"></div>
+    <div class="relative">
+      <h2 class="font-display font-bold text-3xl md:text-4xl">Připraven na první kampaň?</h2>
+      <p class="text-mist mt-3 max-w-lg mx-auto">Zadej platformu, obor a rozpočet — během chvíle uvidíš tvůrce, kteří prodají tvůj produkt.</p>
+      <a href="#marketplace" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none inline-block mt-8 font-display font-semibold px-8 py-4 rounded-xl text-white">Otevřít tržiště</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================= -->
+<!-- =========================  TVŮRCI  =========================== -->
+<!-- ============================================================= -->
+<main id="view-creators" class="hidden">
+
+<section class="relative pt-40 sm:pt-32 pb-14 px-5 md:px-8">
+  <div class="max-w-5xl mx-auto text-center animate-fade-up">
+    <div class="inline-flex items-center gap-2 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-full px-4 py-1.5 text-xs font-mono text-[11px] tracking-wide text-mist mb-7">
+      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#00E5FF]"></span>
+      PRO INFLUENCERY A UGC TVŮRCE
+    </div>
+    <h1 class="font-display font-extrabold leading-[1.08] text-[2.15rem] sm:text-4xl md:text-5xl lg:text-6xl tracking-tight">Propoj profil. <span class="bg-gradient-to-r from-accent-soft via-magenta to-cyan bg-clip-text text-transparent">Získej nabídky.</span><br>Nahraj video.</h1>
+    <p class="mt-6 text-mist text-base md:text-lg max-w-2xl mx-auto">Bez ceníků pro značky, bez zbytečných kroků. Propojíš účty, nastavíš si ceny podle platformy a systém ti vygeneruje kartu rovnou do tržiště.</p>
+    <div class="flex flex-wrap justify-center gap-3 mt-8">
+      <button onclick="scrollToId('propojeni')" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none font-semibold text-sm px-7 py-3.5 rounded-xl text-white">Propojit profil</button>
+      <button onclick="goToCreatorDashboard()" class="bg-white/[0.04] border border-white/[0.14] transition-all duration-300 hover:bg-white/[0.09] hover:border-white/[0.24] font-semibold text-sm px-7 py-3.5 rounded-xl text-white/90">Zobrazit dashboard</button>
+    </div>
+  </div>
+  <div class="max-w-3xl mx-auto grid grid-cols-3 gap-4 mt-14 animate-fade-up" style="animation-delay:.1s">
+    <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-5 text-center"><p class="font-display font-bold text-2xl bg-gradient-to-r from-accent-soft via-magenta to-cyan bg-clip-text text-transparent">0 Kč</p><p class="text-mist text-xs mt-1">registrace a profil</p></div>
+    <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-5 text-center"><p class="font-display font-bold text-2xl bg-gradient-to-r from-accent-soft via-magenta to-cyan bg-clip-text text-transparent">48 h</p><p class="text-mist text-xs mt-1">výplata po schválení</p></div>
+    <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-5 text-center"><p class="font-display font-bold text-2xl bg-gradient-to-r from-accent-soft via-magenta to-cyan bg-clip-text text-transparent">Ty</p><p class="text-mist text-xs mt-1">nastavuješ ceny</p></div>
+  </div>
+</section>
+
+<!-- PROPOJENÍ + SOCIAL CONNECT + CENY + AVATAR -->
+<section id="propojeni" class="px-5 md:px-8 py-16 md:py-24">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="font-display font-bold text-3xl md:text-4xl text-center">Propoj účty a nastav si profil</h2>
+    <p class="text-mist text-center mt-3 max-w-xl mx-auto">Zadáš odkazy na své sítě, přidáš libovolný počet balíčků s vlastní cenou i licencí a systém z nich sestaví kartu do tržiště.</p>
+
+    <div class="creator-gate-locked bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-10 md:p-14 mt-12 text-center max-w-lg mx-auto">
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] flex items-center justify-center mx-auto mb-5 text-2xl">🔒</div>
+      <h3 class="font-display font-semibold text-xl mb-2">Přihlas se, ať můžeš vytvořit profil</h3>
+      <p class="text-mist text-sm mb-7">Propojení účtů a generování profilu do tržiště je dostupné jen přihlášeným tvůrcům.</p>
+      <button onclick="goToCreatorDashboard()" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none font-semibold text-sm px-7 py-3.5 rounded-xl text-white">Přihlásit se</button>
+    </div>
+
+    <div class="creator-gate-unlocked hidden">
+    <div class="bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-7 md:p-10 mt-12 grid lg:grid-cols-2 gap-10">
+      <div>
+        <span class="font-mono text-[11px] tracking-wide text-xs uppercase text-cyan-300">Krok 1 — sociální sítě</span>
+        <h3 class="font-display font-semibold text-xl mt-2 mb-5">Zadej své účty</h3>
+        <div class="space-y-3">
+          <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">🎵 TikTok</label><input id="handle-tiktok" type="text" placeholder="@tvuj_ucet" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>
+          <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">📸 Instagram</label><input id="handle-instagram" type="text" placeholder="@tvuj_ucet" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>
+          <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">▶️ YouTube</label><input id="handle-youtube" type="text" placeholder="@tvuj_kanal" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>
+        </div>
+        <p class="text-mist text-[11px] font-mono text-[11px] tracking-wide mt-2.5">Vyplň jen sítě, které používáš — zobrazí se jako odkazy na tvém profilu.</p>
+
+        <div class="mt-7">
+          <span class="font-mono text-[11px] tracking-wide text-xs uppercase text-cyan-300">Statistiky (podle sebe)</span>
+          <div class="grid grid-cols-3 gap-2.5 mt-3">
+            <div><label class="block text-[10px] font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Sledující</label><input id="stat-followers" type="number" min="0" placeholder="12000" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-lg px-3 py-2.5 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>
+            <div><label class="block text-[10px] font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Zhlédnutí/video</label><input id="stat-avgviews" type="number" min="0" placeholder="3000" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-lg px-3 py-2.5 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>
+            <div><label class="block text-[10px] font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Dosah/30 dní</label><input id="stat-reach" type="number" min="0" placeholder="8000" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-lg px-3 py-2.5 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="font-mono text-[11px] tracking-wide text-xs uppercase text-cyan-300">Krok 2 — jméno, avatar a obor</span>
+        <h3 class="font-display font-semibold text-xl mt-2 mb-5">Doladit profil</h3>
+
+        <div class="flex items-center gap-4 mb-6">
+          <div class="flex h-[88px] w-[88px] cursor-pointer items-center justify-center overflow-hidden rounded-full rounded-full bg-gradient-to-br from-violet via-magenta to-cyan p-[2.5px]" onclick="document.getElementById('avatar-upload').click()">
+            <div id="avatar-preview" class="w-full h-full rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center font-display font-bold text-white">?</div>
+          </div>
+          <div>
+            <button type="button" onclick="document.getElementById('avatar-upload').click()" class="bg-white/[0.04] border border-white/[0.14] transition-all duration-300 hover:bg-white/[0.09] hover:border-white/[0.24] text-xs font-semibold px-4 py-2 rounded-lg text-white/85">Nahrát fotku</button>
+            <input id="avatar-upload" type="file" accept="image/*" class="hidden">
+            <p class="text-mist text-[11px] mt-2 font-mono text-[11px] tracking-wide">JPG / PNG, čtvercový výřez</p>
+          </div>
+        </div>
+
+        <label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-2">Zobrazované jméno (např. Jana K.)</label>
+        <input id="profile-display-name" type="text" placeholder="Jana K." class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] mb-6">
+
+        <label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-2">Obor</label>
+        <div id="dd-profile-category-mount" class="mb-7"></div>
+
+        <button onclick="generateRealProfile()" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none w-full font-semibold text-sm py-3.5 rounded-xl text-white">Vygenerovat profil do tržiště</button>
+        <p id="profile-error" class="text-xs mt-3 hidden" style="color:#ff8fd6;">Vyplň jméno a přidej alespoň jeden balíček níže.</p>
+        <p id="profile-success" class="text-xs mt-3 hidden" style="color:#00E5FF;"></p>
+        <button id="profile-view-btn" onclick="switchView('firms'); scrollToId('marketplace');" class="hidden w-full mt-3 bg-white/[0.04] border border-white/[0.14] transition-all duration-300 hover:bg-white/[0.09] hover:border-white/[0.24] font-semibold text-sm py-3 rounded-xl text-white/85">Zobrazit v tržišti →</button>
+      </div>
+    </div>
+
+    <!-- neomezený počet balíčků pod propojeným účtem -->
+    <div class="bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-7 md:p-10 mt-8">
+      <span class="font-mono text-[11px] tracking-wide text-xs uppercase text-cyan-300">Krok 3 — balíčky tvého profilu</span>
+      <h3 class="font-display font-semibold text-xl mt-2 mb-1">Přidej libovolný počet balíčků</h3>
+      <p class="text-mist text-sm mb-7">Každý balíček se v katalogu zobrazí jako samostatná záložka s vlastní cenou, dobou doručení a licencí.</p>
+
+      <div class="grid lg:grid-cols-5 gap-6">
+        <div class="lg:col-span-3 space-y-5">
+          <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Název balíčku</label><input id="staging-name" type="text" placeholder="např. TikTok video balíček" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Formát</label><div id="dd-staging-format-mount"></div></div>
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Doba doručení</label><div id="dd-staging-delivery-mount"></div></div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Počet revizí</label><input id="staging-revisions" type="number" min="0" max="5" value="1" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Cena (Kč)</label><input id="staging-price" type="number" min="0" step="100" placeholder="2000" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]"></div>
+          </div>
+          <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Délka licence pro reklamu (Meta/TikTok Ads)</label><div id="dd-staging-license-mount"></div></div>
+          <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Popis balíčku</label><textarea id="staging-description" rows="2" placeholder="Co přesně balíček obsahuje..." class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] resize-none"></textarea></div>
+          <button type="button" onclick="addStagingPackage()" class="bg-white/[0.04] border border-white/[0.14] transition-all duration-300 hover:bg-white/[0.09] hover:border-white/[0.24] w-full font-semibold text-sm py-3 rounded-xl text-white/90">+ Přidat balíček do profilu</button>
+        </div>
+        <div class="lg:col-span-2">
+          <p class="text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-3">Rozpracované balíčky (<span id="staging-count">0</span>)</p>
+          <div id="staging-packages-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD PRO TVŮRCE (vyžaduje přihlášení) -->
+<section id="dashboard" class="px-5 md:px-8 py-16 md:py-24">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="font-display font-bold text-3xl md:text-4xl text-center">Dashboard pro tvůrce</h2>
+    <p class="text-mist text-center mt-3 max-w-xl mx-auto">Přehled tvých objednávek a místo pro nahrání hotového obsahu.</p>
+
+    <div class="creator-gate-locked bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-10 md:p-14 mt-12 text-center max-w-lg mx-auto">
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] flex items-center justify-center mx-auto mb-5 text-2xl">🔒</div>
+      <h3 class="font-display font-semibold text-xl mb-2">Tahle sekce je jen pro přihlášené tvůrce</h3>
+      <p class="text-mist text-sm mb-7">Přihlas se, ať vidíš své objednávky a můžeš nahrávat hotový obsah.</p>
+      <button onclick="goToCreatorDashboard()" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none font-semibold text-sm px-7 py-3.5 rounded-xl text-white">Přihlásit se</button>
+    </div>
+
+    <div class="creator-gate-unlocked hidden">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-14">
+        <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_25px_60px_-20px_rgba(124,58,237,0.5)] hover:border-magenta/40"><p class="text-mist text-xs font-mono text-[11px] tracking-wide uppercase mb-2">Celkový výdělek</p><p class="font-display font-extrabold text-3xl bg-gradient-to-r from-accent-soft via-magenta to-cyan bg-clip-text text-transparent">0 Kč</p><p class="text-mist text-xs mt-2">zatím žádné dokončené objednávky</p></div>
+        <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_25px_60px_-20px_rgba(124,58,237,0.5)] hover:border-magenta/40"><p class="text-mist text-xs font-mono text-[11px] tracking-wide uppercase mb-2">Aktivní objednávky</p><p class="font-display font-extrabold text-3xl">0</p><p class="text-mist text-xs mt-2">čekají na nahrání nebo schválení</p></div>
+        <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_25px_60px_-20px_rgba(124,58,237,0.5)] hover:border-magenta/40"><p class="text-mist text-xs font-mono text-[11px] tracking-wide uppercase mb-2">Dokončené kampaně</p><p class="font-display font-extrabold text-3xl">0</p><p class="text-mist text-xs mt-2">za celou dobu na platformě</p></div>
+        <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_25px_60px_-20px_rgba(124,58,237,0.5)] hover:border-magenta/40" id="profile-views-card"></div>
+      </div>
+      <div class="grid lg:grid-cols-5 gap-6 mt-8">
+        <div class="lg:col-span-2 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7">
+          <h3 class="font-display font-semibold text-lg mb-5">Aktivní objednávky</h3>
+          <div id="creator-orders-list" class="space-y-3">
+            <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-5 text-center text-mist text-sm">Zatím žádné objednávky. Jakmile ti někdo pošle poptávku, objeví se tady.</div>
+          </div>
+        </div>
+        <div class="lg:col-span-3 bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7">
+          <h3 class="font-display font-semibold text-lg mb-1">Nahrát hotové video</h3>
+          <p class="text-mist text-sm mb-5">Podporované formáty: MP4, MOV. Po nahrání odešleme obsah zadavateli ke schválení.</p>
+          <div id="dropzone" class="border-2 border-dashed border-white/[0.18] transition-all duration-300 [&.drag-over]:border-magenta [&.drag-over]:bg-magenta/[0.06] [&.drag-over]:shadow-[0_0_0_6px_rgba(232,56,255,0.06)] rounded-2xl p-10 text-center cursor-pointer" onclick="document.getElementById('file-input').click()">
+            <input id="file-input" type="file" accept=".mp4,.mov,video/mp4,video/quicktime" class="hidden">
+            <div id="dropzone-empty">
+              <div class="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] flex items-center justify-center mx-auto mb-4 text-2xl">⬆</div>
+              <p class="font-semibold text-sm">Přetáhni sem video, nebo klikni pro výběr souboru</p>
+              <p class="text-mist text-xs mt-2 font-mono text-[11px] tracking-wide">MP4 / MOV · max. 500 MB</p>
+            </div>
+            <div id="dropzone-file" class="hidden">
+              <div class="w-14 h-14 rounded-2xl bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center mx-auto mb-4 text-2xl">🎬</div>
+              <p id="file-name" class="font-semibold text-sm"></p><p id="file-size" class="text-mist text-xs mt-2 font-mono text-[11px] tracking-wide"></p>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3 mt-5">
+            <div id="dd-upload-order-mount" class="flex-1"></div>
+            <button onclick="submitUpload()" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none font-semibold text-sm px-6 py-3 rounded-xl text-white whitespace-nowrap">Odeslat ke schválení</button>
+          </div>
+          <p id="upload-msg" class="text-xs mt-3 font-mono text-[11px] tracking-wide hidden"></p>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-7 mt-6">
+        <h3 class="font-display font-semibold text-lg mb-5">Zprávy</h3>
+        <div id="creator-conversations-list" class="space-y-3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGE BUILDER -->
+<section id="balicky" class="px-5 md:px-8 py-16 md:py-24">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="font-display font-bold text-3xl md:text-4xl text-center">Tvorba a správa balíčků</h2>
+    <p class="text-mist text-center mt-3 max-w-xl mx-auto">Balíčky, které tu vytvoříš, se značkám zobrazí přesně takto po rozkliknutí tvého profilu v tržišti.</p>
+
+    <div class="creator-gate-locked bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-10 md:p-14 mt-12 text-center max-w-lg mx-auto">
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] flex items-center justify-center mx-auto mb-5 text-2xl">🔒</div>
+      <h3 class="font-display font-semibold text-xl mb-2">Přihlas se pro správu balíčků</h3>
+      <p class="text-mist text-sm mb-7">Balíčky patří k tvému profilu, proto je vidíš a upravuješ jen po přihlášení.</p>
+      <button onclick="goToCreatorDashboard()" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none font-semibold text-sm px-7 py-3.5 rounded-xl text-white">Přihlásit se</button>
+    </div>
+
+    <div class="creator-gate-unlocked hidden grid lg:grid-cols-5 gap-6 mt-14">
+      <div class="lg:col-span-3 bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-7 md:p-9">
+        <h3 id="pkg-form-title" class="font-display font-semibold text-lg mb-6">Nový balíček</h3>
+        <form id="package-form" onsubmit="submitPackageForm(event)" class="space-y-5">
+          <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Název balíčku</label><input id="pkg-name" type="text" placeholder="např. Instagram Reel balíček" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" required></div>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Typ formátu</label><div id="dd-pkg-format-mount"></div></div>
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Doba doručení</label><div id="dd-pkg-delivery-mount"></div></div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Počet revizí</label><input id="pkg-revisions" type="number" min="0" max="5" value="1" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" required></div>
+            <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Cena (Kč)</label><input id="pkg-price" type="number" min="0" step="100" placeholder="2500" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" required></div>
+          </div>
+          <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Délka licence pro reklamu (Meta/TikTok Ads)</label><div id="dd-pkg-license-mount"></div></div>
+          <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Popis balíčku (rozsah, práva k reklamě...)</label><textarea id="pkg-description" rows="3" placeholder="Např. 1× Reel + 2× Story, publikace na tvém profilu." class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] resize-none" required></textarea></div>
+          <div class="flex gap-3">
+            <button type="submit" id="pkg-submit-btn" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none flex-1 font-semibold text-sm py-3.5 rounded-xl text-white">Přidat balíček</button>
+            <button type="button" id="pkg-cancel-btn" onclick="cancelPackageEdit()" class="hidden bg-white/[0.04] border border-white/[0.14] transition-all duration-300 hover:bg-white/[0.09] hover:border-white/[0.24] font-semibold text-sm px-6 py-3.5 rounded-xl text-white/85">Zrušit</button>
+          </div>
+        </form>
+      </div>
+      <div class="lg:col-span-2">
+        <h3 class="font-display font-semibold text-lg mb-5">Tvé aktivní balíčky</h3>
+        <div id="my-packages-list" class="space-y-3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREATOR PRO -->
+<section id="creator-pro" class="px-5 md:px-8 py-16 md:py-24">
+  <div class="max-w-3xl mx-auto text-center">
+    <span class="font-mono text-[11px] tracking-wide text-xs uppercase" style="color:#a5b4fc;">Pro aktivní tvůrce</span>
+    <h2 class="font-display font-bold text-3xl md:text-4xl mt-2">Creator PRO</h2>
+    <p class="text-mist mt-3 max-w-xl mx-auto">Bez limitů na počet balíčků, s předností na tržišti a přehledem o tom, kdo si tvůj profil prohlíží.</p>
+  </div>
+  <div class="max-w-md mx-auto mt-10 group relative transition-all duration-300 hover:-translate-y-2.5 hover:scale-[1.015] hover:shadow-[0_35px_70px_-20px_rgba(124,58,237,0.55)] bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-3xl p-8 relative" style="border-color:rgba(99,102,241,0.4); box-shadow:0 25px 70px -20px rgba(99,102,241,0.4);">
+    <div class="flex h-[52px] w-[52px] items-center justify-center rounded-2xl text-[22px] mb-6" style="background:linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.15)); border:1px solid rgba(99,102,241,0.4);">⭐</div>
+    <h3 class="font-display font-semibold text-xl">Creator PRO</h3>
+    <p class="text-mist text-sm mt-1.5">Pro tvůrce, kteří to myslí vážně</p>
+    <p class="font-display font-extrabold text-4xl mt-7">99 Kč <span class="text-sm font-normal text-mist">/ měsíc</span></p>
+    <div class="h-px bg-white/10 my-6"></div>
+    <ul class="text-sm text-white/85 space-y-3.5">
+      <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(99,102,241,0.22); color:#a5b4fc;">✓</span>Neomezený počet inzerátů a nabídek</li>
+      <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(99,102,241,0.22); color:#a5b4fc;">✓</span>Topování na tržišti (přednostní výpis)</li>
+      <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(99,102,241,0.22); color:#a5b4fc;">✓</span>Odznak "PRO Tvůrce" na profilu</li>
+      <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(99,102,241,0.22); color:#a5b4fc;">✓</span>Přehled zobrazení profilu (kolik značek vidělo tvou kartu)</li>
+      <li class="flex items-center gap-3"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]" style="background:rgba(99,102,241,0.22); color:#a5b4fc;">✓</span>Prioritní notifikace o nových poptávkách</li>
+    </ul>
+    <button id="creator-pro-btn" onclick="handleCheckout('creatorPro')" class="w-full mt-8 rounded-xl py-3.5 font-semibold text-sm text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">Upgradovat na Creator PRO</button>
+    <p class="text-center text-[11px] text-mist font-mono text-[11px] tracking-wide mt-3">Bezplatný účet: max. 2 aktivní inzeráty/balíčky</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================= -->
+<!-- ==========================  KONTAKT  ========================= -->
+<!-- ============================================================= -->
+<section id="kontakt" class="px-5 md:px-8 py-20 md:py-24">
+  <div class="max-w-5xl mx-auto bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.12] backdrop-blur-[14px] rounded-[28px] p-8 md:p-14 grid md:grid-cols-2 gap-10">
+    <div>
+      <span class="font-mono text-[11px] tracking-wide text-xs uppercase text-cyan-300">Kontakt</span>
+      <h2 class="font-display font-bold text-3xl md:text-4xl mt-2">Máš dotaz? Ozveme se.</h2>
+      <p class="text-mist mt-4 max-w-md">Ať jsi firma, nebo tvůrce, náš support odpovídá do 1 pracovního dne.</p>
+      <div class="mt-8 space-y-4 text-sm">
+        <div class="flex items-center gap-3"><span class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] w-10 h-10 rounded-xl flex items-center justify-center">✉️</span> podpora@promobazar.cz</div>
+      </div>
+    </div>
+    <form onsubmit="submitContact(event)" class="space-y-4">
+      <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Jméno</label><input class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" required></div>
+      <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">E-mail</label><input type="email" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03]" required></div>
+      <div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Zpráva</label><textarea rows="3" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(232,56,255,0.4)] disabled:bg-white/[0.03] resize-none" required></textarea></div>
+      <button type="submit" class="bg-gradient-to-r from-violet via-magenta to-cyan text-white shadow-[0_8px_30px_-6px_rgba(160,60,255,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-4px_rgba(232,56,255,0.65)] hover:brightness-105 active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none w-full font-semibold text-sm py-3.5 rounded-xl text-white">Odeslat zprávu</button>
+    </form>
+  </div>
+</section>
