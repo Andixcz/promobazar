@@ -4,7 +4,9 @@ import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { legacyInvoke } from "@/lib/legacy-bridge";
+import { invokeAppGlobal } from "@/lib/app-global";
+import { sectionX } from "@/lib/ui-surfaces";
+import { cn } from "@/lib/utils";
 
 function syncBudgetRangeFill(el: HTMLInputElement) {
   const min = Number(el.min);
@@ -16,7 +18,7 @@ function syncBudgetRangeFill(el: HTMLInputElement) {
   );
 }
 
-/** Hero + vyhledávací shell pro značky. Mount pointy dropdownů musí zůstat pro legacy-app.js. */
+/** Hero + vyhledávací shell pro značky. Mount pointy dropdownů musí zůstat pro app.js. */
 export function FirmsHeroSection() {
   const budgetRef = useRef<HTMLInputElement>(null);
 
@@ -27,7 +29,7 @@ export function FirmsHeroSection() {
   return (
     <section
       id="top"
-      className="relative pb-section-x pt-40 sm:pt-32 pb-16 md:pb-20"
+      className={cn("relative pt-40 sm:pt-32 py-8", sectionX)}
     >
       <div className="max-w-7xl mx-auto text-center animate-fade-up">
         <h1 className="font-display font-extrabold leading-[1.05] text-[2.35rem] sm:text-5xl md:text-6xl lg:text-[4.2rem] tracking-tight">
@@ -92,7 +94,7 @@ export function FirmsHeroSection() {
                   variant="ghost"
                   size="sm"
                   className="mt-2 h-auto w-full justify-start px-0 py-0 text-left text-[11px] font-normal text-mist hover:bg-transparent hover:text-white lg:w-auto"
-                  onClick={() => legacyInvoke("openConcierge")}
+                  onClick={() => invokeAppGlobal("openConcierge")}
                 >
                   Nechce se ti vybírat? Nech výběr na nás →
                 </Button>

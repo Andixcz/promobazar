@@ -13,21 +13,16 @@ Otevři [http://localhost:3000](http://localhost:3000).
 
 Proměnné prostředí: zkopíruj `.env.example` → `.env.local` a doplň hodnoty (Postgres, Better Auth, Stripe).
 
-## Struktura migrace
+## Struktura homepage
 
-Původní monolitický `index.html` je rozdělen na:
-
-- `public/legacy-body.html` — zbytek UI, které ještě není v Reactu
-- `public/legacy-app.js` — klientská logika (auth, tržiště, chat, …)
-- `app/globals.css` — Tailwind v4 + design tokeny
-- `components/ui/*` — sdílené UI (logo, později tlačítka, modaly, …)
-- `components/landing/*` — homepage / marketing shell + legacy bridge
-- `lib/legacy-body.ts` — načtení a split `legacy-body.html` (jen server)
-- `lib/legacy-bridge.ts` — volání legacy funkcí z Reactu během migrace
-- `components/landing/legacy-html-chunk.tsx` — server render HTML bez client props
-- `components/landing/legacy-app-bootstrap.tsx` — Supabase + `legacy-app.js`
-
-Původní soubor je archivovaný v `legacy/index.html`. Další krok: sekce ceník/FAQ, creator view, auth modaly.
+- `public/site-body.html` — statické sekce stránky (server render)
+- `public/app.js` — klientská logika (auth, tržiště, chat, …)
+- `app/globals.css` — Tailwind v4 + design tokeny (`@theme`)
+- `lib/ui-surfaces.ts` — sdílené Tailwind třídy pro React / `site-body.html` / `app.js`
+- `components/ui/*` — sdílené UI (shadcn, tlačítka, …)
+- `components/landing/*` — React shell (header, hero, modaly, …)
+- `lib/site-body.ts` — načtení a split `site-body.html` (jen server)
+- `lib/app-global.ts` — volání globálních funkcí z `app.js` z Reactu
 
 ## Deploy
 

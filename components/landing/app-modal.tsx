@@ -3,8 +3,8 @@
 import { XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { legacyInvoke } from "@/lib/legacy-bridge";
-import { modalScrim } from "@/lib/ui-surfaces";
+import { invokeAppGlobal } from "@/lib/app-global";
+import { glassPanel, modalScrim } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
 export function AppModal() {
@@ -17,14 +17,17 @@ export function AppModal() {
       )}
     >
       <div
-        className="relative max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-3xl pb-glass-panel"
+        className={cn(
+          "relative max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-3xl",
+          glassPanel,
+        )}
         onClick={(e) => e.stopPropagation()}
       >
         <Button
           type="button"
           variant="outline"
           size="icon"
-          onClick={() => legacyInvoke("closeModal")}
+          onClick={() => invokeAppGlobal("closeModal")}
           className="absolute top-5 right-5 z-10"
           aria-label="Zavřít"
         >

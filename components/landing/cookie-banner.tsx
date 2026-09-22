@@ -4,7 +4,7 @@ import { CookieIcon } from "lucide-react";
 
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { legacyInvoke } from "@/lib/legacy-bridge";
+import { invokeAppGlobal } from "@/lib/app-global";
 
 export function CookieBanner() {
   return (
@@ -24,7 +24,7 @@ export function CookieBanner() {
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => legacyInvoke("cookieChoice", "essential")}
+            onClick={() => invokeAppGlobal("cookieChoice", "essential")}
           >
             Jen nezbytné
           </Button>
@@ -32,7 +32,7 @@ export function CookieBanner() {
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => legacyInvoke("openCookieSettings")}
+            onClick={() => invokeAppGlobal("openCookieSettings")}
           >
             Nastavení
           </Button>
@@ -40,7 +40,7 @@ export function CookieBanner() {
             type="button"
             variant="default"
             size="sm"
-            onClick={() => legacyInvoke("cookieChoice", "all")}
+            onClick={() => invokeAppGlobal("cookieChoice", "all")}
           >
             Přijmout vše
           </Button>

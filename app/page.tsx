@@ -2,26 +2,26 @@ import { AppModal } from "@/components/landing/app-modal";
 import { ChatWidget } from "@/components/landing/chat-widget";
 import { CookieBanner } from "@/components/landing/cookie-banner";
 import { FirmsHeroSection } from "@/components/landing/firms-hero-section";
-import { LegacyAppBootstrap } from "@/components/landing/legacy-app-bootstrap";
-import { LegacyHtmlChunk } from "@/components/landing/legacy-html-chunk";
+import { ClientAppScript } from "@/components/landing/client-app-script";
+import { StaticHtmlChunk } from "@/components/landing/static-html-chunk";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
-import { getLegacyBodyParts } from "@/lib/legacy-body";
+import { getSiteBodyParts } from "@/lib/site-body";
 
 export default function HomePage() {
-  const { firmsMainOpen, legacyTailHtml } = getLegacyBodyParts();
+  const { firmsMainOpen, bodyTailHtml } = getSiteBodyParts();
 
   return (
     <>
       <SiteHeader />
-      <LegacyHtmlChunk html={firmsMainOpen} />
+      <StaticHtmlChunk html={firmsMainOpen} />
       <FirmsHeroSection />
-      <LegacyHtmlChunk html={legacyTailHtml} />
+      <StaticHtmlChunk html={bodyTailHtml} />
       <SiteFooter />
       <AppModal />
       <CookieBanner />
       <ChatWidget />
-      <LegacyAppBootstrap />
+      <ClientAppScript />
     </>
   );
 }

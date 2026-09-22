@@ -3,14 +3,19 @@
 import { MessageCircleIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { legacyInvoke } from "@/lib/legacy-bridge";
+import { invokeAppGlobal } from "@/lib/app-global";
+import { glassPanel } from "@/lib/ui-surfaces";
+import { cn } from "@/lib/utils";
 
 export function ChatWidget() {
   return (
     <div id="chat-widget" className="fixed bottom-5 right-5 z-50 hidden">
       <div
         id="chat-widget-drawer"
-        className="pb-glass-panel rounded-2xl absolute bottom-[70px] right-0 w-[360px] max-w-[90vw] max-h-[70vh] flex flex-col overflow-hidden opacity-0 pointer-events-none translate-y-3 scale-[0.98] transition-all duration-200 [&.open]:opacity-100 [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:pointer-events-auto"
+        className={cn(
+          glassPanel,
+          "rounded-2xl absolute bottom-[70px] right-0 w-[360px] max-w-[90vw] max-h-[70vh] flex flex-col overflow-hidden opacity-0 pointer-events-none translate-y-3 scale-[0.98] transition-all duration-200 [&.open]:opacity-100 [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:pointer-events-auto",
+        )}
       >
         <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/10 shrink-0">
           <p id="chat-widget-title" className="font-semibold text-sm truncate pr-2">
@@ -21,7 +26,7 @@ export function ChatWidget() {
             variant="outline"
             size="icon"
             className="size-7"
-            onClick={() => legacyInvoke("toggleChatWidget")}
+            onClick={() => invokeAppGlobal("toggleChatWidget")}
             aria-label="Zavřít chat"
           >
             <XIcon className="size-3.5" aria-hidden />
@@ -35,7 +40,7 @@ export function ChatWidget() {
         variant="default"
         size="icon"
         className="relative size-14 text-2xl"
-        onClick={() => legacyInvoke("toggleChatWidget")}
+        onClick={() => invokeAppGlobal("toggleChatWidget")}
         title="Zprávy"
       >
         <span id="chat-widget-avatar" className="flex items-center justify-center">

@@ -10,11 +10,10 @@ declare global {
   }
 }
 
-/** Načte legacy-app.js a vystaví Supabase pro starý skript. */
-export function LegacyAppBootstrap() {
+export function ClientAppScript() {
   useEffect(() => {
     window.supabase = { createClient };
   }, []);
 
-  return <Script src="/legacy-app.js" strategy="afterInteractive" />;
+  return <Script src="/app.js" strategy="afterInteractive" />;
 }

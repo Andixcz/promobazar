@@ -5,7 +5,8 @@ const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./public/legacy-body.html",
+    "./public/site-body.html",
+    "./public/app.js",
   ],
 };
 

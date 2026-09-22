@@ -5,7 +5,8 @@ import { ChevronDownIcon, UserIcon } from "lucide-react";
 
 import { BrandMark } from "@/components/ui/brand-mark";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { legacyInvoke } from "@/lib/legacy-bridge";
+import { invokeAppGlobal } from "@/lib/app-global";
+import { audienceSwitcherActive } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
 const ddPanelClass =
@@ -28,7 +29,7 @@ function NavMoreDropdown({
         variant="ghost"
         size="default"
         className="dd-trigger inline-flex h-auto items-center gap-1 p-0"
-        onClick={(e) => legacyInvoke("toggleUserMenu", id, e.nativeEvent)}
+        onClick={(e) => invokeAppGlobal("toggleUserMenu", id, e.nativeEvent)}
       >
         Více
         <ChevronDownIcon
@@ -55,7 +56,7 @@ function AuthIconTrigger({
       size="icon"
       aria-label="Účet"
       className={cn("dd-trigger shrink-0", className)}
-      onClick={(e) => legacyInvoke("toggleUserMenu", menuId, e.nativeEvent)}
+      onClick={(e) => invokeAppGlobal("toggleUserMenu", menuId, e.nativeEvent)}
     >
       <UserIcon className="size-4 text-void" aria-hidden />
     </Button>
@@ -78,10 +79,10 @@ function AudienceActionButtons({
         id={firmsId}
         size="sm"
         variant="outline"
-        className="switcher-pill active px-2.5 text-xs sm:px-4 sm:text-sm"
+        className={cn("px-2.5 text-xs sm:px-4 sm:text-sm", audienceSwitcherActive, "active")}
         onClick={() => {
-          legacyInvoke("switchView", "firms");
-          legacyInvoke("scrollToId", "marketplace");
+          invokeAppGlobal("switchView", "firms");
+          invokeAppGlobal("scrollToId", "marketplace");
         }}
       >
         <span className="sm:hidden">Promo</span>
@@ -92,10 +93,10 @@ function AudienceActionButtons({
         id={creatorsId}
         size="sm"
         variant="outline"
-        className="switcher-pill px-2.5 text-xs sm:px-4 sm:text-sm"
+        className={cn("px-2.5 text-xs sm:px-4 sm:text-sm", audienceSwitcherActive)}
         onClick={() => {
-          legacyInvoke("switchView", "creators");
-          legacyInvoke("scrollToId", "propojeni");
+          invokeAppGlobal("switchView", "creators");
+          invokeAppGlobal("scrollToId", "propojeni");
         }}
       >
         <span className="sm:hidden">Tvůrci</span>
@@ -116,7 +117,7 @@ export function SiteHeader() {
           className="col-start-1 flex items-center gap-2.5 shrink-0"
           onClick={(e) => {
             e.preventDefault();
-            legacyInvoke("switchView", "firms");
+            invokeAppGlobal("switchView", "firms");
           }}
         >
           <BrandMark />
@@ -134,7 +135,7 @@ export function SiteHeader() {
               type="button"
               variant="ghost"
               className="h-auto p-0 font-medium text-mist hover:bg-transparent"
-              onClick={() => legacyInvoke("goToJobBoardBrowse")}
+              onClick={() => invokeAppGlobal("goToJobBoardBrowse")}
             >
               Poptávky
             </Button>
@@ -152,7 +153,7 @@ export function SiteHeader() {
           </nav>
           <nav
             id="nav-creators"
-            className="view-hidden flex items-center gap-5 text-sm font-medium text-mist overflow-visible"
+            className="hidden flex items-center gap-5 text-sm font-medium text-mist overflow-visible"
           >
             <a href="#propojeni" className={buttonVariants({ variant: "ghost", className: "h-auto p-0 font-medium text-mist hover:bg-transparent" })}>
               Propojení
@@ -189,13 +190,13 @@ export function SiteHeader() {
               <div className={ddPanelClass}>
                 <div
                   className={ddOptionClass}
-                  onClick={() => legacyInvoke("openAuth", "creator")}
+                  onClick={() => invokeAppGlobal("openAuth", "creator")}
                 >
                   Přihlásit se
                 </div>
                 <div
                   className={ddOptionClass}
-                  onClick={() => legacyInvoke("openAuth", "creator")}
+                  onClick={() => invokeAppGlobal("openAuth", "creator")}
                 >
                   Registrace
                 </div>
@@ -213,7 +214,7 @@ export function SiteHeader() {
                 aria-label="Můj účet"
                 className="dd-trigger shrink-0 p-0 overflow-hidden"
                 onClick={(e) =>
-                  legacyInvoke("toggleUserMenu", "user-menu-dd", e.nativeEvent)
+                  invokeAppGlobal("toggleUserMenu", "user-menu-dd", e.nativeEvent)
                 }
               >
                 <span className="user-avatar-initials flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 font-display text-[10px] font-bold text-white">
@@ -224,19 +225,19 @@ export function SiteHeader() {
                 <p className="user-menu-email px-4 pt-2 pb-1 text-xs font-medium text-zinc-200 truncate max-w-[200px] empty:hidden" />
                 <div
                   className={ddOptionClass}
-                  onClick={() => legacyInvoke("goToMyDashboard")}
+                  onClick={() => invokeAppGlobal("goToMyDashboard")}
                 >
                   Můj dashboard
                 </div>
                 <div
                   className={ddOptionClass}
-                  onClick={() => legacyInvoke("openAccountSettings")}
+                  onClick={() => invokeAppGlobal("openAccountSettings")}
                 >
                   Nastavení účtu
                 </div>
                 <div
                   className={ddOptionClass}
-                  onClick={() => legacyInvoke("handleLogout")}
+                  onClick={() => invokeAppGlobal("handleLogout")}
                 >
                   Odhlásit se
                 </div>

@@ -1,5 +1,5 @@
-/** Volání globálních funkcí z `public/legacy-app.js` během postupné migrace do Reactu. */
-export type LegacyGlobal = {
+/** Volání globálních funkcí z `public/app.js`. */
+export type AppGlobal = {
   switchView?: (view: "firms" | "creators") => void;
   scrollToId?: (id: string) => void;
   openAuth?: (role: string, afterCallback?: () => void) => void;
@@ -15,11 +15,11 @@ export type LegacyGlobal = {
   openConcierge?: () => void;
 };
 
-export function legacyInvoke<Name extends keyof LegacyGlobal>(
+export function invokeAppGlobal<Name extends keyof AppGlobal>(
   name: Name,
-  ...args: Parameters<NonNullable<LegacyGlobal[Name]>>
+  ...args: Parameters<NonNullable<AppGlobal[Name]>>
 ): void {
-  const fn = (window as unknown as LegacyGlobal)[name];
+  const fn = (window as unknown as AppGlobal)[name];
   if (typeof fn === "function") {
     (fn as (...params: unknown[]) => void)(...args);
   }
