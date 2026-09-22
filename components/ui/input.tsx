@@ -2,13 +2,17 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
-import { fieldControl } from "@/lib/ui-surfaces"
+import {
+  fieldControl,
+  fieldControlSizeDefault,
+  fieldControlSizeSm,
+} from "@/lib/ui-surfaces"
 
 const inputVariants = cva(fieldControl, {
   variants: {
     size: {
-      default: "h-auto px-4 py-3",
-      sm: "h-auto px-3 py-2.5",
+      default: fieldControlSizeDefault,
+      sm: fieldControlSizeSm,
     },
   },
   defaultVariants: {

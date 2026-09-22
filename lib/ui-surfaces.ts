@@ -67,5 +67,35 @@ export const audienceSwitcherActive =
 export const fieldControl =
   "w-full min-w-0 rounded-sm border border-white/[0.09] bg-white/[0.065] text-sm text-white transition-all duration-200 placeholder:text-white/40 outline-none focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-white/[0.03] disabled:opacity-50 aria-invalid:border-destructive/50 aria-invalid:ring-2 aria-invalid:ring-destructive/35 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-white";
 
+/** Stejná výška jako `Input` (default size). */
+export const fieldControlSizeDefault = "h-auto px-4 py-3";
+
+export const fieldControlSizeSm = "h-auto px-3 py-2.5";
+
+/** React `FieldSelect` — stejný box jako Input, chování jako hero dropdown. */
+export const fieldSelectTrigger = `${fieldControl} ${fieldControlSizeDefault} dd-trigger flex cursor-pointer items-center justify-between gap-2 text-left font-medium shadow-none backdrop-blur-[10px] hover:bg-white/[0.09] [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(0,229,255,0.4)]`;
+
 export const fieldLabel =
   "block font-body text-[11px] font-medium uppercase tracking-wide text-mist";
+
+/** Custom dropdown (hero filtry, formuláře) — drž v sync s `PB_DD_*` v public/app.js */
+export const dropdownTrigger =
+  "dd-trigger flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-sm border border-white/[0.09] bg-white/[0.065] px-3 py-2 text-left text-sm font-medium text-white shadow-none backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.09] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] focus-visible:outline-none [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(0,229,255,0.4)]";
+
+const dropdownPanelBase =
+  "dd-panel absolute top-[calc(100%+6px)] z-[100] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 space-y-0.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] shadow-[0_16px_40px_-12px_rgba(0,0,0,0.55)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100";
+
+export const dropdownPanel = `${dropdownPanelBase} left-0 right-0`;
+
+export const dropdownPanelNav = `${dropdownPanelBase} right-0 min-w-[190px]`;
+
+export const dropdownOption =
+  "dd-option cursor-pointer rounded-sm px-3 py-2 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white";
+
+/** Aktivní položka v dashboard přepínači (nav, typ účtu). */
+export const switcherActive =
+  "border-transparent bg-cyan text-void hover:bg-cyan/85";
+
+/** Výchozí avatar bez fotky — iniciály na aqua výplni. */
+export const avatarPlaceholder =
+  "bg-gradient-to-br from-cyan to-cyan/75 text-void";
