@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Unbounded } from "next/font/google";
+import { Inter, JetBrains_Mono, Strichpunkt_Sans, Geist } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
-const unbounded = Unbounded({
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
+const strichpunktSans = Strichpunkt_Sans({
   subsets: ["latin", "latin-ext"],
-  variable: "--font-unbounded",
+  variable: "--font-strichpunkt-sans",
   display: "swap",
 });
 
@@ -35,7 +38,13 @@ export default function RootLayout({
   return (
     <html
       lang="cs"
-      className={`${unbounded.variable} ${inter.variable} ${jetbrains.variable}`}
+      className={cn(
+        "dark font-sans",
+        strichpunktSans.variable,
+        inter.variable,
+        jetbrains.variable,
+        geist.variable,
+      )}
     >
       <body className="grain antialiased">{children}</body>
     </html>
