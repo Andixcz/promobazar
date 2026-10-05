@@ -8,6 +8,7 @@ import {
   ClipboardList,
   LayoutDashboard,
   Package,
+  Receipt,
   Settings2,
   UserRound,
   type LucideIcon,
@@ -27,26 +28,30 @@ type NavItemDef = {
 };
 
 function buildNav(profile: MemberProfileRow): NavItemDef[] {
-  const slug = profile.slug;
   const items: NavItemDef[] = [
-    { href: dashboardPath(slug), label: "Přehled", icon: LayoutDashboard, overview: true },
+    { href: dashboardPath(), label: "Přehled", icon: LayoutDashboard, overview: true },
+    {
+      href: dashboardPath("objednavky"),
+      label: "Objednávky",
+      icon: Receipt,
+    },
   ];
   if (profile.role === "creator") {
     items.push({
-      href: dashboardPath(slug, "balicky"),
+      href: dashboardPath("balicky"),
       label: "Balíčky",
       icon: Package,
     });
-  } else {
+  } else if (profile.role === "brand") {
     items.push({
-      href: dashboardPath(slug, "poptavky"),
+      href: dashboardPath("poptavky"),
       label: "Poptávky",
       icon: ClipboardList,
     });
   }
   items.push(
-    { href: dashboardPath(slug, "profil"), label: "Profil", icon: UserRound },
-    { href: dashboardPath(slug, "nastaveni"), label: "Nastavení", icon: Settings2 },
+    { href: dashboardPath("profil"), label: "Profil", icon: UserRound },
+    { href: dashboardPath("nastaveni"), label: "Nastavení", icon: Settings2 },
   );
   return items;
 }
@@ -114,13 +119,16 @@ export function DashboardSidebar({
 
   return (
     <aside
-      className="hidden lg:flex lg:w-[248px] lg:shrink-0 lg:flex-col border-r border-white/[0.08] bg-ink"
+      className="hidden h-screen shrink-0 flex-col overflow-hidden border-r border-white/[0.08] bg-ink lg:flex lg:w-[248px]"
     >
       <div className="flex h-14 items-center px-4">
         <SidebarBrand />
       </div>
 
-      <nav className="flex flex-1 flex-col gap-0.5 px-3 py-2" aria-label="Dashboard">
+      <nav
+        className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2"
+        aria-label="Dashboard"
+      >
         <p className="px-2.5 pb-1 pt-2 font-body text-[10px] font-medium uppercase tracking-wider text-mist/90">
           Menu
         </p>

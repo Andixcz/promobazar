@@ -109,7 +109,7 @@ export function DashboardUserMenu({
           >
             <Link
               role="menuitem"
-              href={dashboardPath(profile.slug, "profil")}
+              href={dashboardPath("profil")}
               className="block rounded-sm px-3 py-2 text-sm text-white/90 hover:bg-white/[0.08]"
               onClick={() => setOpen(false)}
             >
@@ -117,7 +117,7 @@ export function DashboardUserMenu({
             </Link>
             <Link
               role="menuitem"
-              href={dashboardPath(profile.slug, "nastaveni")}
+              href={dashboardPath("nastaveni")}
               className="block rounded-sm px-3 py-2 text-sm text-white/90 hover:bg-white/[0.08]"
               onClick={() => setOpen(false)}
             >

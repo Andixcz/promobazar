@@ -4,18 +4,15 @@ import { redirect } from "next/navigation";
 import { BrandJobsPanel } from "@/components/dashboard/brand-jobs-panel";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { dashboardPath } from "@/lib/dashboard-routes";
-import { requireDashboardProfile } from "@/lib/dashboard/require-dashboard";
+import { requireDashboard } from "@/lib/dashboard/require-dashboard";
 import { db } from "@/lib/db";
 import { brandJobPost } from "@/lib/db/schema";
 
-type PageProps = { params: Promise<{ slug: string }> };
-
-export default async function DashboardJobsPage({ params }: PageProps) {
-  const { slug } = await params;
-  const { profile } = await requireDashboardProfile(slug);
+export default async function DashboardJobsPage() {
+  const { profile } = await requireDashboard();
 
   if (profile.role !== "brand") {
-    redirect(dashboardPath(profile.slug));
+    redirect(dashboardPath());
   }
 
   const jobs = await db
