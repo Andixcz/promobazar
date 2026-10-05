@@ -9,7 +9,6 @@ import {
   memberProfile,
   type MemberRole,
 } from "@/lib/db/schema";
-import { slugifyBase } from "@/lib/dashboard/slug";
 import type {
   DashboardBadge,
   MemberProfileRow,
@@ -35,17 +34,6 @@ export async function getProfileByUserId(userId: string) {
   return row ?? null;
 }
 
-async function uniqueSlug(base: string): Promise<string> {
-  let candidate = base;
-  let n = 2;
-  while (true) {
-    const existing = await getProfileBySlug(candidate);
-    if (!existing) return candidate;
-    candidate = `${base}-${n}`;
-    n += 1;
-  }
-}
-
 export async function ensureMemberProfile(
   userId: string,
   name: string,
@@ -55,9 +43,11 @@ export async function ensureMemberProfile(
   const existing = await getProfileByUserId(userId);
   if (existing) return existing;
 
-  const slug = await uniqueSlug(slugifyBase(name || email.split("@")[0]));
+  const slug = userId;
   const role: MemberRole =
-    preferredRole === "creator" || preferredRole === "brand"
+    preferredRole === "creator" ||
+    preferredRole === "brand" ||
+    preferredRole === "buyer"
       ? preferredRole
       : "brand";
 
@@ -115,6 +105,29 @@ export async function computeBadges(
         label: "Aktivní tvůrce",
         earned: pkgCount >= 2,
         hint: "Měj 2 a více aktivních balíčků.",
+      },
+    ];
+  }
+
+  if (profile.role === "buyer") {
+    return [
+      {
+        id: "verified-buyer",
+        label: "Ověřený účet",
+        earned: true,
+        hint: "Aktivní po přihlášení jako nakupující.",
+      },
+      {
+        id: "first-order",
+        label: "První objednávka",
+        earned: false,
+        hint: "Získáš dokončenou objednávkou v tržišti.",
+      },
+      {
+        id: "loyal-buyer",
+        label: "Stálý nakupující",
+        earned: false,
+        hint: "Získáš třetí dokončenou objednávkou.",
       },
     ];
   }

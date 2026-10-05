@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  useTransition,
+  type ReactNode,
+} from "react";
 import { useRouter } from "next/navigation";
 
 import { saveProfileSettings, saveMemberRole } from "@/app/dashboard/actions";
@@ -14,7 +20,12 @@ import { Input } from "@/components/ui/input";
 import { FieldSelect } from "@/components/ui/field-select";
 import { Textarea } from "@/components/ui/textarea";
 import { MARKETPLACE_CATEGORIES } from "@/lib/dashboard/categories";
-import { roleLabel } from "@/lib/dashboard/profile-display";
+import {
+  roleLabel,
+  SELECTABLE_MEMBER_ROLES,
+  showsMarketplaceCategory,
+  showsPortfolioInProfile,
+} from "@/lib/dashboard/member-role";
 import type {
   DashboardBadge,
   MemberProfileRow,
@@ -29,25 +40,21 @@ type ProfileSettingsFormProps = {
   profile: MemberProfileRow;
   email: string;
   badges: DashboardBadge[];
+  platformLinkingSlot?: ReactNode;
 };
 
 type PreviewState = {
   displayName: string;
   bio: string;
   category: string;
-  socialTiktok: string;
-  socialInstagram: string;
-  socialYoutube: string;
 };
 
 function readPreviewFromForm(form: HTMLFormElement): PreviewState {
+  const data = new FormData(form);
   return {
-    displayName: String(form.get("displayName") ?? ""),
-    bio: String(form.get("bio") ?? ""),
-    category: String(form.get("category") ?? "fitness"),
-    socialTiktok: String(form.get("socialTiktok") ?? ""),
-    socialInstagram: String(form.get("socialInstagram") ?? ""),
-    socialYoutube: String(form.get("socialYoutube") ?? ""),
+    displayName: String(data.get("displayName") ?? ""),
+    bio: String(data.get("bio") ?? ""),
+    category: String(data.get("category") ?? "fitness"),
   };
 }
 
@@ -56,9 +63,6 @@ function previewFromProfile(profile: MemberProfileRow): PreviewState {
     displayName: profile.displayName ?? "",
     bio: profile.bio ?? "",
     category: profile.category ?? "fitness",
-    socialTiktok: profile.socialTiktok ?? "",
-    socialInstagram: profile.socialInstagram ?? "",
-    socialYoutube: profile.socialYoutube ?? "",
   };
 }
 
@@ -66,6 +70,7 @@ export function ProfileSettingsForm({
   profile,
   email,
   badges,
+  platformLinkingSlot,
 }: ProfileSettingsFormProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -107,13 +112,10 @@ export function ProfileSettingsForm({
     );
 
     startTransition(async () => {
-      const result = await saveProfileSettings(profile.slug, {
+      const result = await saveProfileSettings({
         displayName: String(form.get("displayName") ?? ""),
         bio: String(form.get("bio") ?? ""),
         category: String(form.get("category") ?? profile.category ?? "fitness"),
-        socialTiktok: String(form.get("socialTiktok") ?? ""),
-        socialInstagram: String(form.get("socialInstagram") ?? ""),
-        socialYoutube: String(form.get("socialYoutube") ?? ""),
         portfolioUrls,
         avatarUrl: media.avatarUrl,
         bannerUrl: media.bannerUrl,
@@ -140,7 +142,7 @@ export function ProfileSettingsForm({
 
   function onRoleChange(role: MemberRole) {
     startTransition(async () => {
-      const result = await saveMemberRole(profile.slug, role);
+      const result = await saveMemberRole(role);
       if (!result.ok) setError(result.error);
       else router.refresh();
     });
@@ -151,6 +153,9 @@ export function ProfileSettingsForm({
     email,
     badges,
     ...preview,
+    socialTiktok: profile.socialTiktok ?? undefined,
+    socialInstagram: profile.socialInstagram ?? undefined,
+    socialYoutube: profile.socialYoutube ?? undefined,
     avatarUrl: media.avatarUrl ?? profile.avatarUrl,
     bannerUrl: media.bannerUrl ?? profile.bannerUrl,
   };
@@ -185,10 +190,10 @@ export function ProfileSettingsForm({
           >
             <ProfileSettingsSection
               title="Typ účtu"
-              description="Tvůrce nebo značka v tržišti."
+              description="Tvůrce, značka nebo nakupující v tržišti."
             >
               <div className="flex flex-wrap gap-2">
-                {(["creator", "brand"] as MemberRole[]).map((role) => (
+                {SELECTABLE_MEMBER_ROLES.map((role) => (
                   <Button
                     key={role}
                     type="button"
@@ -216,25 +221,29 @@ export function ProfileSettingsForm({
                   placeholder={
                     profile.role === "creator"
                       ? "Jana K."
-                      : "Jméno / název značky"
+                      : profile.role === "brand"
+                        ? "Jméno / název značky"
+                        : "Tvoje jméno"
                   }
                 />
               </FormField>
 
-              <FormField label="Obor" htmlFor="category">
-                <FieldSelect
-                  id="category"
-                  name="category"
-                  defaultValue={profile.category ?? "fitness"}
-                  options={MARKETPLACE_CATEGORIES}
-                  onValueChange={() => {
-                    const el = document.getElementById(
-                      "profile-settings-form",
-                    ) as HTMLFormElement | null;
-                    if (el) syncPreview(el);
-                  }}
-                />
-              </FormField>
+              {showsMarketplaceCategory(profile.role) ? (
+                <FormField label="Obor" htmlFor="category">
+                  <FieldSelect
+                    id="category"
+                    name="category"
+                    defaultValue={profile.category ?? "fitness"}
+                    options={MARKETPLACE_CATEGORIES}
+                    onValueChange={() => {
+                      const el = document.getElementById(
+                        "profile-settings-form",
+                      ) as HTMLFormElement | null;
+                      if (el) syncPreview(el);
+                    }}
+                  />
+                </FormField>
+              ) : null}
 
               <FormField label="Bio" htmlFor="bio">
                 <div className="space-y-1.5">
@@ -258,7 +267,9 @@ export function ProfileSettingsForm({
                     placeholder={
                       profile.role === "creator"
                         ? "Kdo jsi, jaký obsah tvoříš a s jakými značkami chceš spolupracovat…"
-                        : "Co děláte, koho hledáte a jak probíhá spolupráce…"
+                        : profile.role === "brand"
+                          ? "Co děláte, koho hledáte a jak probíhá spolupráce…"
+                          : "Krátké představení pro komunikaci při objednávkách…"
                     }
                     onChange={(e) => {
                       setBioLength(e.target.value.length);
@@ -269,57 +280,28 @@ export function ProfileSettingsForm({
               </FormField>
             </ProfileSettingsSection>
 
-            {profile.role === "creator" ? (
+            {platformLinkingSlot}
+
+            {showsPortfolioInProfile(profile.role) ? (
               <ProfileSettingsSection
-                title="Sociální sítě a portfolio"
-                description="Sítě a odkazy na ukázky."
+                title="Portfolio"
+                description="Odkazy na ukázky práce."
               >
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <FormField label="TikTok" htmlFor="socialTiktok">
+                {portfolio.map((url, idx) => (
+                  <FormField
+                    key={idx}
+                    label={`Odkaz ${idx + 1}`}
+                    htmlFor={`portfolio-${idx}`}
+                  >
                     <Input
-                      id="socialTiktok"
-                      name="socialTiktok"
-                      defaultValue={profile.socialTiktok ?? ""}
-                      placeholder="@handle"
+                      id={`portfolio-${idx}`}
+                      name={`portfolio-${idx}`}
+                      type="url"
+                      defaultValue={url}
+                      placeholder="https://…"
                     />
                   </FormField>
-                  <FormField label="Instagram" htmlFor="socialInstagram">
-                    <Input
-                      id="socialInstagram"
-                      name="socialInstagram"
-                      defaultValue={profile.socialInstagram ?? ""}
-                      placeholder="@handle"
-                    />
-                  </FormField>
-                </div>
-                <FormField label="YouTube" htmlFor="socialYoutube">
-                  <Input
-                    id="socialYoutube"
-                    name="socialYoutube"
-                    defaultValue={profile.socialYoutube ?? ""}
-                    placeholder="@handle nebo kanál"
-                  />
-                </FormField>
-                <div className="space-y-3 border-t border-white/[0.08] pt-4">
-                  <p className="text-sm font-medium text-white">
-                    Portfolio · ukázky práce
-                  </p>
-                  {portfolio.map((url, idx) => (
-                    <FormField
-                      key={idx}
-                      label={`Odkaz ${idx + 1}`}
-                      htmlFor={`portfolio-${idx}`}
-                    >
-                      <Input
-                        id={`portfolio-${idx}`}
-                        name={`portfolio-${idx}`}
-                        type="url"
-                        defaultValue={url}
-                        placeholder="https://…"
-                      />
-                    </FormField>
-                  ))}
-                </div>
+                ))}
               </ProfileSettingsSection>
             ) : null}
 
