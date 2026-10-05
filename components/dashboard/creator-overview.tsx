@@ -1,26 +1,40 @@
-import { Package, UserRound } from "lucide-react";
+import { Package, Receipt, UserRound } from "lucide-react";
 
 import { DashboardSectionLink } from "@/components/dashboard/dashboard-section-link";
 import { DashboardStat } from "@/components/dashboard/dashboard-stat";
 import { dashboardPath } from "@/lib/dashboard-routes";
+import type { DashboardOrderStats } from "@/lib/dashboard/orders-server";
 import type { MemberProfileRow } from "@/lib/dashboard/profile-types";
 
-export function CreatorOverview({ profile }: { profile: MemberProfileRow }) {
+function formatCzk(amount: number) {
+  return `${amount.toLocaleString("cs-CZ")} Kč`;
+}
+
+export function CreatorOverview({
+  profile,
+  orderStats,
+}: {
+  profile: MemberProfileRow;
+  orderStats: DashboardOrderStats;
+}) {
   const stats = [
     {
       label: "Celkový výdělek",
-      value: "0 Kč",
-      hint: "zatím žádné dokončené objednávky",
+      value: formatCzk(orderStats.totalEarnedCzk),
+      hint:
+        orderStats.completed === 0
+          ? "zatím žádné dokončené objednávky"
+          : `z ${orderStats.completed} dokončených zakázek`,
       accent: true,
     },
     {
       label: "Aktivní objednávky",
-      value: "0",
-      hint: "čekají na nahrání nebo schválení",
+      value: String(orderStats.active),
+      hint: "čekají na práci, dodání nebo schválení",
     },
     {
       label: "Dokončené kampaně",
-      value: "0",
+      value: String(orderStats.completed),
       hint: "za celou dobu na platformě",
     },
     {
@@ -50,13 +64,19 @@ export function CreatorOverview({ profile }: { profile: MemberProfileRow }) {
         </h2>
         <div className="grid gap-4 md:grid-cols-2 md:gap-5">
           <DashboardSectionLink
-            href={dashboardPath(profile.slug, "balicky")}
+            href={dashboardPath("objednavky")}
+            icon={Receipt}
+            title="Objednávky"
+            description="Stav zakázek od značek a nakupujících: platba, práce a schválení."
+          />
+          <DashboardSectionLink
+            href={dashboardPath("balicky")}
             icon={Package}
             title="Balíčky"
             description="Nastav ceny, formáty a licence. Značky uvidí balíčky po rozkliknutí tvého profilu."
           />
           <DashboardSectionLink
-            href={dashboardPath(profile.slug, "profil")}
+            href={dashboardPath("profil")}
             icon={UserRound}
             title="Profil"
             description="Avatar, bio, sítě a portfolio ve veřejném profilu."

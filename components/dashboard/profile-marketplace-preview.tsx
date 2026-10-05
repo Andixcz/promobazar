@@ -97,7 +97,7 @@ export function ProfileMarketplacePreview({
         ) : (
           <p className="mt-3 text-sm text-mist">Bez bio</p>
         )}
-        {profile.role === "creator" && socials.length > 0 ? (
+        {profile.role !== "buyer" && socials.length > 0 ? (
           <div className="mt-3 flex flex-wrap gap-2">
             {socials.map(({ key, value, icon }) => (
               <span

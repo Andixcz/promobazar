@@ -43,7 +43,7 @@ export function CreatorPackagesPanel({
     setError(null);
     const form = new FormData(e.currentTarget);
     startTransition(async () => {
-      const result = await createCreatorPackage(profile.slug, {
+      const result = await createCreatorPackage({
         name: String(form.get("name") ?? ""),
         format: String(form.get("format") ?? "tiktok"),
         deliveryDays: Number(form.get("deliveryDays") ?? 7),
@@ -64,7 +64,7 @@ export function CreatorPackagesPanel({
 
   function onDelete(id: string) {
     startTransition(async () => {
-      await deleteCreatorPackage(profile.slug, id);
+      await deleteCreatorPackage(id);
       router.refresh();
     });
   }

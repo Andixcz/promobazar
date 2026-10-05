@@ -46,7 +46,7 @@ export function BrandJobsPanel({
     setError(null);
     const form = new FormData(e.currentTarget);
     startTransition(async () => {
-      const result = await createBrandJob(profile.slug, {
+      const result = await createBrandJob({
         title: String(form.get("title") ?? ""),
         category: String(form.get("category") ?? "fitness"),
         budgetCzk: Number(form.get("budgetCzk") ?? 0),
