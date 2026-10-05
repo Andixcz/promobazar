@@ -41,6 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="cs"
+      data-scroll-behavior="smooth"
       className={cn(
         "dark font-sans",
         strichpunktSans.variable,

@@ -81,6 +81,7 @@
 
   body.dashboard-app {
     background: var(--color-void);
+    overflow: hidden;
   }
 
   body.dashboard-app.grain::before {
