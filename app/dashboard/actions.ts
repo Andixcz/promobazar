@@ -14,6 +14,7 @@ import {
   getProfileByUserId,
 } from "@/lib/dashboard/profile-server";
 import { db } from "@/lib/db";
+import { isAllowedProfileMediaUrl } from "@/lib/storage/storage-url";
 import {
   brandJobPost,
   creatorPackage,
@@ -59,6 +60,15 @@ export async function saveProfileSettings(input: {
   if (!ctx.ok) return ctx;
   const { session, profile } = ctx;
 
+  const nextAvatar = input.avatarUrl ?? profile.avatarUrl;
+  const nextBanner = input.bannerUrl ?? profile.bannerUrl;
+  if (!isAllowedProfileMediaUrl(nextAvatar) || !isAllowedProfileMediaUrl(nextBanner)) {
+    return {
+      ok: false as const,
+      error: "Neplatná URL profilového obrázku.",
+    };
+  }
+
   await db
     .update(memberProfile)
     .set({
@@ -66,8 +76,8 @@ export async function saveProfileSettings(input: {
       bio: input.bio.trim(),
       category: input.category,
       portfolioUrls: input.portfolioUrls.filter(Boolean).slice(0, 3),
-      avatarUrl: input.avatarUrl ?? profile.avatarUrl,
-      bannerUrl: input.bannerUrl ?? profile.bannerUrl,
+      avatarUrl: nextAvatar,
+      bannerUrl: nextBanner,
     })
     .where(eq(memberProfile.userId, profile.userId));
 

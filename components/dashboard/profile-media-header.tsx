@@ -3,6 +3,11 @@
 import { Camera, ImageIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
+import {
+  StorageUnavailableError,
+  uploadFileToStorage,
+} from "@/lib/storage/upload-file";
+
 import { Button } from "@/components/ui/button";
 import { profileInitials } from "@/lib/dashboard/profile-display";
 import type { MemberProfileRow } from "@/lib/dashboard/profile-types";
@@ -17,7 +22,7 @@ type ProfileMediaHeaderProps = {
   onDirty?: () => void;
 };
 
-/** ponytail: obrázky jako data URL v DB — pro produkci nahradit object storage (Vercel Blob). */
+/** ponytail: fallback bez B2 env — jen lokální vývoj. */
 async function fileToDataUrl(file: File): Promise<string> {
   const maxBytes = 900_000;
   if (file.size > maxBytes) {
@@ -41,6 +46,7 @@ export function ProfileMediaHeader({
   const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl);
   const [bannerUrl, setBannerUrl] = useState(profile.bannerUrl);
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<"avatar" | "banner" | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
   const bannerInput = useRef<HTMLInputElement>(null);
   const initials = profileInitials(
@@ -55,8 +61,18 @@ export function ProfileMediaHeader({
   ) {
     if (!file) return;
     setError(null);
+    setUploading(kind);
     try {
-      const url = await fileToDataUrl(file);
+      let url: string;
+      try {
+        url = await uploadFileToStorage(file, kind);
+      } catch (e) {
+        if (e instanceof StorageUnavailableError) {
+          url = await fileToDataUrl(file);
+        } else {
+          throw e;
+        }
+      }
       if (kind === "avatar") {
         setAvatarUrl(url);
         onMediaChange({ avatarUrl: url });
@@ -67,6 +83,8 @@ export function ProfileMediaHeader({
       onDirty?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Nahrání selhalo.");
+    } finally {
+      setUploading(null);
     }
   }
 
@@ -91,9 +109,10 @@ export function ProfileMediaHeader({
             size="sm"
             className="border-white/20 bg-void/60 backdrop-blur-sm"
             onClick={() => bannerInput.current?.click()}
+            disabled={uploading !== null}
           >
             <ImageIcon className="size-4" aria-hidden />
-            Banner
+            {uploading === "banner" ? "Nahrávám…" : "Banner"}
           </Button>
         </div>
       </div>
@@ -110,7 +129,8 @@ export function ProfileMediaHeader({
           <button
             type="button"
             onClick={() => avatarInput.current?.click()}
-            className="group relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-cyan/50 bg-panel p-0.5 md:size-[88px]"
+            disabled={uploading !== null}
+            className="group relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-cyan/50 bg-panel p-0.5 disabled:opacity-60 md:size-[88px]"
           >
             <span
               className={cn(
