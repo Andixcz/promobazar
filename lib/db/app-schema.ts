@@ -89,6 +89,8 @@ export const creatorPackage = pgTable(
     licenseDays: text("license_days").default("30").notNull(),
     priceCzk: integer("price_czk").notNull(),
     description: text("description").notNull(),
+    showcaseUrls: jsonb("showcase_urls").$type<string[]>().default([]).notNull(),
+    bannerUrl: text("banner_url"),
     sortOrder: integer("sort_order").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

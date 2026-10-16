@@ -1,4 +1,4 @@
-export type UploadPurpose = "avatar" | "banner" | "file";
+export type UploadPurpose = "avatar" | "banner" | "file" | "package-showcase";
 
 const IMAGE_TYPES = new Set([
   "image/jpeg",
@@ -16,11 +16,17 @@ const FILE_TYPES = new Set([
 const MAX_BYTES: Record<UploadPurpose, number> = {
   avatar: 5 * 1024 * 1024,
   banner: 10 * 1024 * 1024,
+  "package-showcase": 8 * 1024 * 1024,
   file: 500 * 1024 * 1024,
 };
 
 export function isUploadPurpose(value: string): value is UploadPurpose {
-  return value === "avatar" || value === "banner" || value === "file";
+  return (
+    value === "avatar" ||
+    value === "banner" ||
+    value === "file" ||
+    value === "package-showcase"
+  );
 }
 
 export function allowedContentTypes(purpose: UploadPurpose): Set<string> {
@@ -56,5 +62,5 @@ export function buildObjectKey(
 
 /** Veřejné profilové médium — kdokoli s URL může zobrazit (UUID v cestě). */
 export function isPublicStorageObjectKey(key: string): boolean {
-  return /^uploads\/[^/]+\/(avatar|banner)\//.test(key);
+  return /^uploads\/[^/]+\/(avatar|banner|package-showcase)\//.test(key);
 }
