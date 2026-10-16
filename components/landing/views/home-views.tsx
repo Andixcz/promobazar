@@ -204,8 +204,8 @@ export function FirmsView() {
           <p className="text-zinc-200 text-center mt-3 max-w-xl mx-auto">Tři kroky mezi tvým produktem a hotovým promo videem na síti.</p>
           <div className="grid md:grid-cols-3 gap-6 mt-14">
             <div className="border border-white/[0.09] bg-panel rounded-md p-7 relative"><div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">1</div><h3 className="font-display font-semibold text-lg mb-2">Vybereš influencera</h3><p className="text-zinc-200 text-sm leading-relaxed">Podle ceny, platformy a oboru najdeš přesně toho tvůrce, jehož publikum kupuje produkty jako ten tvůj.</p></div>
-            <div className="border border-white/[0.09] bg-panel rounded-md p-7 relative"><div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">2</div><h3 className="font-display font-semibold text-lg mb-2">Pošleš produkt a zadání</h3><p className="text-zinc-200 text-sm leading-relaxed">Briefing si domluvíš přímo v platformě. Napíšeš, co má video ukázat, jaký tón chceš a co má divák udělat jako další krok.</p></div>
-            <div className="border border-white/[0.09] bg-panel rounded-md p-7 relative"><div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">3</div><h3 className="font-display font-semibold text-lg mb-2">Schválíš a získáš prodeje</h3><p className="text-zinc-200 text-sm leading-relaxed">Video zveřejní tvůrce, ty sleduješ dosah a konverze. Platba je držena v úschově až po tvém schválení.</p></div>
+            <div className="border border-white/[0.09] bg-panel rounded-md p-7 relative"><div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">2</div><h3 className="font-display font-semibold text-lg mb-2">Zadáš a zaplatíš</h3><p className="text-zinc-200 text-sm leading-relaxed">Napíšeš zadání a zaplatíš celou částku. Tvůrce má 48 hodin na přijetí.</p></div>
+            <div className="border border-white/[0.09] bg-panel rounded-md p-7 relative"><div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">3</div><h3 className="font-display font-semibold text-lg mb-2">Schválíš výstup</h3><p className="text-zinc-200 text-sm leading-relaxed">Máš 3 dny na schválení nebo jednu úpravu.</p></div>
           </div>
         </div>
       </section>
@@ -228,8 +228,7 @@ export function FirmsView() {
         <div className="max-w-7xl mx-auto">
           <h2 className="font-display font-bold text-3xl md:text-4xl text-center">Ceníkové balíčky pro značky</h2>
           <p className="text-zinc-200 text-center mt-3 max-w-xl mx-auto">
-            Platíš jen za kampaně, které skutečně proběhnou. Bez skrytých poplatků. Peníze držíme v
-            úschově, dokud nebudeš s výsledkem spokojený.
+            Platíš jen za kampaně, které skutečně proběhnou. Peníze držíme do schválení výstupu.
           </p>
           <div className="mt-6 flex justify-center px-2">
             <div

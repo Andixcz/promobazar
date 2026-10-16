@@ -1021,7 +1021,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       renderUploadOrderPicker();
     }
 
-    modalContent.innerHTML = successBlock('Poptávka odeslána', 'Tvůrce ' + c.name + ' dostane tvé zadání a ozve se do 24 hodin s potvrzením termínu. Peníze jsou zatím bezpečně v úschově.');
+    modalContent.innerHTML = successBlock('Objednávka', 'Objednávku založíš po přihlášení v účtu.');
   }
   function submitPlan(planName){
     modalContent.innerHTML = successBlock('Díky za zájem o ' + planName, 'Ozveme se do jednoho pracovního dne na ' + currentUser.email + ' a nastavíme účet přesně podle tvého rozpočtu.');

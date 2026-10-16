@@ -69,7 +69,7 @@ export function SiteFooter() {
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-zinc-200">
               Propojujeme značky s tvůrci, kteří umí prodat. Vyber promo, nastav rozpočet a plať
-              v klidu. Peníze držíme v úschově, dokud nebudeš s výsledkem spokojený.
+              v klidu. Peníze držíme do schválení výstupu.
             </p>
             <a
               href="mailto:podpora@promobazar.cz"

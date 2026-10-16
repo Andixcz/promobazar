@@ -9,7 +9,7 @@ const FAQ_ITEMS = [
   {
     question: "Co je to bezpečná platba a proč je bez rizika?",
     answer:
-      "Při objednání pošleš peníze na zabezpečený účet promobazar.cz, kde je držíme v úschově. Tvůrce je dostane vyplacené až ve chvíli, kdy ty osobně schválíš hotové video nebo fotky. Pokud výstup neodpovídá zadání, peníze se vrací.",
+      "Zaplatíš celou částku předem a peníze držíme do schválení. Tvůrce má 48 hodin na přijetí. Když odmítne, částka se vrací. Na kontrolu výstupu máš 3 dny.",
   },
   {
     question: "Proč nevidím přímý kontakt na tvůrce?",
@@ -19,12 +19,12 @@ const FAQ_ITEMS = [
   {
     question: "Jak dlouho trvá realizace jedné kampaně?",
     answer:
-      "Většina tvůrců dodá hotové video do 3–14 pracovních dní podle zvoleného balíčku. Přesný termín vidíš u každého balíčku ještě před objednáním.",
+      "Většina tvůrců dodá hotové video do 3 až 14 pracovních dní podle zvoleného balíčku. Přesný termín vidíš u každého balíčku ještě před objednáním.",
   },
   {
     question: "Co když nejsem spokojený s výsledkem?",
     answer:
-      "V rámci zadání máš nárok na jedno kolo úprav zdarma. Pokud výstup přesto neodpovídá dohodnutému briefu, můžeš situaci nahlásit naší podpoře, která pomůže nalézt férové řešení pro obě strany.",
+      "Máš jedno kolo úprav, do 3 dnů od odevzdání. Když výstup pořád nesedí, napiš na podporu.",
   },
 ] as const;
 
