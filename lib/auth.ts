@@ -4,6 +4,11 @@ import { nextCookies } from "better-auth/next-js";
 
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
+import {
+  authEmailPasswordExtras,
+  authEmailVerification,
+  authUserEmailOptions,
+} from "@/lib/auth-email-hooks";
 import { buildBetterAuthSocialProviders } from "@/lib/auth-social-server";
 
 export const auth = betterAuth({
@@ -12,9 +17,12 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
+  emailVerification: authEmailVerification,
   emailAndPassword: {
     enabled: true,
+    ...authEmailPasswordExtras,
   },
+  user: authUserEmailOptions,
   socialProviders: buildBetterAuthSocialProviders(),
   plugins: [nextCookies()],
 });
