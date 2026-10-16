@@ -47,7 +47,7 @@ export const pricingBadge =
   "absolute top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-sm border border-transparent bg-cyan px-4 py-1.5 font-body text-[11px] font-medium uppercase tracking-wide text-void";
 
 const btnBase =
-  "inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none";
+  "inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-55 disabled:transform-none";
 
 export const htmlButtonCta = `${btnBase} text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5`;
 
@@ -72,8 +72,12 @@ export const fieldControlSizeDefault = "h-auto px-4 py-3";
 
 export const fieldControlSizeSm = "h-auto px-3 py-2.5";
 
+/** React `FieldSelect` trigger — bez velikosti (viz `fieldSelectTrigger`). */
+export const fieldSelectTriggerExtras =
+  "dd-trigger flex cursor-pointer items-center justify-between gap-2 text-left font-medium shadow-none backdrop-blur-[10px] hover:bg-white/[0.09] [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(0,229,255,0.4)]";
+
 /** React `FieldSelect` — stejný box jako Input, chování jako hero dropdown. */
-export const fieldSelectTrigger = `${fieldControl} ${fieldControlSizeDefault} dd-trigger flex cursor-pointer items-center justify-between gap-2 text-left font-medium shadow-none backdrop-blur-[10px] hover:bg-white/[0.09] [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(0,229,255,0.4)]`;
+export const fieldSelectTrigger = `${fieldControl} ${fieldControlSizeDefault} ${fieldSelectTriggerExtras}`;
 
 export const fieldLabel =
   "block font-body text-[11px] font-medium uppercase tracking-wide text-mist";

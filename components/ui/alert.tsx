@@ -10,7 +10,7 @@ const alertVariants = cva(
         default:
           "rounded-md border border-white/[0.09] bg-panel text-foreground",
         destructive:
-          "rounded-md border border-destructive/35 bg-destructive/10 text-error-soft *:data-[slot=alert-description]:text-error-soft/90",
+          "rounded-md border border-destructive/35 bg-destructive/10 text-danger *:data-[slot=alert-description]:text-danger/90",
         subtle:
           "rounded-md border border-white/[0.09] bg-panel text-zinc-200",
       },
