@@ -2,10 +2,8 @@ import { Receipt } from "lucide-react";
 
 import { OrderControls } from "@/components/dashboard/order-controls";
 import type { DashboardOrderListItem } from "@/lib/dashboard/orders-server";
-import {
-  orderStatusHint,
-  orderStatusLabel,
-} from "@/lib/dashboard/marketplace-order";
+import { OrderStatusBadge } from "@/components/dashboard/order-status-badge";
+import { orderStatusHint } from "@/lib/dashboard/marketplace-order";
 import type { MemberRole } from "@/lib/db/schema";
 import { emptyState, emptyStateIcon, resultCount, surface } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
@@ -88,18 +86,30 @@ function emptyCopy(role: MemberRole) {
 
 type OrdersPanelProps = {
   orders: DashboardOrderListItem[];
+  total: number;
+  filtered: boolean;
   memberRole: MemberRole;
 };
 
-export function OrdersPanel({ orders, memberRole }: OrdersPanelProps) {
-  const empty = emptyCopy(memberRole);
+function ordersCountLabel(total: number) {
+  if (total === 0) return "Žádné objednávky";
+  if (total === 1) return "1 objednávka";
+  if (total < 5) return `${total} objednávky`;
+  return `${total} objednávek`;
+}
+
+export function OrdersPanel({ orders, total, filtered, memberRole }: OrdersPanelProps) {
+  const empty = filtered
+    ? {
+        title: "Nic jsme nenašli",
+        body: "Zkus jiný výraz nebo zruš filtr stavu.",
+      }
+    : emptyCopy(memberRole);
 
   return (
     <div className="space-y-0">
       <span className={resultCount}>
-        {orders.length === 0
-          ? "Žádné objednávky"
-          : `${orders.length} ${orders.length === 1 ? "objednávka" : "objednávek"}`}
+        {ordersCountLabel(total)}
       </span>
 
       <div className={cn(surface, "mt-5 overflow-hidden")}>
@@ -128,8 +138,13 @@ export function OrdersPanel({ orders, memberRole }: OrdersPanelProps) {
                       {counterpartyLabel(order, memberRole)}
                     </p>
                     <p className="text-xs text-mist">
-                      {deadlineLine(order) ??
-                        `${orderStatusHint(order.status, order.viewerRole)}, ${formatOrderDate(order.createdAt)}`}
+                      <time dateTime={order.createdAt.toISOString()}>
+                        Objednáno {formatOrderDate(order.createdAt)}
+                      </time>
+                      {deadlineLine(order) ? <> · {deadlineLine(order)}</> : null}
+                    </p>
+                    <p className="text-xs text-zinc-300">
+                      {orderStatusHint(order.status, order.viewerRole)}
                     </p>
                     {order.brief ? (
                       <p className="line-clamp-2 text-sm text-zinc-300">{order.brief}</p>
@@ -146,9 +161,7 @@ export function OrdersPanel({ orders, memberRole }: OrdersPanelProps) {
                     ) : null}
                   </div>
                   <div className="flex shrink-0 flex-col items-start gap-1 md:items-end">
-                    <span className="rounded-sm border border-cyan/30 bg-cyan/10 px-2.5 py-1 text-xs font-medium text-cyan">
-                      {orderStatusLabel(order.status)}
-                    </span>
+                    <OrderStatusBadge status={order.status} />
                     <span className="text-sm font-semibold tabular-nums text-white">
                       {formatCzk(shownAmount(order))}
                     </span>

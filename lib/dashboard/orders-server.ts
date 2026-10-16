@@ -1,6 +1,6 @@
 import "server-only";
 
-import { desc, eq, inArray, or } from "drizzle-orm";
+import { and, count, desc, eq, ilike, inArray, or, sql, type SQL } from "drizzle-orm";
 
 import { payoutCzk } from "@/lib/orders/money";
 import {
@@ -54,20 +54,95 @@ function displayName(
   return profile?.displayName?.trim() || fallback;
 }
 
-export async function listOrdersForUser(
+export const ORDERS_PAGE_SIZE = 20;
+
+export type OrderListFilter = {
+  q?: string;
+  status?: MarketplaceOrderStatus;
+  page?: number;
+};
+
+export type OrderListPage = {
+  items: DashboardOrderListItem[];
+  total: number;
+  page: number;
+  pageCount: number;
+};
+
+function escapeLike(value: string) {
+  return value.replace(/[\\%_]/g, (ch) => `\\${ch}`);
+}
+
+/** Hledá v názvu, briefu a jménu protistrany; stránkuje na serveru. */
+export async function listOrdersPageForUser(
   userId: string,
-): Promise<DashboardOrderListItem[]> {
+  filter: OrderListFilter = {},
+): Promise<OrderListPage> {
+  const conditions: SQL[] = [
+    or(
+      eq(marketplaceOrder.creatorUserId, userId),
+      eq(marketplaceOrder.clientUserId, userId),
+    )!,
+  ];
+  if (filter.status) conditions.push(eq(marketplaceOrder.status, filter.status));
+  const q = filter.q?.trim();
+  if (q) {
+    const pattern = `%${escapeLike(q)}%`;
+    conditions.push(
+      or(
+        ilike(marketplaceOrder.title, pattern),
+        ilike(marketplaceOrder.brief, pattern),
+        sql`exists (select 1 from ${memberProfile} where ${memberProfile.userId} = case when ${marketplaceOrder.creatorUserId} = ${userId} then ${marketplaceOrder.clientUserId} else ${marketplaceOrder.creatorUserId} end and ${memberProfile.displayName} ilike ${pattern})`,
+      )!,
+    );
+  }
+  const where = and(...conditions);
+
+  const [{ total }] = await db
+    .select({ total: count() })
+    .from(marketplaceOrder)
+    .where(where);
+  const pageCount = Math.max(1, Math.ceil(total / ORDERS_PAGE_SIZE));
+  const page = Math.min(Math.max(1, Math.floor(filter.page ?? 1)), pageCount);
+
   const orders = await db
     .select()
     .from(marketplaceOrder)
+    .where(where)
+    .orderBy(desc(marketplaceOrder.createdAt), desc(marketplaceOrder.id))
+    .limit(ORDERS_PAGE_SIZE)
+    .offset((page - 1) * ORDERS_PAGE_SIZE);
+
+  return { items: await toListItems(orders, userId), total, page, pageCount };
+}
+
+/** Tvůrce má zaplacené zakázky, které čekají na výplatní účet. */
+export async function creatorHasPaidOrders(userId: string) {
+  const [row] = await db
+    .select({ id: marketplaceOrder.id })
+    .from(marketplaceOrder)
     .where(
-      or(
+      and(
         eq(marketplaceOrder.creatorUserId, userId),
-        eq(marketplaceOrder.clientUserId, userId),
+        inArray(marketplaceOrder.status, [
+          "awaiting_acceptance",
+          "in_progress",
+          "delivered",
+          "revision_requested",
+          "payout_pending",
+          "completed",
+          "disputed",
+        ]),
       ),
     )
-    .orderBy(desc(marketplaceOrder.createdAt));
+    .limit(1);
+  return Boolean(row);
+}
 
+async function toListItems(
+  orders: (typeof marketplaceOrder.$inferSelect)[],
+  userId: string,
+): Promise<DashboardOrderListItem[]> {
   if (orders.length === 0) return [];
 
   const profileIds = [

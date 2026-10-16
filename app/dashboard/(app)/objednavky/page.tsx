@@ -2,22 +2,36 @@ import Link from "next/link";
 
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { NewOrderForm } from "@/components/dashboard/new-order-form";
+import { OrdersFilters } from "@/components/dashboard/orders-filters";
+import { OrdersPagination } from "@/components/dashboard/orders-pagination";
 import { OrdersPanel } from "@/components/dashboard/orders-panel";
 import {
+  creatorHasPaidOrders,
   listOrderablePackages,
-  listOrdersForUser,
+  listOrdersPageForUser,
 } from "@/lib/dashboard/orders-server";
+import { marketplaceOrderStatusValues } from "@/lib/db/schema";
+import type { MarketplaceOrderStatus } from "@/lib/dashboard/marketplace-order";
 import { dashboardPath } from "@/lib/dashboard-routes";
 import { requireDashboard } from "@/lib/dashboard/require-dashboard";
 
 export default async function DashboardOrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ platba?: string }>;
+  searchParams: Promise<{ platba?: string; q?: string; stav?: string; strana?: string }>;
 }) {
   const { profile } = await requireDashboard(dashboardPath("objednavky"));
-  const { platba } = await searchParams;
-  const orders = await listOrdersForUser(profile.userId);
+  const { platba, q, stav, strana } = await searchParams;
+  const query = (q ?? "").trim().slice(0, 100);
+  const status = (marketplaceOrderStatusValues as readonly string[]).includes(stav ?? "")
+    ? (stav as MarketplaceOrderStatus)
+    : undefined;
+  const result = await listOrdersPageForUser(profile.userId, {
+    q: query,
+    status,
+    page: Number.parseInt(strana ?? "1", 10) || 1,
+  });
+  const filtered = Boolean(query || status);
   const packages =
     profile.role === "creator" ? [] : await listOrderablePackages();
   const notice =
@@ -29,12 +43,7 @@ export default async function DashboardOrdersPage({
   const heldForCreator =
     profile.role === "creator" &&
     profile.stripeTransfersStatus !== "active" &&
-    orders.some(
-      (order) =>
-        order.status !== "pending_payment" &&
-        order.status !== "refunded" &&
-        order.status !== "cancelled",
-    );
+    (await creatorHasPaidOrders(profile.userId));
 
   return (
     <DashboardShell
@@ -56,7 +65,19 @@ export default async function DashboardOrdersPage({
           <NewOrderForm packages={packages} />
         </div>
       )}
-      <OrdersPanel orders={orders} memberRole={profile.role} />
+      <OrdersFilters q={query} status={status} />
+      <OrdersPanel
+        orders={result.items}
+        total={result.total}
+        filtered={filtered}
+        memberRole={profile.role}
+      />
+      <OrdersPagination
+        page={result.page}
+        pageCount={result.pageCount}
+        q={query}
+        status={status}
+      />
     </DashboardShell>
   );
 }

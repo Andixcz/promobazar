@@ -6,7 +6,10 @@ import { ChevronDown } from "lucide-react";
 import {
   dropdownOption,
   dropdownPanel,
-  fieldSelectTrigger,
+  fieldControl,
+  fieldControlSizeDefault,
+  fieldControlSizeSm,
+  fieldSelectTriggerExtras,
 } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
@@ -20,9 +23,11 @@ type FieldSelectProps = {
   id?: string;
   options: readonly FieldSelectOption[] | FieldSelectOption[];
   defaultValue?: string | number;
+  value?: string | number;
   required?: boolean;
   disabled?: boolean;
   className?: string;
+  size?: "default" | "sm";
   "aria-invalid"?: boolean;
   onValueChange?: (value: string) => void;
 };
@@ -32,9 +37,11 @@ function FieldSelect({
   id,
   options,
   defaultValue,
+  value: valueProp,
   required,
   disabled,
   className,
+  size = "default",
   "aria-invalid": ariaInvalid,
   onValueChange,
 }: FieldSelectProps) {
@@ -46,6 +53,11 @@ function FieldSelect({
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(initial);
   const rootRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (valueProp === undefined) return;
+    setValue(String(valueProp));
+  }, [valueProp]);
 
   React.useEffect(() => {
     function onDocumentClick(event: MouseEvent) {
@@ -78,7 +90,11 @@ function FieldSelect({
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-invalid={ariaInvalid}
-        className={fieldSelectTrigger}
+        className={cn(
+          fieldControl,
+          size === "sm" ? fieldControlSizeSm : fieldControlSizeDefault,
+          fieldSelectTriggerExtras,
+        )}
         onClick={(event) => {
           event.stopPropagation();
           if (!disabled) setOpen((wasOpen) => !wasOpen);
