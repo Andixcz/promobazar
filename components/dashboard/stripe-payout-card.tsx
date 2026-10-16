@@ -29,7 +29,7 @@ export function StripePayoutCard({
   return (
     <ProfileSettingsSection title="Výplaty" description={COPY[status ?? "none"]}>
       {problem ? (
-        <p className="text-xs text-error-soft" role="alert">
+        <p className="text-sm text-destructive" role="alert">
           {problem}
         </p>
       ) : null}
@@ -42,7 +42,10 @@ export function StripePayoutCard({
             Otevřít výplaty
           </Link>
         ) : (
-          <Link href="/api/stripe/connect" className={buttonVariants({ size: "sm" })}>
+          <Link
+            href="/api/stripe/connect"
+            className={buttonVariants({ size: "sm", variant: "outline" })}
+          >
             {status ? "Dokončit ověření" : "Propojit výplaty"}
           </Link>
         )}

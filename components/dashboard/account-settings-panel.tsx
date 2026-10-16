@@ -8,7 +8,6 @@ import { ProfileSettingsSection } from "@/components/dashboard/profile-settings-
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { AUTH_FORGOT_PASSWORD_PATH } from "@/lib/auth-routes";
 import { dashboardPath } from "@/lib/dashboard-routes";
@@ -163,11 +162,11 @@ export function AccountSettingsPanel({
         title="Přihlášení"
         description="Způsoby, jak se přihlašuješ k účtu."
       >
-        <ul className="flex flex-wrap gap-2 text-sm text-mist">
+        <ul className="flex flex-wrap gap-2">
           {providers.map((id) => (
             <li
               key={id}
-              className="rounded-sm border border-white/[0.12] bg-white/[0.04] px-2.5 py-1 text-white/90"
+              className="rounded-full bg-white/[0.06] px-2.5 py-0.5 text-xs text-mist"
             >
               {providerLabel(id)}
             </li>
@@ -262,9 +261,9 @@ export function AccountSettingsPanel({
                 onChange={(e) => setRevokeOtherSessions(e.target.checked)}
                 className="size-4 rounded border-white/20 bg-panel accent-cyan"
               />
-              <Label htmlFor="account-revoke-sessions" className="text-sm font-normal text-mist">
+              <label htmlFor="account-revoke-sessions" className="text-sm text-mist">
                 Odhlásit ostatní zařízení
-              </Label>
+              </label>
             </div>
             {passwordError ? (
               <p className="text-sm text-destructive" role="alert">{passwordError}</p>

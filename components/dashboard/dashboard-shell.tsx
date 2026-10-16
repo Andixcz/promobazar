@@ -15,7 +15,7 @@ export function DashboardShell({
   children,
 }: DashboardShellProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h1 className="font-display text-xl font-semibold tracking-tight text-white md:text-2xl">
