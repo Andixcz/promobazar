@@ -1,28 +1,25 @@
-export const marketplaceOrderStatusValues = [
-  "pending_payment",
-  "paid",
-  "in_progress",
-  "delivered",
-  "completed",
-  "cancelled",
-  "disputed",
-] as const;
+import type { MarketplaceOrderStatus } from "@/lib/db/schema";
 
-export type MarketplaceOrderStatus =
-  (typeof marketplaceOrderStatusValues)[number];
+export type { MarketplaceOrderStatus };
 
 export function orderStatusLabel(status: MarketplaceOrderStatus): string {
   switch (status) {
     case "pending_payment":
       return "Čeká na platbu";
-    case "paid":
-      return "Zaplaceno";
+    case "awaiting_acceptance":
+      return "Čeká na přijetí";
     case "in_progress":
-      return "Probíhá";
+      return "Tvorba";
     case "delivered":
       return "Ke schválení";
+    case "revision_requested":
+      return "Úprava";
+    case "payout_pending":
+      return "K výplatě";
     case "completed":
-      return "Dokončeno";
+      return "Vyplaceno";
+    case "refunded":
+      return "Vráceno";
     case "cancelled":
       return "Zrušeno";
     case "disputed":
@@ -30,31 +27,42 @@ export function orderStatusLabel(status: MarketplaceOrderStatus): string {
   }
 }
 
-export function orderStatusHint(status: MarketplaceOrderStatus): string {
+export function orderStatusHint(
+  status: MarketplaceOrderStatus,
+  viewerRole: "creator" | "client",
+): string {
   switch (status) {
     case "pending_payment":
-      return "Dokonči platbu, aby tvůrce mohl začít.";
-    case "paid":
-      return "Platba proběhla, čeká se na zahájení práce.";
+      return viewerRole === "client" ? "Čeká na tvoji platbu." : "Čeká na platbu zákazníka.";
+    case "awaiting_acceptance":
+      return viewerRole === "creator" ? "Přijmi, nebo odmítni." : "Čeká se na přijetí.";
     case "in_progress":
       return "Tvůrce na zakázce pracuje.";
     case "delivered":
-      return "Obsah je hotový. Zkontroluj ho a schval.";
+      return viewerRole === "client" ? "Zkontroluj výstup." : "Čeká na schválení.";
+    case "revision_requested":
+      return viewerRole === "creator" ? "Pošli upravený odkaz." : "Čeká se na úpravu.";
+    case "payout_pending":
+      return "Výplata se připravuje.";
     case "completed":
-      return "Spolupráce je uzavřená.";
+      return "Hotovo.";
+    case "refunded":
+      return "Platba se vrátila.";
     case "cancelled":
-      return "Objednávka byla zrušena.";
+      return "Objednávka je zrušená.";
     case "disputed":
-      return "Řešíme reklamaci podle pravidel tržiště.";
+      return "Řeší se reklamace.";
   }
 }
 
 export function isActiveOrderStatus(status: MarketplaceOrderStatus): boolean {
   return (
     status === "pending_payment" ||
-    status === "paid" ||
+    status === "awaiting_acceptance" ||
     status === "in_progress" ||
     status === "delivered" ||
+    status === "revision_requested" ||
+    status === "payout_pending" ||
     status === "disputed"
   );
 }

@@ -1,5 +1,6 @@
 import { Receipt } from "lucide-react";
 
+import { OrderControls } from "@/components/dashboard/order-controls";
 import type { DashboardOrderListItem } from "@/lib/dashboard/orders-server";
 import {
   orderStatusHint,
@@ -17,8 +18,39 @@ function formatOrderDate(value: Date) {
   });
 }
 
+function formatDeadline(value: Date) {
+  return value.toLocaleString("cs-CZ", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 function formatCzk(amount: number) {
   return `${amount.toLocaleString("cs-CZ")} Kč`;
+}
+
+function deadlineLine(order: DashboardOrderListItem) {
+  if (order.status === "awaiting_acceptance" && order.acceptBy) {
+    return `Přijetí do ${formatDeadline(order.acceptBy)}`;
+  }
+  if (order.status === "in_progress" && order.deliveryDueAt) {
+    return `Doručit do ${formatDeadline(order.deliveryDueAt)}`;
+  }
+  if (order.status === "delivered" && order.reviewDueAt) {
+    return `Schválit do ${formatDeadline(order.reviewDueAt)}`;
+  }
+  return null;
+}
+
+function shownAmount(order: DashboardOrderListItem) {
+  const paid =
+    order.status !== "pending_payment" &&
+    order.status !== "refunded" &&
+    order.status !== "cancelled";
+  if (order.viewerRole === "creator" && paid) return order.payoutCzk;
+  return order.amountCzk;
 }
 
 function counterpartyLabel(
@@ -86,34 +118,46 @@ export function OrdersPanel({ orders, memberRole }: OrdersPanelProps) {
         ) : (
           <ul className="divide-y divide-white/[0.08]">
             {orders.map((order) => (
-              <li
-                key={order.id}
-                className="flex flex-col gap-3 px-5 py-4 md:flex-row md:items-start md:justify-between md:px-6"
-              >
-                <div className="min-w-0 space-y-1">
-                  <p className="font-display text-base font-semibold text-white">
-                    {order.title}
-                  </p>
-                  <p className="text-sm text-mist">
-                    {counterpartyLabel(order, memberRole)}
-                  </p>
-                  <p className="text-xs text-mist">
-                    Založeno {formatOrderDate(order.createdAt)}
-                  </p>
-                  <p className="text-sm leading-relaxed text-zinc-300">
-                    {orderStatusHint(order.status)}
-                  </p>
+              <li key={order.id} className="space-y-3 px-5 py-4 md:px-6">
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div className="min-w-0 space-y-1">
+                    <p className="font-display text-base font-semibold text-white">
+                      {order.title}
+                    </p>
+                    <p className="text-sm text-mist">
+                      {counterpartyLabel(order, memberRole)}
+                    </p>
+                    <p className="text-xs text-mist">
+                      {deadlineLine(order) ??
+                        `${orderStatusHint(order.status, order.viewerRole)}, ${formatOrderDate(order.createdAt)}`}
+                    </p>
+                    {order.brief ? (
+                      <p className="line-clamp-2 text-sm text-zinc-300">{order.brief}</p>
+                    ) : null}
+                    {order.deliverableUrl && order.status !== "in_progress" ? (
+                      <a
+                        href={order.deliverableUrl}
+                        className="text-sm text-cyan underline-offset-2 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Výstup
+                      </a>
+                    ) : null}
+                  </div>
+                  <div className="flex shrink-0 flex-col items-start gap-1 md:items-end">
+                    <span className="rounded-sm border border-cyan/30 bg-cyan/10 px-2.5 py-1 text-xs font-medium text-cyan">
+                      {orderStatusLabel(order.status)}
+                    </span>
+                    <span className="text-sm font-semibold tabular-nums text-white">
+                      {formatCzk(shownAmount(order))}
+                    </span>
+                    {order.viewerRole === "creator" && shownAmount(order) !== order.amountCzk ? (
+                      <span className="text-xs text-mist">po provizi</span>
+                    ) : null}
+                  </div>
                 </div>
-                <div className="flex shrink-0 flex-col items-start gap-1 md:items-end">
-                  <span
-                    className="rounded-sm border border-cyan/30 bg-cyan/10 px-2.5 py-1 text-xs font-medium text-cyan"
-                  >
-                    {orderStatusLabel(order.status)}
-                  </span>
-                  <span className="text-sm font-semibold tabular-nums text-white">
-                    {formatCzk(order.amountCzk)}
-                  </span>
-                </div>
+                <OrderControls order={order} />
               </li>
             ))}
           </ul>

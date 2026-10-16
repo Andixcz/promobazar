@@ -2,17 +2,21 @@ import "server-only";
 
 import { desc, eq, inArray, or } from "drizzle-orm";
 
+import { payoutCzk } from "@/lib/orders/money";
 import {
   isActiveOrderStatus,
   type MarketplaceOrderStatus,
 } from "@/lib/dashboard/marketplace-order";
 import { db } from "@/lib/db";
-import { marketplaceOrder, memberProfile } from "@/lib/db/schema";
+import { creatorPackage, marketplaceOrder, memberProfile } from "@/lib/db/schema";
 
 export type DashboardOrderListItem = {
   id: string;
   title: string;
+  brief: string;
   amountCzk: number;
+  payoutCzk: number;
+  platformFeeBps: number;
   status: MarketplaceOrderStatus;
   createdAt: Date;
   creatorUserId: string;
@@ -20,6 +24,20 @@ export type DashboardOrderListItem = {
   creatorName: string;
   clientName: string;
   viewerRole: "creator" | "client";
+  deliverableUrl: string | null;
+  acceptBy: Date | null;
+  deliveryDueAt: Date | null;
+  reviewDueAt: Date | null;
+  revisionCount: number;
+  revisionsAllowed: number;
+};
+
+export type OrderablePackage = {
+  id: string;
+  name: string;
+  priceCzk: number;
+  deliveryDays: number;
+  creatorName: string;
 };
 
 export type DashboardOrderStats = {
@@ -71,7 +89,10 @@ export async function listOrdersForUser(
     return {
       id: order.id,
       title: order.title,
+      brief: order.brief,
       amountCzk: order.amountCzk,
+      payoutCzk: payoutCzk(order.amountCzk, order.platformFeeBps),
+      platformFeeBps: order.platformFeeBps,
       status: order.status,
       createdAt: order.createdAt,
       creatorUserId: order.creatorUserId,
@@ -79,6 +100,12 @@ export async function listOrdersForUser(
       creatorName: displayName(byId.get(order.creatorUserId), "Tvůrce"),
       clientName: displayName(byId.get(order.clientUserId), "Zákazník"),
       viewerRole: asCreator ? "creator" : "client",
+      deliverableUrl: order.deliverableUrl,
+      acceptBy: order.acceptBy,
+      deliveryDueAt: order.deliveryDueAt,
+      reviewDueAt: order.reviewDueAt,
+      revisionCount: order.revisionCount,
+      revisionsAllowed: order.revisionsAllowed,
     };
   });
 }
@@ -90,6 +117,7 @@ export async function getOrderStatsForUser(
     .select({
       status: marketplaceOrder.status,
       amountCzk: marketplaceOrder.amountCzk,
+      platformFeeBps: marketplaceOrder.platformFeeBps,
       creatorUserId: marketplaceOrder.creatorUserId,
       clientUserId: marketplaceOrder.clientUserId,
     })
@@ -111,7 +139,7 @@ export async function getOrderStatsForUser(
     if (order.status === "completed") {
       completed += 1;
       if (order.creatorUserId === userId) {
-        totalEarnedCzk += order.amountCzk;
+        totalEarnedCzk += payoutCzk(order.amountCzk, order.platformFeeBps);
       }
       if (order.clientUserId === userId) {
         totalSpentCzk += order.amountCzk;
@@ -120,4 +148,26 @@ export async function getOrderStatsForUser(
   }
 
   return { active, completed, totalSpentCzk, totalEarnedCzk };
+}
+
+export async function listOrderablePackages(): Promise<OrderablePackage[]> {
+  const rows = await db
+    .select({
+      id: creatorPackage.id,
+      name: creatorPackage.name,
+      priceCzk: creatorPackage.priceCzk,
+      deliveryDays: creatorPackage.deliveryDays,
+      creatorName: memberProfile.displayName,
+    })
+    .from(creatorPackage)
+    .innerJoin(memberProfile, eq(creatorPackage.userId, memberProfile.userId))
+    .orderBy(desc(creatorPackage.createdAt));
+
+  return rows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    priceCzk: row.priceCzk,
+    deliveryDays: row.deliveryDays,
+    creatorName: row.creatorName?.trim() || "Tvůrce",
+  }));
 }
