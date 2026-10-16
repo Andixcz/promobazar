@@ -15,6 +15,13 @@
       "when": 1791195430911,
       "tag": "0001_loving_squadron_supreme",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792169199477,
+      "tag": "0002_strong_morg",
+      "breakpoints": true
     }
   ]
 }

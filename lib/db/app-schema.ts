@@ -35,6 +35,12 @@ export const memberProfile = pgTable(
     socialYoutube: text("social_youtube"),
     portfolioUrls: jsonb("portfolio_urls").$type<string[]>().default([]).notNull(),
     profileViews: integer("profile_views").default(0).notNull(),
+    /** Účet příjemce výplat (Accounts v2, recipient). Neukládá tajemství. */
+    stripeAccountId: text("stripe_account_id").unique(),
+    /** `active` = může přijmout převod z úschovy. */
+    stripeTransfersStatus: text("stripe_transfers_status").$type<
+      "pending" | "active" | "restricted"
+    >(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -116,10 +122,13 @@ export const brandJobPost = pgTable(
 
 export const marketplaceOrderStatusValues = [
   "pending_payment",
-  "paid",
+  "awaiting_acceptance",
   "in_progress",
   "delivered",
+  "revision_requested",
+  "payout_pending",
   "completed",
+  "refunded",
   "cancelled",
   "disputed",
 ] as const;
@@ -138,7 +147,14 @@ export const marketplaceOrder = pgTable(
       .notNull()
       .references(() => memberProfile.userId, { onDelete: "cascade" }),
     title: text("title").notNull(),
+    brief: text("brief").default("").notNull(),
     amountCzk: integer("amount_czk").notNull(),
+    /** Provize platformy v setinách procenta. 1200 = 12 %. */
+    platformFeeBps: integer("platform_fee_bps").default(1200).notNull(),
+    deliveryDays: integer("delivery_days").default(7).notNull(),
+    revisionsAllowed: integer("revisions_allowed").default(1).notNull(),
+    revisionCount: integer("revision_count").default(0).notNull(),
+    deliverableUrl: text("deliverable_url"),
     status: text("status")
       .notNull()
       .default("pending_payment")
@@ -149,6 +165,16 @@ export const marketplaceOrder = pgTable(
     jobPostId: text("job_post_id").references(() => brandJobPost.id, {
       onDelete: "set null",
     }),
+    stripeCheckoutSessionId: text("stripe_checkout_session_id"),
+    stripePaymentIntentId: text("stripe_payment_intent_id"),
+    stripeChargeId: text("stripe_charge_id"),
+    stripeTransferId: text("stripe_transfer_id"),
+    acceptBy: timestamp("accept_by"),
+    deliveryDueAt: timestamp("delivery_due_at"),
+    reviewDueAt: timestamp("review_due_at"),
+    acceptedAt: timestamp("accepted_at"),
+    deliveredAt: timestamp("delivered_at"),
+    completedAt: timestamp("completed_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
