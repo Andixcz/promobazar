@@ -9,7 +9,10 @@ import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
 import { SocialSignInButtons } from "@/components/auth/social-sign-in-buttons";
 import { authClient } from "@/lib/auth-client";
-import { AUTH_REGISTER_PATH } from "@/lib/auth-routes";
+import {
+  AUTH_FORGOT_PASSWORD_PATH,
+  AUTH_REGISTER_PATH,
+} from "@/lib/auth-routes";
 import { LANDING_FIRMS_PATH } from "@/lib/landing-routes";
 
 export function SignInForm() {
@@ -53,14 +56,24 @@ export function SignInForm() {
         />
       </FormField>
       <FormField label="Heslo" htmlFor="sign-in-password">
-        <Input
-          id="sign-in-password"
-          type="password"
-          autoComplete="current-password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="space-y-2">
+          <Input
+            id="sign-in-password"
+            type="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <p className="text-right">
+            <Link
+              href={AUTH_FORGOT_PASSWORD_PATH}
+              className="text-xs font-medium text-mist hover:text-cyan"
+            >
+              Zapomenuté heslo?
+            </Link>
+          </p>
+        </div>
       </FormField>
       {error ? (
         <p className="text-sm text-destructive" role="alert">{error}</p>
