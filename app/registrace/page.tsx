@@ -6,7 +6,7 @@ import { SignUpForm } from "@/components/auth/sign-up-form";
 import { LandingShell } from "@/components/landing/landing-shell";
 
 export const metadata: Metadata = {
-  title: "Registrace — promobazar.cz",
+  title: "Registrace | promobazar.cz",
   description: "Vytvoř si účet na promobazar.cz",
 };
 
@@ -15,7 +15,7 @@ export default function RegisterPage() {
     <LandingShell>
       <AuthPageShell
         title="Registrace"
-        description="Založ účet a propoj profil — registrace tvůrce je zdarma."
+        description="Založ si účet a nastav profil. Registrace tvůrce je zdarma."
       >
         <Suspense fallback={<p className="text-sm text-mist">Načítám formulář…</p>}>
           <SignUpForm />

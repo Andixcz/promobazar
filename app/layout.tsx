@@ -28,7 +28,7 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title:
-    "promobazar.cz — Tržiště influencerů a UGC tvůrců. Vyber si promo, nastav rozpočet, získej prodeje.",
+    "Tržiště influencerů a UGC tvůrců | promobazar.cz",
   description:
     "Tržiště influencerů a UGC tvůrců pro firmy a tvůrce. Vyber promo, nastav rozpočet a získej prodeje.",
 };

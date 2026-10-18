@@ -6,7 +6,7 @@ import { SignInForm } from "@/components/auth/sign-in-form";
 import { LandingShell } from "@/components/landing/landing-shell";
 
 export const metadata: Metadata = {
-  title: "Přihlášení — promobazar.cz",
+  title: "Přihlášení | promobazar.cz",
   description: "Přihlášení do účtu promobazar.cz",
 };
 

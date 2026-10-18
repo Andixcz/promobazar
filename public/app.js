@@ -336,7 +336,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   function renderConciergeForm(){
     modalContent.innerHTML =
       '<h3 class="font-display font-bold text-xl mb-1">Nech výběr na nás</h3>' +
-      '<p class="text-zinc-200 text-sm mb-6">Popiš, co potřebuješ propagovat — do 24 hodin ti návrh 2–3 tvůrců z balíčku Growth nebo Scale pošleme na <span class="text-white">' + currentUser.email + '</span>.</p>' +
+      '<p class="text-zinc-200 text-sm mb-6">Popiš, co potřebuješ propagovat. Do 24 hodin ti pošleme návrh 2–3 tvůrců z balíčku Growth nebo Scale na <span class="text-white">' + currentUser.email + '</span>.</p>' +
       '<form onsubmit="submitConcierge(event)" class="space-y-4">' +
         '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Přibližný rozpočet</label><input type="text" placeholder="např. 15 000 Kč / měsíc" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required></div>' +
         '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Co potřebuješ propagovat?</label><textarea rows="3" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none" placeholder="Produkt, cílovka, preferovaná platforma..." required></textarea></div>' +
@@ -445,7 +445,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   function authStep1Markup(){
     return '' +
       '<h3 class="font-display font-bold text-xl mb-1">Přihlášení / Registrace</h3>' +
-      '<p class="text-zinc-200 text-sm mb-6">Bez hesla — stačí e-mail a ověřovací kód, nebo se přihlas přes Google.</p>' +
+      '<p class="text-zinc-200 text-sm mb-6">Bez hesla stačí e-mail a ověřovací kód. Nebo se přihlas přes Google.</p>' +
       '<div class="mb-6"><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-2">Jsem</label>' +
         '<div class="flex gap-2"><button type="button" id="role-creator" onclick="setAuthRole(\'creator\')" class="transition-all duration-200 [&.selected]:border-transparent [&.selected]:bg-gradient-to-r [&.selected]:from-violet [&.selected]:via-magenta [&.selected]:to-cyan [&.selected]:text-white ' + (authRole==='creator'?'selected':'') + ' bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] flex-1 py-2.5 rounded-xl text-sm font-semibold">Tvůrce</button>' +
         '<button type="button" id="role-brand" onclick="setAuthRole(\'brand\')" class="transition-all duration-200 [&.selected]:border-transparent [&.selected]:bg-gradient-to-r [&.selected]:from-violet [&.selected]:via-magenta [&.selected]:to-cyan [&.selected]:text-white ' + (authRole==='brand'?'selected':'') + ' bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] flex-1 py-2.5 rounded-xl text-sm font-semibold">Značka / E-shop</button></div></div>' +
@@ -860,7 +860,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
         (currentUser.role === 'creator' ?
           '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-2">Portfolio · ukázky práce (odkazy na TikTok / Reels / YouTube Shorts)</label>' +
           '<div class="space-y-2.5">' +
-            [0,1,2].map(idx=>'<input id="settings-portfolio-' + idx + '" type="url" value="' + ((profile.portfolio && profile.portfolio[idx]) || '') + '" placeholder="Ukázka ' + (idx+1) + ' — https://www.tiktok.com/@ucet/video/..." class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]">').join('') +
+            [0,1,2].map(idx=>'<input id="settings-portfolio-' + idx + '" type="url" value="' + ((profile.portfolio && profile.portfolio[idx]) || '') + '" placeholder="Ukázka ' + (idx+1) + ': https://www.tiktok.com/@ucet/video/..." class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]">').join('') +
           '</div>' +
           '<p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1.5">Tyto 3 odkazy se zobrazí jako Portfolio v tvém veřejném profilu na tržišti.</p></div>'
         : '') +
@@ -1243,11 +1243,11 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   ============================================================== */
   const CHECKOUT_PLANS = {
     growth: {
-      title: 'Growth — měsíční předplatné', amount: 2990, requiredRole: 'brand',
+      title: 'Growth, měsíční předplatné', amount: 2990, requiredRole: 'brand',
       features: ['Neomezené souběžné objednávky', 'Prioritní odpovědi tvůrců', 'Poplatek jen 7 % z objednávky', 'Reporting dosahu, prokliků a export dat']
     },
     creatorPro: {
-      title: 'Creator PRO — měsíční předplatné', amount: 99, requiredRole: 'creator',
+      title: 'Creator PRO, měsíční předplatné', amount: 99, requiredRole: 'creator',
       features: ['Neomezený počet inzerátů a nabídek', 'Topování na tržišti', 'Odznak „PRO Tvůrce"', 'Přehled zobrazení profilu', 'Prioritní notifikace o poptávkách']
     }
   };
@@ -1286,14 +1286,14 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     brandPlan = 'growth';
     localStorage.setItem('pb_brand_plan', 'growth');
     notifyBrandPlanChange();
-    modalContent.innerHTML = successBlock('Platba proběhla — Growth aktivní! 🎉', 'Stav účtu: SUBSCRIBED. Ozveme se s nastavením účtu podle tvého rozpočtu.');
+    modalContent.innerHTML = successBlock('Growth je aktivní', 'Stav účtu: SUBSCRIBED. Ozveme se s nastavením účtu podle tvého rozpočtu.');
   }
 
   function openCheckout(opts){
     window.__checkoutOnSuccess = opts.onSuccess;
     modalContent.innerHTML =
       '<h3 class="font-display font-bold text-xl mb-1">Dokončit platbu</h3>' +
-      '<p class="text-zinc-200 text-sm mb-6">Bezpečná platební brána — zatím příprava/simulace pro Stripe a GoPay.</p>' +
+      '<p class="text-zinc-200 text-sm mb-6">Bezpečná platební brána. Zatím jde o přípravu pro Stripe a GoPay.</p>' +
       '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-5 mb-4">' +
         '<div class="flex items-center justify-between"><span class="text-sm text-white/85">' + opts.title + '</span><span class="font-display font-bold text-lg">' + opts.amount.toLocaleString('cs-CZ') + ' Kč</span></div>' +
         '<ul class="text-xs text-mist space-y-1.5 mt-3">' + opts.features.map(f=>'<li>✓ ' + f + '</li>').join('') + '</ul>' +
@@ -1306,7 +1306,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
         '</div>' +
       '</div>' +
       '<button id="pay-btn" onclick="simulatePayment()" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Zaplatit ' + opts.amount.toLocaleString('cs-CZ') + ' Kč</button>' +
-      '<p class="text-center text-[11px] text-zinc-200 font-mono text-[11px] tracking-wide mt-3">🔒 Připraveno pro Stripe Checkout / GoPay — platba zatím není propojená s reálnou bránou</p>';
+      '<p class="text-center text-[11px] text-zinc-200 font-mono text-[11px] tracking-wide mt-3">🔒 Připraveno pro Stripe Checkout / GoPay. Platba zatím není propojená s reálnou bránou.</p>';
     showModal();
   }
   function selectPaymentMethod(btn){
@@ -1361,7 +1361,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
         '<div class="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">⭐</div>' +
         '<h3 class="font-display font-bold text-xl mb-2">Dosáhl/a jsi limitu bezplatného účtu</h3>' +
         '<p class="text-zinc-200 text-sm max-w-sm mx-auto mb-6">Bezplatný účet umožňuje maximálně ' + FREE_PACKAGE_LIMIT + ' aktivní inzeráty/balíčky. Přejdi na <span class="text-white font-semibold">Creator PRO</span> za 99 Kč/měsíc a měj jich neomezeně.</p>' +
-        '<button onclick="handleCheckout(\'creatorPro\')" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5">Upgradovat na Creator PRO — 99 Kč/měsíc</button>' +
+        '<button onclick="handleCheckout(\'creatorPro\')" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5">Upgradovat na Creator PRO za 99 Kč/měsíc</button>' +
         '<button onclick="closeModal()" class="block mx-auto mt-4 text-xs text-mist hover:text-white underline">Možná později</button>' +
       '</div>';
     showModal();
@@ -1377,7 +1377,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     }
     renderCreatorProCta();
     renderProfileViewsStat();
-    modalContent.innerHTML = successBlock('Platba proběhla — Creator PRO aktivní! 🎉', 'Stav účtu: SUBSCRIBED. Teď máš neomezený počet inzerátů, topování na tržišti, odznak "PRO Tvůrce" a přehled zobrazení profilu.');
+    modalContent.innerHTML = successBlock('Creator PRO je aktivní', 'Stav účtu: SUBSCRIBED. Teď máš neomezený počet inzerátů, topování na tržišti, odznak "PRO Tvůrce" a přehled zobrazení profilu.');
   }
   function renderProfileViewsStat(){
     const card = document.getElementById('profile-views-card');
@@ -1411,7 +1411,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     const list = document.getElementById('my-packages-list');
     if(!list) return;
     if(myCreatorIndex === null || !creators[myCreatorIndex]){
-      list.innerHTML = '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-6 text-center text-mist text-sm">Nejdřív si v sekci "Propoj účty a nastav si profil" vygeneruj profil do tržiště — pak tu uvidíš a upravíš jeho balíčky.</div>';
+      list.innerHTML = '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-6 text-center text-mist text-sm">Nejdřív si v sekci „Propoj účty a nastav si profil“ vygeneruj profil do tržiště. Pak tu uvidíš a upravíš jeho balíčky.</div>';
       return;
     }
     const pkgs = creators[myCreatorIndex].packages;
@@ -1588,7 +1588,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       const conv = conversations.find(c=>c.id===convId);
       if(!conv) return;
       if(!isConversationParticipant(conv)){
-        modalContent.innerHTML = successBlock('Nemáš přístup k téhle konverzaci', 'Tahle konverzace patří jiné značce nebo tvůrci — otevřít ji může jen firma, která poptávku zadala, a tvůrce, který na ni odpověděl.');
+        modalContent.innerHTML = successBlock('Nemáš přístup k téhle konverzaci', 'Tahle konverzace patří jiné značce nebo tvůrci. Otevřít ji může jen firma, která poptávku zadala, a tvůrce, který na ni odpověděl.');
         showModal();
         return;
       }
@@ -1629,7 +1629,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   function renderChatMessages(conv, viewerRole){
     const wrap = document.getElementById('chat-messages');
     if(!wrap) return;
-    if(conv.messages.length === 0){ wrap.innerHTML = '<p class="text-center text-zinc-200 text-xs py-6">Zatím žádné zprávy — napiš první.</p>'; return; }
+    if(conv.messages.length === 0){ wrap.innerHTML = '<p class="text-center text-zinc-200 text-xs py-6">Zatím žádné zprávy. Napiš první.</p>'; return; }
     wrap.innerHTML = conv.messages.map(m=>{
       if(m.type === 'system'){
         return '<div class="text-center"><span class="font-mono text-[11px] tracking-wide text-[10px] px-3 py-1.5 rounded-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] text-mist inline-block">' + m.text + '</span></div>';
@@ -1821,7 +1821,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   function renderWidgetMessages(conv){
     const wrap = document.getElementById('widget-chat-messages');
     if(!wrap) return;
-    if(conv.messages.length === 0){ wrap.innerHTML = '<p class="text-center text-zinc-200 text-xs py-6">Zatím žádné zprávy — napiš první.</p>'; return; }
+    if(conv.messages.length === 0){ wrap.innerHTML = '<p class="text-center text-zinc-200 text-xs py-6">Zatím žádné zprávy. Napiš první.</p>'; return; }
     wrap.innerHTML = conv.messages.map(m=>{
       if(m.type === 'system'){
         return '<div class="text-center"><span class="font-mono text-[11px] tracking-wide text-[9px] px-2.5 py-1 rounded-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] text-mist inline-block">' + m.text + '</span></div>';

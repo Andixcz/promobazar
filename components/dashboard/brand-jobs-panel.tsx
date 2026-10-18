@@ -87,7 +87,7 @@ export function BrandJobsPanel({
               Zatím nemáš žádnou poptávku
             </p>
             <p className="mt-2 max-w-sm text-sm leading-relaxed text-mist">
-              Publikuj první zakázku — tvůrci ji najdou v tržišti na hlavní stránce.
+              Publikuj první zakázku. Tvůrci ji najdou v tržišti na hlavní stránce.
             </p>
             <Button
               type="button"

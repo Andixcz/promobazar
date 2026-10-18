@@ -350,7 +350,7 @@ export function CreatorsView() {
           <div className="creator-gate-unlocked hidden">
           <div className={cn(surface, "p-7 md:p-10 mt-12 grid lg:grid-cols-2 gap-10")}>
             <div>
-              <span className={eyebrow}>Krok 1 — sociální sítě</span>
+              <span className={eyebrow}>Krok 1: sociální sítě</span>
               <h3 className="font-display font-semibold text-xl mt-2 mb-5">Zadej své účty</h3>
               <div className="space-y-3">
                 <FormField
@@ -387,7 +387,7 @@ export function CreatorsView() {
                   <Input id="handle-youtube" type="text" placeholder="@tvuj_kanal" />
                 </FormField>
               </div>
-              <p className="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-2.5">Vyplň jen sítě, které používáš — zobrazí se jako odkazy na tvém profilu.</p>
+              <p className="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-2.5">Vyplň jen sítě, které používáš. Na profilu z nich budou odkazy.</p>
       
               <div className="mt-7">
                 <span className="font-body text-[11px] font-medium uppercase tracking-wide text-cyan">Statistiky (podle sebe)</span>
@@ -406,7 +406,7 @@ export function CreatorsView() {
             </div>
       
             <div>
-              <span className="font-body text-[11px] font-medium uppercase tracking-wide text-cyan">Krok 2 — jméno, avatar a obor</span>
+              <span className="font-body text-[11px] font-medium uppercase tracking-wide text-cyan">Krok 2: jméno, avatar a obor</span>
               <h3 className="font-display font-semibold text-xl mt-2 mb-5">Doladit profil</h3>
       
               <div className="flex items-center gap-4 mb-6">
@@ -443,7 +443,7 @@ export function CreatorsView() {
       
           
           <div className="border border-white/[0.09] bg-panel rounded-md p-7 md:p-10 mt-8">
-            <span className="font-body text-[11px] font-medium uppercase tracking-wide text-cyan">Krok 3 — balíčky tvého profilu</span>
+            <span className="font-body text-[11px] font-medium uppercase tracking-wide text-cyan">Krok 3: balíčky tvého profilu</span>
             <h3 className="font-display font-semibold text-xl mt-2 mb-1">Přidej libovolný počet balíčků</h3>
             <p className="text-zinc-200 text-sm mb-7">Každý balíček se v katalogu zobrazí jako samostatná záložka s vlastní cenou, dobou doručení a licencí.</p>
       

@@ -87,7 +87,7 @@ export function CreatorPackagesPanel({
               Zatím nemáš žádné balíčky
             </p>
             <p className="mt-2 max-w-sm text-sm leading-relaxed text-mist">
-              Přidej nabídku s cenou a formátem — značky ji uvidí na tvém profilu v tržišti.
+              Přidej nabídku s cenou a formátem. Značky ji uvidí na tvém profilu v tržišti.
             </p>
             <Link
               href={dashboardPackageNewPath()}

@@ -5,7 +5,7 @@ import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 import { LandingShell } from "@/components/landing/landing-shell";
 
 export const metadata: Metadata = {
-  title: "Zapomenuté heslo — promobazar.cz",
+  title: "Zapomenuté heslo | promobazar.cz",
   description: "Obnovení hesla k účtu promobazar.cz",
 };
 
