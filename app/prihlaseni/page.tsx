@@ -15,7 +15,7 @@ export default function LoginPage() {
     <LandingShell>
       <AuthPageShell
         title="Přihlášení"
-        description="Přihlas se e-mailem nebo přes Google / Discord (pokud jsou v env zapnuté)."
+        description="Zadej e-mail a heslo."
       >
         <Suspense fallback={<p className="text-sm text-mist">Načítám formulář…</p>}>
           <SignInForm />
