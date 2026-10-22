@@ -101,7 +101,7 @@ function FieldSelect({
         }}
       >
         <span className="dd-value truncate">
-          {selected?.label ?? "—"}
+          {selected?.label ?? "Vyber"}
         </span>
         <ChevronDown
           className={cn(

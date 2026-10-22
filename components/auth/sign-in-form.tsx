@@ -14,8 +14,13 @@ import {
   AUTH_REGISTER_PATH,
 } from "@/lib/auth-routes";
 import { LANDING_FIRMS_PATH } from "@/lib/landing-routes";
+import type { SocialAuthProviderId } from "@/lib/auth-social";
 
-export function SignInForm() {
+type SignInFormProps = {
+  socialProviders?: SocialAuthProviderId[];
+};
+
+export function SignInForm({ socialProviders }: SignInFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? LANDING_FIRMS_PATH;
@@ -83,13 +88,14 @@ export function SignInForm() {
       </Button>
       <SocialSignInButtons
         callbackUrl={callbackUrl}
+        providers={socialProviders}
         disabled={pending}
         onError={(message) => setError(message || null)}
       />
       <p className="text-center text-sm text-mist">
         Nemáš účet?{" "}
         <Link
-          href={AUTH_REGISTER_PATH}
+          href={`${AUTH_REGISTER_PATH}?callbackUrl=${encodeURIComponent(callbackUrl)}`}
           className="text-cyan hover:text-cyan/85 font-medium"
         >
           Registrace

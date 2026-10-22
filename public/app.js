@@ -289,7 +289,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
         '<div><h3 class="font-display font-bold text-xl">' + c.name + '</h3><p class="text-zinc-200 text-sm">' + c.categoryLabel + ' · publikum ' + c.audienceAge + '</p></div></div>' +
       socialHandleLinksHtml(c) +
       '<div class="grid grid-cols-3 gap-3 mb-6"><div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 text-center"><p class="font-display font-bold text-lg">' + c.followers + '</p><p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1">sledujících</p></div>' +
-        '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 text-center"><p class="font-display font-bold text-lg">' + (c.avgViews || '—') + '</p><p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1">zhlédnutí / video</p></div>' +
+        '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 text-center"><p class="font-display font-bold text-lg">' + (c.avgViews || 'neuvedeno') + '</p><p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1">zhlédnutí / video</p></div>' +
         '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 text-center"><p class="font-display font-bold text-lg">' + c.reach + '</p><p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1">dosah / 30 dní</p></div></div>' +
       portfolioPreview(c) + securityBadge() +
       '<p class="text-sm text-zinc-200 mb-3 font-mono text-[11px] tracking-wide uppercase">Cena podle platformy (klikni na formát)</p>' +
@@ -336,7 +336,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   function renderConciergeForm(){
     modalContent.innerHTML =
       '<h3 class="font-display font-bold text-xl mb-1">Nech výběr na nás</h3>' +
-      '<p class="text-zinc-200 text-sm mb-6">Popiš, co potřebuješ propagovat. Do 24 hodin ti pošleme návrh 2–3 tvůrců z balíčku Growth nebo Scale na <span class="text-white">' + currentUser.email + '</span>.</p>' +
+      '<p class="text-zinc-200 text-sm mb-6">Popiš, co potřebuješ propagovat. Do 24 hodin pošleme návrh 2 až 3 tvůrců z balíčku Growth nebo Scale na <span class="text-white">' + currentUser.email + '</span>.</p>' +
       '<form onsubmit="submitConcierge(event)" class="space-y-4">' +
         '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Přibližný rozpočet</label><input type="text" placeholder="např. 15 000 Kč / měsíc" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" required></div>' +
         '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">Co potřebuješ propagovat?</label><textarea rows="3" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03] resize-none" placeholder="Produkt, cílovka, preferovaná platforma..." required></textarea></div>' +
@@ -346,7 +346,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
   function submitConcierge(e){
     e.preventDefault();
-    modalContent.innerHTML = successBlock('Požadavek odeslán', 'Do 24 hodin ti pošleme návrh 2–3 tvůrců z balíčku Growth/Scale přesně na míru tvému rozpočtu.');
+    modalContent.innerHTML = successBlock('Požadavek odeslán', 'Do 24 hodin pošleme návrh 2 až 3 tvůrců z balíčku Growth nebo Scale podle tvého rozpočtu.');
   }
 
   function openOrderIntent(planName){
@@ -373,7 +373,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     if(window.supabase && typeof window.supabase.createClient === 'function'){
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     } else {
-      console.warn('Supabase JS se nenačetlo z CDN — Google přihlášení bude nedostupné, zbytek stránky funguje dál.');
+      console.warn('Supabase JS se nenačetlo z CDN. Google přihlášení v demu nebude fungovat.');
     }
   } catch(err){
     console.warn('Supabase client se nepodařilo vytvořit:', err);
@@ -442,21 +442,41 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       '</div>';
     showModal();
   }
+  function getSocialAuthProviders(){
+    if(Array.isArray(window.__PB_SOCIAL_PROVIDERS__)) return window.__PB_SOCIAL_PROVIDERS__;
+    return [];
+  }
+  var SOCIAL_AUTH_ICONS = {
+    google: '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.4 0 6.4 1.2 8.8 3.5l6.6-6.6C35.4 2.5 30.1 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.7 6C12.2 13 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4H24v8h12.7c-.3 2.1-1.6 5.3-4.6 7.4l7.1 5.5c4.2-3.9 6.3-9.6 6.3-16.9z"/><path fill="#FBBC05" d="M10.3 19.2c-.5 1.4-.8 2.9-.8 4.8s.3 3.4.8 4.8l-7.7 6C1 31.4 0 27.9 0 24s1-7.4 2.6-10.8l7.7 6z"/><path fill="#34A853" d="M24 48c6.1 0 11.4-2 15.2-5.5l-7.1-5.5c-2 1.4-4.7 2.3-8.1 2.3-6.4 0-11.8-3.5-13.7-8.7l-7.7 6C6.5 42.6 14.6 48 24 48z"/></svg>',
+    discord: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>'
+  };
+  var SOCIAL_AUTH_LABELS = { google: 'Google', discord: 'Discord' };
+  function socialAuthButtonsMarkup(){
+    const providers = getSocialAuthProviders();
+    if(!providers.length) return '';
+    return providers.map(function(id){
+      const label = SOCIAL_AUTH_LABELS[id] || id;
+      const icon = SOCIAL_AUTH_ICONS[id] || '';
+      return '<button type="button" data-social-auth="' + id + '" onclick="authSocial(\'' + id + '\')" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-3 mb-3 hover:bg-white/10 transition">' +
+        icon + '<span>Pokračovat přes ' + label + '</span></button>';
+    }).join('') +
+    '<div class="flex items-center gap-3 mb-5"><div class="h-px bg-white/10 flex-1"></div><span class="text-mist text-xs font-mono text-[11px] tracking-wide">NEBO E-MAILEM</span><div class="h-px bg-white/10 flex-1"></div></div>';
+  }
   function authStep1Markup(){
+    const socialBlock = socialAuthButtonsMarkup();
+    const oauthHint = getSocialAuthProviders().length ? ', Google nebo Discord' : '';
     return '' +
       '<h3 class="font-display font-bold text-xl mb-1">Přihlášení / Registrace</h3>' +
-      '<p class="text-zinc-200 text-sm mb-6">Bez hesla stačí e-mail a ověřovací kód. Nebo se přihlas přes Google.</p>' +
+      '<p class="text-zinc-200 text-sm mb-6">Zvol typ účtu. Přihlášení přes kód na e-mail' + oauthHint + '. V demu stačí libovolný kód.</p>' +
       '<div class="mb-6"><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-2">Jsem</label>' +
         '<div class="flex gap-2"><button type="button" id="role-creator" onclick="setAuthRole(\'creator\')" class="transition-all duration-200 [&.selected]:border-transparent [&.selected]:bg-gradient-to-r [&.selected]:from-violet [&.selected]:via-magenta [&.selected]:to-cyan [&.selected]:text-white ' + (authRole==='creator'?'selected':'') + ' bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] flex-1 py-2.5 rounded-xl text-sm font-semibold">Tvůrce</button>' +
         '<button type="button" id="role-brand" onclick="setAuthRole(\'brand\')" class="transition-all duration-200 [&.selected]:border-transparent [&.selected]:bg-gradient-to-r [&.selected]:from-violet [&.selected]:via-magenta [&.selected]:to-cyan [&.selected]:text-white ' + (authRole==='brand'?'selected':'') + ' bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] flex-1 py-2.5 rounded-xl text-sm font-semibold">Značka / E-shop</button></div></div>' +
-      '<button id="google-auth-btn" onclick="authGoogle()" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-3 mb-5 hover:bg-white/10 transition">' +
-        '<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.4 0 6.4 1.2 8.8 3.5l6.6-6.6C35.4 2.5 30.1 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.7 6C12.2 13 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4H24v8h12.7c-.3 2.1-1.6 5.3-4.6 7.4l7.1 5.5c4.2-3.9 6.3-9.6 6.3-16.9z"/><path fill="#FBBC05" d="M10.3 19.2c-.5 1.4-.8 2.9-.8 4.8s.3 3.4.8 4.8l-7.7 6C1 31.4 0 27.9 0 24s1-7.4 2.6-10.8l7.7 6z"/><path fill="#34A853" d="M24 48c6.1 0 11.4-2 15.2-5.5l-7.1-5.5c-2 1.4-4.7 2.3-8.1 2.3-6.4 0-11.8-3.5-13.7-8.7l-7.7 6C6.5 42.6 14.6 48 24 48z"/></svg>' +
-        '<span>Pokračovat přes Google</span></button>' +
-      '<div class="flex items-center gap-3 mb-5"><div class="h-px bg-white/10 flex-1"></div><span class="text-mist text-xs font-mono text-[11px] tracking-wide">NEBO E-MAILEM</span><div class="h-px bg-white/10 flex-1"></div></div>' +
+      socialBlock +
       '<form onsubmit="authSendCode(event)" class="space-y-4">' +
         '<div><label class="block text-xs font-mono text-[11px] tracking-wide uppercase text-mist mb-1.5">E-mail</label><input type="email" id="auth-email" class="w-full bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-sm px-4 py-3 text-sm border-none bg-white/[0.065] text-white outline-none transition-all duration-200 placeholder:text-white/40 focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] disabled:bg-white/[0.03]" placeholder="jmeno@email.cz" required></div>' +
         '<button type="submit" id="send-code-btn" class="inline-flex shrink-0 items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-55 disabled:transform-none text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5 w-full">Poslat ověřovací kód</button>' +
       '</form>' +
+      '<p class="text-center text-xs text-mist mt-4">Chceš heslo? <a href="/registrace?role=' + authRole + '" class="text-cyan hover:text-cyan/85 font-medium">Vytvořit účet</a></p>' +
       '<button onclick="fakeTestLogin()" class="w-full mt-5 text-xs text-mist hover:text-white underline transition">🧪 Testovací přihlášení bez ověření (jen pro vývoj)</button>';
   }
   function authStep2Markup(email){
@@ -474,53 +494,76 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     document.getElementById('role-creator').classList.toggle('selected', role==='creator');
     document.getElementById('role-brand').classList.toggle('selected', role==='brand');
   }
-  async function authGoogle(){
-    const btn = document.getElementById('google-auth-btn');
-    if(!supabaseClient){
-      btn.innerHTML = '<span>Google přihlášení není dostupné (Supabase se nenačetlo)</span>';
-      return;
+  /* Better Auth — OAuth (Google / Discord) z modalu na landingu. */
+  async function authSocial(provider){
+    const btn = document.querySelector('[data-social-auth="' + provider + '"]');
+    if(btn){
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'Přesměrování…';
     }
-    btn.disabled = true; btn.innerHTML = '<span>Přesměrování na Google...</span>';
-    // Stránka se teď kompletně přenačte na accounts.google.com a zpět —
-    // veškerý JS stav (proměnná authRole) se ztratí, proto si zvolenou
-    // roli (tvůrce/značka) uložíme do localStorage a přečteme ji zpátky
-    // až po návratu (viz handleAuthCallback níže).
     localStorage.setItem('pb_pending_role', authRole);
-    const { error } = await supabaseClient.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        // Návrat rovnou na kořen appky — žádná samostatná /auth/callback
-        // routa není potřeba, protože jde o jeden statický HTML soubor.
-        // POZOR: tohle funguje spolehlivě jen pokud je tento soubor nasazený
-        // jako index.html přímo na kořeni domény. Pokud ho hostuješ na jiné
-        // cestě, nahraď window.location.origin za plnou URL k tomuto souboru.
-        redirectTo: window.location.origin
+    const callbackURL = window.location.href.split('#')[0];
+    try {
+      const res = await fetch('/api/auth/sign-in/social', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider: provider, callbackURL: callbackURL, requestSignUp: true })
+      });
+      const payload = await res.json().catch(function(){ return {}; });
+      if(payload && payload.url){
+        window.location.href = payload.url;
+        return;
       }
-    });
-    if(error){
+      if(!res.ok){
+        console.error('Social sign-in failed:', payload);
+      }
+    } catch(err){
+      console.error('Social sign-in error:', err);
+    }
+    if(btn){
       btn.disabled = false;
-      btn.innerHTML = '<span>Přihlášení se nezdařilo, zkus to znovu</span>';
-      console.error('Google OAuth error:', error);
+      const label = SOCIAL_AUTH_LABELS[provider] || provider;
+      btn.querySelector('span').textContent = 'Pokračovat přes ' + label;
     }
-    // Při úspěchu prohlížeč hned odchází na Google — sem se kód nikdy nedostane.
   }
-  /* Zpracuje návrat z Google OAuth. Supabase JS v prohlížeči si sám všimne
-     tokenu/kódu v URL (hash #access_token=... nebo ?code=...) a jakmile ho
-     zpracuje, spustí přes onAuthStateChange event "SIGNED_IN" — na to tu
-     jen čekáme a napojíme to na náš vlastní currentUser/session systém.
-     getSession() navíc hned na startu odchytí session, pokud už zpracování
-     proběhlo dřív, než se tenhle listener stihl zaregistrovat. */
-  async function handleAuthCallback(){
-    if(!supabaseClient) return;
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if(event === 'SIGNED_IN' && session && session.user && !currentUser){
-        finishSupabaseLogin(session);
-      }
-    });
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if(session && session.user && !currentUser){
-      finishSupabaseLogin(session);
+  async function fetchBetterAuthSession(){
+    try {
+      const res = await fetch('/api/auth/get-session', { credentials: 'include' });
+      if(!res.ok) return null;
+      const data = await res.json();
+      if(!data || !data.user) return null;
+      return data;
+    } catch(_err){
+      return null;
     }
+  }
+  function applyBetterAuthUserToApp(sessionPayload){
+    const user = sessionPayload.user;
+    const role = localStorage.getItem('pb_pending_role') || localStorage.getItem('pb_userRole') || 'creator';
+    localStorage.removeItem('pb_pending_role');
+    currentUser = {
+      email: user.email,
+      role: role,
+      name: user.name || null,
+      avatarUrl: user.image || null,
+      id: user.id
+    };
+    persistSession(currentUser);
+  }
+  async function syncBetterAuthSession(){
+    const sessionPayload = await fetchBetterAuthSession();
+    if(!sessionPayload || !sessionPayload.user) return false;
+    if(currentUser && currentUser.id === sessionPayload.user.id) return true;
+    const hadPendingRole = !!localStorage.getItem('pb_pending_role');
+    applyBetterAuthUserToApp(sessionPayload);
+    if(hadPendingRole){
+      onAuthSuccess(currentUser);
+      if(window.location.hash || window.location.search){
+        window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+      }
+    }
+    return true;
   }
   /* Uloží/aktualizuje řádek v tabulce "profiles" podle user.id (upsert) —
      spouští se pokaždé po přihlášení přes Google, ať uživatel klikl na
@@ -694,8 +737,9 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     const idx = creators.findIndex(c=>c.ownerEmail === email);
     return idx === -1 ? null : idx;
   }
-  function restoreSession(){
-    if(localStorage.getItem('pb_isLoggedIn') === 'true'){
+  async function restoreSession(){
+    const fromBetterAuth = await syncBetterAuthSession();
+    if(!fromBetterAuth && localStorage.getItem('pb_isLoggedIn') === 'true'){
       const email = localStorage.getItem('pb_userEmail');
       const role = localStorage.getItem('pb_userRole');
       if(email && role){
@@ -739,7 +783,15 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   function goToMyDashboard(){
     window.location.assign('/dashboard');
   }
-  function handleLogout(){
+  async function handleLogout(){
+    try {
+      await fetch('/api/auth/sign-out', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}'
+      });
+    } catch(_err){ /* React header už mohl odhlásit přes authClient */ }
     if(supabaseClient) supabaseClient.auth.signOut();
     currentUser = null;
     myCreatorIndex = null;
@@ -1142,7 +1194,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
 
     const newCreator = {
       name: name, category: category, categoryLabel: categoryLabelsDemo[category],
-      audienceAge: '18–34 let (přibližně)', platforms: platforms,
+      audienceAge: '18 až 34 let (přibližně)', platforms: platforms,
       followers: (followers/1000).toFixed(followers>=1000?0:1) + 'K', reach: (reach/1000).toFixed(reach>=1000?0:1) + 'K', avgViews: (avgViews/1000).toFixed(avgViews>=1000?0:1) + 'K',
       initials: initials, grad: grad, avatarUrl: uploadedAvatarUrl, packages: packages, portfolio: [], socialHandles: socialHandles,
       isPro: isCreatorPro, viewCount: 0, ownerEmail: currentUser ? currentUser.email : null
@@ -1719,7 +1771,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
         '<div><h3 class="font-display font-bold text-xl">' + creator.name + (creator.isPro ? ' <span class="text-xs align-middle">⭐</span>' : '') + '</h3><p class="text-zinc-200 text-sm">' + creator.categoryLabel + ' · publikum ' + creator.audienceAge + '</p></div></div>' +
       (creator.bio ? '<p class="text-zinc-200 text-sm mb-6">' + creator.bio + '</p>' : '') +
       '<div class="grid grid-cols-3 gap-3 mb-2"><div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 text-center"><p class="font-display font-bold text-lg">' + creator.followers + '</p><p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1">sledujících</p></div>' +
-        '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 text-center"><p class="font-display font-bold text-lg">' + (creator.avgViews || '—') + '</p><p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1">zhlédnutí / video</p></div>' +
+        '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 text-center"><p class="font-display font-bold text-lg">' + (creator.avgViews || 'neuvedeno') + '</p><p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1">zhlédnutí / video</p></div>' +
         '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-xl p-4 text-center"><p class="font-display font-bold text-lg">' + creator.reach + '</p><p class="text-zinc-200 text-[11px] font-mono text-[11px] tracking-wide mt-1">dosah / 30 dní</p></div></div>';
     showModal();
   }
@@ -1953,6 +2005,6 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     ).join('');
   }
 
-  restoreSession();
-  enforceDashboardAccess();
-  handleAuthCallback();
+  void restoreSession().then(function(){
+    enforceDashboardAccess();
+  });

@@ -187,7 +187,7 @@ export function BrandJobsPanel({
               name="description"
               rows={10}
               required
-              placeholder={`## Co dodat\n- 3× TikTok (15–30 s), česky\n- Produkt pošleme poštou\n\n**Tón:** autentický, ne reklamní\n**Termín:** do 14 dní od zaslání produktu`}
+              placeholder={`## Co dodat\n- 3× TikTok (15 až 30 s), česky\n- Produkt pošleme poštou\n\n**Tón:** autentický, ne reklamní\n**Termín:** do 14 dní od zaslání produktu`}
             />
           </FormField>
           {error ? (

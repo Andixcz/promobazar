@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UserIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { invokeAppGlobal } from "@/lib/app-global";
 import { authClient } from "@/lib/auth-client";
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from "@/lib/auth-routes";
 import { DASHBOARD_HOME_PATH } from "@/lib/dashboard-routes";
+import { isCreatorsLandingPath } from "@/lib/landing-routes";
 import { cn } from "@/lib/utils";
 
 const ddPanelClass =
@@ -19,7 +20,11 @@ const ddOptionClass =
 
 export function HeaderAccountMenu() {
   const router = useRouter();
+  const pathname = usePathname();
   const { data: session, isPending } = authClient.useSession();
+  const registerHref = isCreatorsLandingPath(pathname)
+    ? `${AUTH_REGISTER_PATH}?role=creator`
+    : AUTH_REGISTER_PATH;
 
   if (isPending) {
     return (
@@ -49,7 +54,7 @@ export function HeaderAccountMenu() {
           <Link href={AUTH_LOGIN_PATH} className={cn(ddOptionClass, "block")}>
             Přihlásit se
           </Link>
-          <Link href={AUTH_REGISTER_PATH} className={cn(ddOptionClass, "block")}>
+          <Link href={registerHref} className={cn(ddOptionClass, "block")}>
             Registrace
           </Link>
         </div>

@@ -29,7 +29,7 @@ export function getDatabaseUrl(): string {
     if (hasPublicSupabase) {
       throw new Error(
         "NEXT_PUBLIC_SUPABASE_* nenahrazuje DATABASE_URL. " +
-          "Pro Drizzle a Better Auth nastav Neon (nebo jiný Postgres) connection string — viz .env.example.",
+          "Pro Drizzle a Better Auth nastav Neon (nebo jiný Postgres) connection string. Viz .env.example.",
       );
     }
 

@@ -32,7 +32,7 @@ export type PackagePreviewFields = {
 
 export function formatPackagePrice(priceCzk: number) {
   if (!Number.isFinite(priceCzk) || priceCzk <= 0) {
-    return "— Kč";
+    return "Bez ceny";
   }
   return `${priceCzk.toLocaleString("cs-CZ")} Kč`;
 }

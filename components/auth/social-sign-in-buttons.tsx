@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { SimpleIcon } from "@/components/auth/simple-icon";
 import { authClient } from "@/lib/auth-client";
 import type { SocialAuthProviderId } from "@/lib/auth-social";
-import { getEnabledSocialAuthProviders } from "@/lib/auth-social";
+import { resolveSocialAuthProviders } from "@/lib/auth-social";
 import { cn } from "@/lib/utils";
 
 const providerMeta: Record<
@@ -17,8 +17,13 @@ const providerMeta: Record<
   discord: { label: "Discord", icon: siDiscord },
 };
 
+type SocialAuthIntent = "sign-in" | "sign-up";
+
 type SocialSignInButtonsProps = {
   callbackUrl: string;
+  /** Ze serveru (`listConfiguredSocialAuthProviders`); bez toho platí `NEXT_PUBLIC_*`. */
+  providers?: SocialAuthProviderId[];
+  intent?: SocialAuthIntent;
   disabled?: boolean;
   onError?: (message: string | null) => void;
   className?: string;
@@ -26,21 +31,31 @@ type SocialSignInButtonsProps = {
 
 export function SocialSignInButtons({
   callbackUrl,
+  providers: providersFromServer,
+  intent = "sign-in",
   disabled,
   onError,
   className,
 }: SocialSignInButtonsProps) {
-  const providers = getEnabledSocialAuthProviders();
+  const providers = resolveSocialAuthProviders(providersFromServer);
   if (providers.length === 0) return null;
+
+  const isSignUp = intent === "sign-up";
 
   async function signInWith(provider: SocialAuthProviderId) {
     onError?.(null);
     const { error } = await authClient.signIn.social({
       provider,
       callbackURL: callbackUrl,
+      ...(isSignUp ? { requestSignUp: true } : {}),
     });
     if (error) {
-      onError?.(error.message ?? "Přihlášení přes sociální síť se nezdařilo.");
+      onError?.(
+        error.message ??
+          (isSignUp
+            ? "Registrace přes sociální síť se nezdařila."
+            : "Přihlášení přes sociální síť se nezdařilo."),
+      );
     }
   }
 
@@ -61,7 +76,7 @@ export function SocialSignInButtons({
             onClick={() => signInWith(id)}
           >
             <SimpleIcon icon={icon} title={label} />
-            Pokračovat přes {label}
+            {isSignUp ? `Zaregistrovat se přes ${label}` : `Pokračovat přes ${label}`}
           </Button>
         );
       })}

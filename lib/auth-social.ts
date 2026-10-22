@@ -1,6 +1,6 @@
 export type SocialAuthProviderId = "google" | "discord";
 
-/** Která OAuth tlačítka zobrazit (jen `NEXT_PUBLIC_*` — dostupné v prohlížeči). */
+/** Legacy: ruční zapnutí tlačítek přes `NEXT_PUBLIC_*` (preferuj serverový seznam). */
 export function getEnabledSocialAuthProviders(): SocialAuthProviderId[] {
   const list: SocialAuthProviderId[] = [];
   if (process.env.NEXT_PUBLIC_GOOGLE_OAUTH_ENABLED === "true") {
@@ -10,4 +10,12 @@ export function getEnabledSocialAuthProviders(): SocialAuthProviderId[] {
     list.push("discord");
   }
   return list;
+}
+
+/** Server props mají prioritu; jinak `NEXT_PUBLIC_*` pro starší deploye. */
+export function resolveSocialAuthProviders(
+  fromServer?: SocialAuthProviderId[],
+): SocialAuthProviderId[] {
+  if (fromServer && fromServer.length > 0) return fromServer;
+  return getEnabledSocialAuthProviders();
 }

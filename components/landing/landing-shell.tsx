@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { AppModal } from "@/components/landing/app-modal";
 import { ChatWidget } from "@/components/landing/chat-widget";
+import { AppJsBootstrap } from "@/components/landing/app-js-bootstrap";
 import { ClientAppScript } from "@/components/landing/client-app-script";
 import { LandingHashScroll } from "@/components/landing/landing-hash-scroll";
 import { CookieBanner } from "@/components/landing/cookie-banner";
@@ -21,6 +22,7 @@ export function LandingShell({ children }: { children: ReactNode }) {
       <CookieBanner />
       <CookieSettingsDialog />
       <ChatWidget />
+      <AppJsBootstrap />
       <ClientAppScript />
     </>
   );

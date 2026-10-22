@@ -7,20 +7,30 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
+import { RegisterRoleField } from "@/components/auth/register-role-field";
 import { SocialSignInButtons } from "@/components/auth/social-sign-in-buttons";
 import { authClient } from "@/lib/auth-client";
 import { AUTH_LOGIN_PATH } from "@/lib/auth-routes";
-import { DASHBOARD_HOME_PATH } from "@/lib/dashboard-routes";
-import { LANDING_FIRMS_PATH } from "@/lib/landing-routes";
+import {
+  buildRegisterCallbackUrl,
+  isAuthRegisterRole,
+  type AuthRegisterRole,
+} from "@/lib/auth-register";
+import type { SocialAuthProviderId } from "@/lib/auth-social";
 
-export function SignUpForm() {
+type SignUpFormProps = {
+  socialProviders?: SocialAuthProviderId[];
+};
+
+export function SignUpForm({ socialProviders }: SignUpFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const roleParam = searchParams.get("role");
+  const [memberRole, setMemberRole] = useState<AuthRegisterRole>(
+    isAuthRegisterRole(roleParam) ? roleParam : "creator",
+  );
   const callbackUrl =
-    searchParams.get("callbackUrl") ??
-    (searchParams.get("role") === "creator"
-      ? `${DASHBOARD_HOME_PATH}?role=creator`
-      : LANDING_FIRMS_PATH);
+    searchParams.get("callbackUrl") ?? buildRegisterCallbackUrl(memberRole);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -49,6 +59,11 @@ export function SignUpForm() {
 
   return (
     <form className="space-y-5" onSubmit={onSubmit}>
+      <RegisterRoleField
+        value={memberRole}
+        onChange={setMemberRole}
+        disabled={pending}
+      />
       <FormField label="Jméno" htmlFor="sign-up-name">
         <Input
           id="sign-up-name"
@@ -91,6 +106,8 @@ export function SignUpForm() {
       </Button>
       <SocialSignInButtons
         callbackUrl={callbackUrl}
+        providers={socialProviders}
+        intent="sign-up"
         disabled={pending}
         onError={(message) => setError(message || null)}
       />

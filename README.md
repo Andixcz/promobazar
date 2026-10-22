@@ -43,6 +43,20 @@ Baseline jen označí aktuální `0000_initial` jako aplikovanou — nespouští
 
 Auth a dashboard jedou přes **Better Auth + Drizzle**, ne přes Supabase DB. Volitelné `NEXT_PUBLIC_SUPABASE_*` jsou jen pro legacy `public/app.js`.
 
+### Přihlášení Google a Discord
+
+1. V `.env.local` nastav `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` a/nebo `DISCORD_CLIENT_ID` + `DISCORD_CLIENT_SECRET`.
+2. U providera zaregistruj redirect:
+   - `http://localhost:3000/api/auth/callback/google` (resp. `discord`)
+   - v produkci `https://promobazar.cz/api/auth/callback/...`
+3. `BETTER_AUTH_SECRET` (min. 32 znaků) a `BETTER_AUTH_URL` musí sedět s doménou, na které běží appka.
+
+Tlačítka se zobrazí na `/prihlaseni`, `/registrace` a v auth modalu na landingu, jakmile jsou creds na serveru.
+
+**Registrace:** na `/registrace` zvol typ účtu (tvůrce / značka), pak e-mail nebo OAuth. Po úspěchu redirect na `/dashboard?role=…` vytvoří `member_profile` (cookie `pb_dashboard_role` nastaví `proxy.ts`). Z `/pro-tvurce` odkaz Registrace v menu přidá `?role=creator`.
+
+Ověření: `GET /api/auth/ok` → `{ "status": "ok" }`.
+
 ## Struktura homepage
 
 - **`/`** — Najít promo (`FirmsView`)
