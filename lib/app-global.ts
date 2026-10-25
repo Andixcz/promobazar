@@ -21,6 +21,7 @@ export type AppGlobal = {
   submitPackageForm?: (event: Event) => void;
   cancelPackageEdit?: () => void;
   submitContact?: (event: Event) => void;
+  restoreLandingSession?: () => void | Promise<void>;
 };
 
 export function invokeAppGlobal<Name extends keyof AppGlobal>(

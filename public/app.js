@@ -538,9 +538,34 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       return null;
     }
   }
-  function applyBetterAuthUserToApp(sessionPayload){
+  async function fetchMemberRoleFromServer(){
+    try {
+      const res = await fetch('/api/me/member-role', { credentials: 'include' });
+      if(!res.ok) return null;
+      const data = await res.json();
+      if(data.role === 'creator' || data.role === 'brand' || data.role === 'buyer') return data.role;
+      return null;
+    } catch(_err){
+      return null;
+    }
+  }
+  function landingRoleFallback(){
+    return window.location.pathname.indexOf('/pro-tvurce') === 0 ? 'creator' : null;
+  }
+  async function resolveAppUserRole(){
+    const serverRole = await fetchMemberRoleFromServer();
+    if(serverRole) return serverRole;
+    const pending = localStorage.getItem('pb_pending_role');
+    if(pending === 'creator' || pending === 'brand') return pending;
+    const stored = localStorage.getItem('pb_userRole');
+    if(stored === 'creator' || stored === 'brand') return stored;
+    const pathRole = landingRoleFallback();
+    if(pathRole) return pathRole;
+    return 'brand';
+  }
+  async function applyBetterAuthUserToApp(sessionPayload){
     const user = sessionPayload.user;
-    const role = localStorage.getItem('pb_pending_role') || localStorage.getItem('pb_userRole') || 'creator';
+    const role = await resolveAppUserRole();
     localStorage.removeItem('pb_pending_role');
     currentUser = {
       email: user.email,
@@ -554,14 +579,22 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   async function syncBetterAuthSession(){
     const sessionPayload = await fetchBetterAuthSession();
     if(!sessionPayload || !sessionPayload.user) return false;
-    if(currentUser && currentUser.id === sessionPayload.user.id) return true;
-    const hadPendingRole = !!localStorage.getItem('pb_pending_role');
-    applyBetterAuthUserToApp(sessionPayload);
-    if(hadPendingRole){
-      onAuthSuccess(currentUser);
-      if(window.location.hash || window.location.search){
-        window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+    const sameUser = currentUser && currentUser.id === sessionPayload.user.id;
+    if(!sameUser){
+      const hadPendingRole = !!localStorage.getItem('pb_pending_role');
+      await applyBetterAuthUserToApp(sessionPayload);
+      if(hadPendingRole){
+        onAuthSuccess(currentUser);
+        if(window.location.hash || window.location.search){
+          window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+        }
       }
+      return true;
+    }
+    const role = await resolveAppUserRole();
+    if(currentUser.role !== role){
+      currentUser.role = role;
+      persistSession(currentUser);
     }
     return true;
   }
@@ -2010,6 +2043,8 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       '</div></div>'
     ).join('');
   }
+
+  window.restoreLandingSession = restoreSession;
 
   void restoreSession().then(function(){
     enforceDashboardAccess();
