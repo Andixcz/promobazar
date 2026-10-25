@@ -129,7 +129,7 @@ export type PackageInput = {
   bannerUrl?: string | null;
 };
 
-/** Stejná pravidla pro vytvoření i úpravu; cena drží limity checkoutu (100–500 000 Kč). */
+/** Stejná pravidla pro vytvoření i úpravu; cena drží limity checkoutu (100 až 500 000 Kč). */
 function validatePackage(input: PackageInput, userId: string) {
   const name = String(input.name ?? "").trim();
   const description = String(input.description ?? "").trim();

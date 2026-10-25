@@ -1,24 +1,22 @@
 ---
 name: promobazar-app-js
 description: >-
-  Client script public/app.js and React bridge for promobazar.cz — invokeAppGlobal,
+  Client script public/app.js and React bridge for promobazar.cz: invokeAppGlobal,
   AppGlobal types, mountDropdown ids, stable DOM contract, marketplace grid, job
   board, creator profile. Use when editing app.js, app-global.ts, home-views ids,
   or landing interactivity tied to window handlers.
 ---
 
-# promobazar — app.js a React
+# promobazar: app.js a React
 
 ## Načtení
 
-`components/landing/client-app-script.tsx` — `Script src="/app.js"`. Funkce jsou **globální** (ne ES module).
+`components/landing/client-app-script.tsx`: `Script src="/app.js"`. Funkce jsou **globální** (ne ES module).
 
 ## Volání z Reactu
 
-`lib/app-global.ts`:
-
-- `invokeAppGlobal(name, ...args)` — preferuj v JSX místo `onclick="..."`
-- `callAppHandler` — stejné, méně typů
+`lib/app-global.ts`: - `invokeAppGlobal(name, ...args)`: preferuj v JSX místo `onclick="..."`
+- `callAppHandler`: stejné, méně typů
 - Nový handler v app.js → doplň **`AppGlobal`**
 
 Příklad: `invokeAppGlobal("openAuth", "creator")`.
@@ -27,7 +25,7 @@ Příklad: `invokeAppGlobal("openAuth", "creator")`.
 
 `restoreSession`, `enforceDashboardAccess`, `handleAuthCallback`, `initLandingViewFromPath`, `scrollToHashOnLoad`, cookie init.
 
-Dropdowny: `mountDropdown('…-mount', …)` hned po load — v JSX musí existovat `id="dd-*-mount"`.
+Dropdowny: `mountDropdown('…-mount', …)` hned po load: v JSX musí existovat `id="dd-*-mount"`.
 
 ## Kam psát změny
 

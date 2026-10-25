@@ -20,7 +20,7 @@ function createDrizzle(url: string): Db {
     void globalForDb.sqlClient.end({ timeout: 1 }).catch(() => {});
   }
   const client = postgres(url, {
-    // Neon / Supabase pooler (transaction mode) — bez prepared statements
+    // Neon / Supabase pooler (transaction mode): bez prepared statements
     prepare: false,
     max: 10,
   });

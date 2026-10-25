@@ -100,7 +100,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   var LANDING_CREATORS_PATH = '/pro-tvurce';
   function scrollToId(id){ setTimeout(()=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth'}); }, 60); }
 
-  /* ============== DATA — tvůrci v tržišti =============
+  /* ============== DATA: tvůrci v tržišti =============
      Prázdné pole: žádní vymyšlení lidé. Skuteční tvůrci se sem přidávají
      výhradně přes tlačítko "Vygenerovat profil do tržiště" v sekci Propojení
      (funkce generateRealProfile), případně načtením z databáze (viz TODO
@@ -191,7 +191,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       const budgetOk = minPrice(c) <= budget;
       return platformOk && categoryOk && licenseOk && budgetOk;
     });
-    // Topování na tržišti — Creator PRO profily se řadí vždy první
+    // Topování na tržišti: Creator PRO profily se řadí vždy první
     filtered.sort((a,b)=> (b.isPro?1:0) - (a.isPro?1:0));
     renderGrid(filtered);
   }
@@ -233,7 +233,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     return '<div class="bg-gradient-to-b from-white/[0.055] to-white/[0.02] border border-white/[0.09] backdrop-blur-[10px] rounded-2xl p-4 flex gap-3 items-start mb-6" style="border-color: rgba(0,229,255,0.3);"><span class="text-xl">🛡️</span>' +
       '<p class="text-xs text-zinc-200 leading-relaxed"><span class="text-white font-semibold">Garance bezpečnosti promobazar.cz:</span> Vaše platba je držena v úschově a tvůrci je vyplácena až po schválení hotového videa. Obchodování mimo platformu ruší záruku vracení peněz.</p></div>';
   }
-  /* Portfolio / Ukázky práce — vychází z reálných odkazů, které si tvůrce
+  /* Portfolio / Ukázky práce: vychází z reálných odkazů, které si tvůrce
      přidá v Nastavení účtu (creators[i].portfolio). Prázdný slot ukazuje
      čestný "zatím bez ukázky" stav, žádná předstíraná videa. */
   function detectPortfolioPlatform(url){
@@ -360,11 +360,10 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
 
   /* ==============================================================
-     AUTH — Supabase struktura
+     AUTH: Supabase struktura
      ------------------------------------------------------------
      Google OAuth je napojený na reálný Supabase projekt (viz níže).
-     E-mail+kód a Facebook zatím zůstávají jako mock (AuthService) —
-     stejný vzor jako u Google, jen zatím bez skutečného volání.
+     E-mail+kód a Facebook zatím zůstávají jako mock (AuthService): stejný vzor jako u Google, jen zatím bez skutečného volání.
   ============================================================== */
   const SUPABASE_URL = 'https://semynsirrzaiivtgmiia.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_4__dsz0Yl4tL8NatxLz1ig_B9CZB_WC';
@@ -408,7 +407,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
 
   /* ==============================================================
-     JEDNOTNÁ KONTROLA PŘIHLÁŠENÍ — requireAuth()
+     JEDNOTNÁ KONTROLA PŘIHLÁŠENÍ: requireAuth()
      ------------------------------------------------------------
      Použij tuhle funkci VŠUDE, kde akce vyžaduje přihlášení (chat,
      odpověď na poptávku, dashboard, nastavení...), místo ručních
@@ -494,7 +493,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     document.getElementById('role-creator').classList.toggle('selected', role==='creator');
     document.getElementById('role-brand').classList.toggle('selected', role==='brand');
   }
-  /* Better Auth — OAuth (Google / Discord) z modalu na landingu. */
+  /* Better Auth: OAuth (Google / Discord) z modalu na landingu. */
   async function authSocial(provider){
     const btn = document.querySelector('[data-social-auth="' + provider + '"]');
     if(btn){
@@ -598,8 +597,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     }
     return true;
   }
-  /* Uloží/aktualizuje řádek v tabulce "profiles" podle user.id (upsert) —
-     spouští se pokaždé po přihlášení přes Google, ať uživatel klikl na
+  /* Uloží/aktualizuje řádek v tabulce "profiles" podle user.id (upsert): spouští se pokaždé po přihlášení přes Google, ať uživatel klikl na
      "Přihlásit se" nebo na "Registrace" (obě tlačítka vedou na stejný
      authGoogle() → stejný finishSupabaseLogin() → stejný upsert).
      Nutná tabulka v Supabase, viz SQL v komentáři pod touto funkcí. */
@@ -616,9 +614,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     const { error } = await supabaseClient.from('profiles').upsert(payload, { onConflict: 'id' });
     if(error) console.warn('Uložení profilu do tabulky "profiles" selhalo:', error.message);
   }
-  /* SQL pro Supabase SQL Editor (spustit jednou, před prvním přihlášením):
-
-    create table if not exists public.profiles (
+  /* SQL pro Supabase SQL Editor (spustit jednou, před prvním přihlášením): create table if not exists public.profiles (
       id uuid references auth.users on delete cascade primary key,
       email text,
       username text,
@@ -642,11 +638,11 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       for update using (auth.uid() = id);
 
   Bez těchto RLS policies upsert()/update() z klienta (anon klíč) tiše
-  selže — Supabase ho zamítne, protože nikdo nemá povolení do tabulky
+  selže: Supabase ho zamítne, protože nikdo nemá povolení do tabulky
   zapisovat. */
 
   /* Uloží nové zobrazované jméno do Supabase (tabulka profiles, podle
-     user.id) — voláno z submitAccountSettings() při změně jména. */
+     user.id): voláno z submitAccountSettings() při změně jména. */
   async function updateProfileName(newName){
     if(!supabaseClient || !currentUser || !currentUser.id) return;
     const { error } = await supabaseClient.from('profiles')
@@ -654,7 +650,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       .eq('id', currentUser.id);
     if(error) console.warn('Uložení jména do Supabase selhalo:', error.message);
   }
-  /* Uloží @handle na TikTok/Instagram/YouTube do Supabase — voláno při
+  /* Uloží @handle na TikTok/Instagram/YouTube do Supabase: voláno při
      vygenerování profilu i při jejich pozdější úpravě v nastavení. */
   async function saveSocialHandles(handles){
     if(!supabaseClient || !currentUser || !currentUser.id) return;
@@ -670,7 +666,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   function finishSupabaseLogin(session){
     const role = localStorage.getItem('pb_pending_role') || localStorage.getItem('pb_userRole') || 'creator';
     localStorage.removeItem('pb_pending_role');
-    // Google účet posílá jméno/avatar v user_metadata — pole se občas
+    // Google účet posílá jméno/avatar v user_metadata: pole se občas
     // liší (full_name vs. name, avatar_url vs. picture), zkusíme obě varianty.
     const meta = session.user.user_metadata || {};
     const googleName = meta.full_name || meta.name || null;
@@ -723,9 +719,9 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
 
   /* ==============================================================
-     DOČASNÝ FAKE LOGIN — pro testování bez Supabase.
+     DOČASNÝ FAKE LOGIN: pro testování bez Supabase.
      Až bude napojený Supabase, tenhle blok (i tlačítko v auth modalu)
-     jednoduše smaž — session pak bude řídit výhradně AuthService.
+     jednoduše smaž: session pak bude řídit výhradně AuthService.
   ============================================================== */
   function fakeTestLogin(){
     const user = { email: 'test@promobazar.cz', role: authRole };
@@ -733,7 +729,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
 
   /* ==============================================================
-     SESSION — perzistence přes localStorage (dočasná náhrada za
+     SESSION: perzistence přes localStorage (dočasná náhrada za
      Supabase session). Až bude Supabase napojený, nahraď tělo funkcí
      persistSession/clearSession/restoreSession voláním
      supabaseClient.auth.getSession() / onAuthStateChange(...).
@@ -754,12 +750,11 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     localStorage.removeItem('pb_userAvatar');
     localStorage.removeItem('pb_userId');
     // POZOR: pb_creator_pro se tady záměrně NEMAŽE. Předplatné patří k účtu,
-    // ne k přihlašovací session — odhlášení nesmí zrušit Creator PRO stav.
+    // ne k přihlašovací session: odhlášení nesmí zrušit Creator PRO stav.
     // (Tohle přesně byla kořenová příčina bugu, kdy po znovupřihlášení
     // vypadala karta "Zobrazení profilu" zamčená, i když měl uživatel PRO.)
   }
-  /* Spolehlivé propojení přihlášeného tvůrce s jeho profilem přes e-mail —
-     myCreatorIndex je jen dočasná proměnná v paměti (index do pole creators),
+  /* Spolehlivé propojení přihlášeného tvůrce s jeho profilem přes e-mail: myCreatorIndex je jen dočasná proměnná v paměti (index do pole creators),
      která se BEZ TOHOTO vyhledávání po odhlášení/přihlášení nebo obnovení
      session ztrácela, i když profil (a jeho Creator PRO stav) v poli
      creators reálně existoval. Tohle byla kořenová příčina toho, že po
@@ -788,7 +783,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     notifyBrandPlanChange();
   }
 
-  /* ============== HEADER — avatar / dropdown menu po přihlášení ============== */
+  /* ============== HEADER: avatar / dropdown menu po přihlášení ============== */
   let brandProfile = { avatarUrl: null, bannerUrl: null, bio: '' };
   function getMyProfile(){
     const googleAvatar = currentUser ? currentUser.avatarUrl : null;
@@ -875,7 +870,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     requireAuth('brand', ()=>{ switchJobTab('brand'); });
   }
 
-  /* ============== BADGES — počítané z reálného stavu session, žádné natvrdo dané ============== */
+  /* ============== BADGES: počítané z reálného stavu session, žádné natvrdo dané ============== */
   function computeBadges(){
     if(!currentUser) return [];
     if(currentUser.role === 'creator'){
@@ -979,11 +974,11 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     window.__pendingProfileUpload = ()=> ({ avatarUrl: pendingAvatarUrl, bannerUrl: pendingBannerUrl });
   }
   /* ==============================================================
-     ZMĚNA E-MAILU S RE-VERIFIKACÍ (legacy modal — dashboard používá /dashboard/nastaveni)
+     ZMĚNA E-MAILU S RE-VERIFIKACÍ (legacy modal: dashboard používá /dashboard/nastaveni)
      ------------------------------------------------------------
      DB schéma (Supabase, budoucí): auth.users.email se mění až po
      potvrzení. Supabase toto řeší nativně přes
-     supabaseClient.auth.updateUser({ email: newEmail }) — automaticky
+     supabaseClient.auth.updateUser({ email: newEmail }): automaticky
      pošle ověřovací e-mail na NOVOU adresu a starý e-mail zůstává
      platný (a přihlašovací), dokud uživatel odkaz nepotvrdí.
      Zde jde o mock: pendingEmailChange drží e-mail čekající na
@@ -1023,8 +1018,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     const newName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : null;
 
     if(newName){
-      // Aktualizuje se přímo v Supabase (tabulka profiles, podle user.id) —
-      // po úspěchu se rovnou promítne do currentUser.name, aby hlavička i
+      // Aktualizuje se přímo v Supabase (tabulka profiles, podle user.id): // po úspěchu se rovnou promítne do currentUser.name, aby hlavička i
       // profil ukázaly nové jméno okamžitě a nezůstal tam viset e-mail.
       updateProfileName(newName);
       currentUser.name = newName;
@@ -1066,7 +1060,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     modalContent.innerHTML = successBlock('Nastavení uloženo', 'Změny se projeví okamžitě v tvém profilu i v katalogu.');
   }
 
-  /* ============== OCHRANA DASHBOARDU — kontrola dle URL hashe ==============
+  /* ============== OCHRANA DASHBOARDU: kontrola dle URL hashe ==============
      Pokud se někdo pokusí dostat na chráněnou sekci přímým odkazem
      (#dashboard, #balicky) nebo tlačítky zpět/vpřed v prohlížeči,
      aniž by byl přihlášený se správnou rolí, přesměruje ho to
@@ -1105,7 +1099,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
 
     // V tomto testovacím prostředí (jeden prohlížeč, jedna session) se objednávka
     // reálně propíše do dashboardu tvůrce, pokud sis zrovna objednal/a vlastní
-    // vygenerovaný profil — jinak by ji v produkci uviděl přihlášený majitel profilu.
+    // vygenerovaný profil: jinak by ji v produkci uviděl přihlášený majitel profilu.
     if(ci === myCreatorIndex){
       myOrders.push({ id: 'ORD-' + Date.now(), label: 'Objednávka od ' + (buyerEmail || 'neznámý e-shop'), packageName: p.name, status: 'Zadání doručeno' });
       renderCreatorOrders();
@@ -1127,7 +1121,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
 
   /* ==============================================================
-     SOCIÁLNÍ SÍTĚ — jednoduché @handle odkazy, žádné OAuth simulace
+     SOCIÁLNÍ SÍTĚ: jednoduché @handle odkazy, žádné OAuth simulace
      ani generovaná čísla. Tvůrce zadá svůj handle, appka z něj postaví
      reálný odkaz na jeho veřejný profil dané sítě.
   ============================================================== */
@@ -1170,7 +1164,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     });
   }
 
-  /* ============== STAGING PACKAGES — neomezený počet balíčků pro nový profil ============== */
+  /* ============== STAGING PACKAGES: neomezený počet balíčků pro nový profil ============== */
   const gradPool = ['from-violet-500 to-fuchsia-500','from-cyan-400 to-blue-500','from-pink-500 to-violet-500','from-fuchsia-500 to-cyan-400','from-blue-500 to-violet-600'];
   const categoryLabelsDemo = { fitness:'Fitness & Health', fashion:'Móda & Beauty', gaming:'Gaming & E-sports', gastro:'Gastro & Jídlo', tech:'Tech & Gadgets', lifestyle:'Lifestyle' };
   let stagingPackages = [];
@@ -1220,7 +1214,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     errorEl.classList.add('hidden');
 
     const category = document.getElementById('dd-profile-category').dataset.value;
-    // Statistiky zadává tvůrce sám (self-reported) — žádná fabrikovaná čísla.
+    // Statistiky zadává tvůrce sám (self-reported): žádná fabrikovaná čísla.
     const followers = parseInt(document.getElementById('stat-followers').value, 10) || 0;
     const avgViews = parseInt(document.getElementById('stat-avgviews').value, 10) || 0;
     const reach = parseInt(document.getElementById('stat-reach').value, 10) || 0;
@@ -1263,7 +1257,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   renderStagingPackages();
 
   /* ============== OBJEDNÁVKY TVŮRCE ==============
-     Prázdné pole — žádné vymyšlené objednávky (#A812 apod.). Skutečné
+     Prázdné pole: žádné vymyšlené objednávky (#A812 apod.). Skutečné
      objednávky sem přibudou, až firma/značka přijme nabídku (po napojení
      Supabase půjde o řádky z tabulky "orders" filtrované na aktuálního
      přihlášeného tvůrce). */
@@ -1315,19 +1309,17 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   renderUploadOrderPicker();
 
   /* ==============================================================
-     CHECKOUT / PLATEBNÍ BRÁNA — příprava na Stripe / GoPay
+     CHECKOUT / PLATEBNÍ BRÁNA: příprava na Stripe / GoPay
      ------------------------------------------------------------
      openCheckout() zobrazí přehled objednávky a až PO simulovaném
-     "webhooku" se zavolá onSuccess (aktivace plánu). V produkci:
-       1) "Zaplatit" vytvoří Stripe Checkout Session / GoPay platbu
+     "webhooku" se zavolá onSuccess (aktivace plánu). V produkci: 1) "Zaplatit" vytvoří Stripe Checkout Session / GoPay platbu
           na serveru a přesměruje uživatele tam.
        2) Po zaplacení platební brána zavolá webhook
           (checkout.session.completed / GoPay callback).
-       3) Teprve webhook (na serveru!) nastaví stav SUBSCRIBED v DB —
-          klient nikdy sám neaktivuje placený plán.
+       3) Teprve webhook (na serveru!) nastaví stav SUBSCRIBED v DB: klient nikdy sám neaktivuje placený plán.
   ============================================================== */
   /* ==============================================================
-     handleCheckout(planId) — JEDNOTNÝ vstupní bod pro všechny placené
+     handleCheckout(planId): JEDNOTNÝ vstupní bod pro všechny placené
      balíčky (tlačítka u cen volají už jen tohle, ne přímo formuláře).
      TODO Stripe/Google Pay: v openCheckoutLoading() je přesné místo,
      kam patří reálné volání serveru pro vytvoření Checkout Session.
@@ -1355,15 +1347,14 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       '</div>';
     showModal();
     // TODO Stripe/Google Pay: tady v produkci půjde server request, který vytvoří
-    // Checkout Session a vrátí URL, na kterou se rovnou přesměruje — např.:
-    //   const res = await fetch('/api/create-checkout-session', {
+    // Checkout Session a vrátí URL, na kterou se rovnou přesměruje: např.: //   const res = await fetch('/api/create-checkout-session', {
     //     method: 'POST', headers: {'Content-Type':'application/json'},
     //     body: JSON.stringify({ planId, email: currentUser.email })
     //   });
     //   const { url } = await res.json();
     //   window.location.href = url;  // -> Stripe/Google Pay hostovaná stránka
     // Server až po přijatém webhooku (checkout.session.completed) nastaví
-    // v databázi SUBSCRIBED — klient si to nikdy neaktivuje sám.
+    // v databázi SUBSCRIBED: klient si to nikdy neaktivuje sám.
     setTimeout(()=>{
       openCheckout({
         title: plan.title, amount: plan.amount, features: plan.features,
@@ -1372,8 +1363,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
     }, 800);
   }
   function activateGrowthPlan(){
-    // Growth zatím (na rozdíl od Creator PRO) v aplikaci nic reálně neodemyká —
-    // stejný platební vzor, jen zatím bez navazující business logiky pro značky.
+    // Growth zatím (na rozdíl od Creator PRO) v aplikaci nic reálně neodemyká: // stejný platební vzor, jen zatím bez navazující business logiky pro značky.
     brandPlan = 'growth';
     localStorage.setItem('pb_brand_plan', 'growth');
     notifyBrandPlanChange();
@@ -1425,11 +1415,11 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
 
   /* ==============================================================
-     CREATOR PRO — limity inzerátů pro bezplatný účet + upgrade flow
+     CREATOR PRO: limity inzerátů pro bezplatný účet + upgrade flow
      ------------------------------------------------------------
      Bezplatný účet smí mít maximálně FREE_PACKAGE_LIMIT aktivních
      balíčků/inzerátů. Creator PRO (99 Kč/měsíc) tento limit odstraní.
-     Klik na "Upgradovat" NIKDY neaktivuje plán natvrdo — vždy projde
+     Klik na "Upgradovat" NIKDY neaktivuje plán natvrdo: vždy projde
      přes openCheckout() a aktivuje se až po (simulovaném) webhooku.
   ============================================================== */
   const FREE_PACKAGE_LIMIT = 2;
@@ -1574,7 +1564,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   renderMyPackages();
 
   /* ============== JOB BOARD + BRAND PANEL ============== */
-  /* Prázdné pole — žádné vymyšlené firmy. Poptávky přibývají jen reálně
+  /* Prázdné pole: žádné vymyšlené firmy. Poptávky přibývají jen reálně
      přes formulář v Panelu pro značky (viz submitNewJob / buildJobPayload). */
   let jobs = [];
   const jobGrid = document.getElementById('job-grid');
@@ -1640,19 +1630,18 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
 
   /* ==============================================================
-     CHAT SYSTÉM — soukromá konverzace mezi značkou a tvůrcem
+     CHAT SYSTÉM: soukromá konverzace mezi značkou a tvůrcem
      ------------------------------------------------------------
-     DB schéma (Supabase, budoucí):
-       conversations(id, job_id, brand_email, creator_email, creator_id, created_at)
+     DB schéma (Supabase, budoucí): conversations(id, job_id, brand_email, creator_email, creator_id, created_at)
        messages(id, conversation_id, sender_role, type['text'|'offer'],
                  text, amount, offer_status['pending'|'accepted'|'rejected'],
                  created_at)
-     Zatím vše drženo v paměti (pole conversations) — po refreshi stránky
+     Zatím vše drženo v paměti (pole conversations): po refreshi stránky
      se ztrácí, stejně jako ostatní mock data v této demo verzi.
 
      DŮLEŽITÉ: vlastnictví konverzace na straně tvůrce se pozná podle
      creatorEmail (stabilní přes celou session), NIKDY jen podle
-     creatorIdx — ten je index do pole creators a po odhlášení/přihlášení
+     creatorIdx: ten je index do pole creators a po odhlášení/přihlášení
      se ztrácí. creatorIdx se používá jen pro zobrazení (avatar, statistiky),
      ne pro řízení přístupu. */
   let conversations = [];
@@ -1816,7 +1805,7 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
   }
 
   /* ==============================================================
-     PLOVOUCÍ CHAT WIDGET (Messenger styl) — jen pro přihlášené tvůrce
+     PLOVOUCÍ CHAT WIDGET (Messenger styl): jen pro přihlášené tvůrce
      ------------------------------------------------------------
      Vlastní, na modalu nezávislé UI, aby šlo minimalizovat zpět do
      bubliny bez ztráty rozepsané zprávy (draft) a bez odchodu ze

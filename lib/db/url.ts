@@ -2,7 +2,7 @@
  * PostgreSQL URL pro Drizzle (`postgres` driver) a drizzle-kit.
  *
  * Doporučení (Neon): pooled URL pro běh aplikace, direct URL pro `db:push`
- * (`DATABASE_URL_MIGRATE`). Pooler vyžaduje `prepare: false` — viz `lib/db/index.ts`.
+ * (`DATABASE_URL_MIGRATE`). Pooler vyžaduje `prepare: false`: viz `lib/db/index.ts`.
  *
  * @see https://neon.com/docs/guides/drizzle
  */

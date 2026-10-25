@@ -1,10 +1,10 @@
-# AGENTS.md — promobazar.cz
+# AGENTS.md: promobazar.cz
 
 Krátký rozcestník pro agenty v tomto repu. Detailní postupy jsou v **projektových skills** (`.cursor/skills/`).
 
 ## Produkt
 
-Tržiště influencerů a UGC tvůrců — UI **čeština**, téma **dark** (`app/layout.tsx`).
+Tržiště influencerů a UGC tvůrců: UI **čeština**, téma **dark** (`app/layout.tsx`).
 
 | Skupina | Route | Obsah |
 |--------|-------|--------|
@@ -15,12 +15,12 @@ Dev: `bun install` → `bun run dev`. Env: `.env.example` → `.env.local`.
 
 ## Architektura (shrnutí)
 
-- **Next.js App Router** — `app/page.tsx`, `app/pro-tvurce/page.tsx`, sdílený `LandingShell`
-- **React** — struktura landingu (`components/landing/`, `components/ui/`)
-- **`public/app.js`** — klientská logika (auth, grid, chat, dropdowny); načítá `ClientAppScript`
-- **`lib/`** — `landing-routes.ts`, `ui-surfaces.ts`, `app-global.ts` (volání handlerů z Reactu)
+- **Next.js App Router**: `app/page.tsx`, `app/pro-tvurce/page.tsx`, sdílený `LandingShell`
+- **React**: struktura landingu (`components/landing/`, `components/ui/`)
+- **`public/app.js`**: klientská logika (auth, grid, chat, dropdowny); načítá `ClientAppScript`
+- **`lib/`**: `landing-routes.ts`, `ui-surfaces.ts`, `app-global.ts` (volání handlerů z Reactu)
 
-React a `app.js` sdílejí **stejná DOM id** a **styly** — při změnách v interaktivních sekcích načti skill `promobazar-app-js`.
+React a `app.js` sdílejí **stejná DOM id** a **styly**: při změnách v interaktivních sekcích načti skill `promobazar-app-js`.
 
 ## Skills (kdy je načíst)
 
@@ -32,12 +32,12 @@ React a `app.js` sdílejí **stejná DOM id** a **styly** — při změnách v i
 
 ## Formuláře (React)
 
-Vždy `components/ui`: **`FormField`** + **`Label`** (uvnitř FormField) + **`Input`** / **`FieldSelect`** / **`Textarea`**. Nepoužívej raw `<input>`, `<select>`, `<textarea>` ani `fieldControl` v JSX — tokeny jsou jen v UI kitu. Výběr z možností = **`FieldSelect`** (stejný vzhled jako hero filtry v `app.js`), ne nativní `<select>`. Modaly: **`Modal`**.
+Vždy `components/ui`: **`FormField`** + **`Label`** (uvnitř FormField) + **`Input`** / **`FieldSelect`** / **`Textarea`**. Nepoužívej raw `<input>`, `<select>`, `<textarea>` ani `fieldControl` v JSX: tokeny jsou jen v UI kitu. Výběr z možností = **`FieldSelect`** (stejný vzhled jako hero filtry v `app.js`), ne nativní `<select>`. Modaly: **`Modal`**.
 
 ## Rychlá pravidla
 
 1. Audience **Najít promo / Pro tvůrce** = navigace (`/` ↔ `/pro-tvurce`), ne jedna stránka se skrytými view.
-2. **Routing, hash scroll, cookies** — React (`landing-routes.ts`, `landing-nav.ts`, `scroll-to-section.ts`, `cookie-consent.ts`). Do `app.js` to nepřidávej.
+2. **Routing, hash scroll, cookies**: React (`landing-routes.ts`, `landing-nav.ts`, `scroll-to-section.ts`, `cookie-consent.ts`). Do `app.js` to nepřidávej.
 3. Nový handler v `app.js` volaný z Reactu → typ v `lib/app-global.ts` (`AppGlobal`).
 3. Změna stylu CTA/outline tlačítek → sync `lib/ui-surfaces.ts` a `PB_BTN_*` v `public/app.js`.
 4. Před merge: obě landing routy + `bun run build` (Tailwind scanuje i `public/app.js`).
@@ -48,8 +48,8 @@ Lidský přehled: `README.md`.
 
 # This is NOT the Next.js you know
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+This version has breaking changes: APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+This block is written and re-added by `next dev`: verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->

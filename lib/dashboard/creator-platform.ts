@@ -1,4 +1,4 @@
-/** OAuth propojení tvůrce s platformou (dashboard) — sdílené typy klient / server. */
+/** OAuth propojení tvůrce s platformou (dashboard): sdílené typy klient / server. */
 export type CreatorPlatformId =
   | "twitch"
   | "kick"
@@ -22,16 +22,11 @@ export function isCreatorPlatformId(
 
 export function creatorPlatformLabel(platform: CreatorPlatformId): string {
   switch (platform) {
-    case "twitch":
-      return "Twitch";
-    case "kick":
-      return "Kick";
-    case "tiktok":
-      return "TikTok";
-    case "instagram":
-      return "Instagram";
-    case "youtube":
-      return "YouTube";
+    case "twitch": return "Twitch";
+    case "kick": return "Kick";
+    case "tiktok": return "TikTok";
+    case "instagram": return "Instagram";
+    case "youtube": return "YouTube";
   }
 }
 

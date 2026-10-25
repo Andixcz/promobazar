@@ -1,4 +1,4 @@
-/** Volání globálních funkcí z `public/app.js` (dočasné — novou logiku piš v Reactu). */
+/** Volání globálních funkcí z `public/app.js` (dočasné: novou logiku piš v Reactu). */
 export type AppGlobal = {
   openAuth?: (role: string, afterCallback?: () => void) => void;
   toggleUserMenu?: (id: string, event: Event) => void;

@@ -1,4 +1,4 @@
-/** Prázdný seed — skutečný seznam doplní `SocialProvidersBootstrap` z API. */
+/** Prázdný seed: skutečný seznam doplní `SocialProvidersBootstrap` z API. */
 export function AppJsBootstrap() {
   return (
     <script

@@ -11,7 +11,7 @@ type FormFieldProps = {
   className?: string
 }
 
-/** Label + control — stejné rozestupy jako na auth / dashboard formulářích. */
+/** Label + control: stejné rozestupy jako na auth / dashboard formulářích. */
 function FormField({ label, htmlFor, hint, children, className }: FormFieldProps) {
   return (
     <div className={cn("min-w-0", className)}>

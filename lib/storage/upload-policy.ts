@@ -60,7 +60,7 @@ export function buildObjectKey(
   return `uploads/${userId}/${purpose}/${id}${ext}`;
 }
 
-/** Veřejné profilové médium — kdokoli s URL může zobrazit (UUID v cestě). */
+/** Veřejné profilové médium: kdokoli s URL může zobrazit (UUID v cestě). */
 export function isPublicStorageObjectKey(key: string): boolean {
   return /^uploads\/[^/]+\/(avatar|banner|package-showcase)\//.test(key);
 }

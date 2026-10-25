@@ -22,7 +22,7 @@ type ProfileMediaHeaderProps = {
   onDirty?: () => void;
 };
 
-/** ponytail: fallback bez B2 env — jen lokální vývoj. */
+/** ponytail: fallback bez B2 env: jen lokální vývoj. */
 async function fileToDataUrl(file: File): Promise<string> {
   const maxBytes = 900_000;
   if (file.size > maxBytes) {

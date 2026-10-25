@@ -11,7 +11,7 @@ type UploadResponse = {
   fileUrl: string;
 };
 
-/** Same-origin upload — nevyžaduje CORS na B2 bucketu (na rozdíl od presigned PUT z prohlížeče). */
+/** Same-origin upload: nevyžaduje CORS na B2 bucketu (na rozdíl od presigned PUT z prohlížeče). */
 export async function uploadFileToStorage(
   file: File,
   purpose: UploadPurpose,

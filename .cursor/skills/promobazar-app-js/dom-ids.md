@@ -1,4 +1,4 @@
-# DOM kontrakt — promobazar
+# DOM kontrakt: promobazar
 
 Neměň id bez úpravy `public/app.js`.
 
@@ -31,8 +31,8 @@ Neměň id bez úpravy `public/app.js`.
 
 ## Header
 
-Audience a nav — React (`site-header.tsx`). `#nav-firms` / `#nav-creators` visibility podle pathname, ne app.js.
+Audience a nav: React (`site-header.tsx`). `#nav-firms` / `#nav-creators` visibility podle pathname, ne app.js.
 
 ## Cookie / chat
 
-`#cookie-banner` — React + `lib/cookie-consent.ts` (dialog: event `pb-open-cookie-settings`).
+`#cookie-banner`: React + `lib/cookie-consent.ts` (dialog: event `pb-open-cookie-settings`).

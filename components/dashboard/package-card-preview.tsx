@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 type PackageCardPreviewProps = {
   fields: PackagePreviewFields;
   className?: string;
-  /** Bez horní lišty — když je náhled vnořený v jiné sekci. */
+  /** Bez horní lišty: když je náhled vnořený v jiné sekci. */
   hideHeader?: boolean;
 };
 

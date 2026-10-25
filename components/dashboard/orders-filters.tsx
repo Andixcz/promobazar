@@ -18,7 +18,7 @@ const orderStatusFilterOptions = [
   })),
 ];
 
-/** GET formulář — filtr žije v URL (?q=&stav=), stránka se vrací na 1. */
+/** GET formulář: filtr žije v URL (?q=&stav=), stránka se vrací na 1. */
 export function OrdersFilters({
   q,
   status,

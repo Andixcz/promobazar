@@ -1,6 +1,6 @@
 import { DASHBOARD_HOME_PATH } from "@/lib/dashboard-routes";
 
-/** Role volitelná při registraci (bez „buyer“ — ten přijde z objednávky). */
+/** Role volitelná při registraci (bez „buyer“: ten přijde z objednávky). */
 export type AuthRegisterRole = "creator" | "brand";
 
 export function isAuthRegisterRole(
@@ -9,7 +9,7 @@ export function isAuthRegisterRole(
   return value === "creator" || value === "brand";
 }
 
-/** Po registraci vždy dashboard — proxy nastaví `pb_dashboard_role` z query. */
+/** Po registraci vždy dashboard: proxy nastaví `pb_dashboard_role` z query. */
 export function buildRegisterCallbackUrl(role: AuthRegisterRole): string {
   return `${DASHBOARD_HOME_PATH}?role=${role}`;
 }

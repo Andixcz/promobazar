@@ -1,4 +1,4 @@
-/** Zveřejněná sazba v pásmu 10–12 %. U oddělených plateb si ji necháme tím, že převedeme míň. */
+/** Zveřejněná sazba v pásmu 10 až 12 %. U oddělených plateb si ji necháme tím, že převedeme míň. */
 export const PLATFORM_FEE_BPS = 1200;
 
 export const ACCEPT_WINDOW_MS = 48 * 60 * 60 * 1000;

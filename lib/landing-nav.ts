@@ -6,7 +6,7 @@ import {
 } from "@/lib/landing-routes";
 import { scrollToSection } from "@/lib/scroll-to-section";
 
-/** Veřejný přehled poptávek (záložka browse) — navigace v Reactu, ne legacy switchView. */
+/** Veřejný přehled poptávek (záložka browse): navigace v Reactu, ne legacy switchView. */
 export function goToJobBoardBrowse(): void {
   if (window.location.pathname !== LANDING_FIRMS_PATH) {
     window.location.assign(landingHref("firms", "job-board"));

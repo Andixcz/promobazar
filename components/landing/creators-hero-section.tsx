@@ -12,7 +12,7 @@ const statCards = [
   { value: "Ty", label: "nastavuješ ceny" },
 ] as const;
 
-/** Hero pro stránku Pro tvůrce — stejný jazyk vizuálu jako FirmsHeroSection. */
+/** Hero pro stránku Pro tvůrce: stejný jazyk vizuálu jako FirmsHeroSection. */
 export function CreatorsHeroSection() {
   return (
     <section id="top" className={cn("relative pt-40 sm:pt-32 pb-16 md:pb-20", sectionX)}>
