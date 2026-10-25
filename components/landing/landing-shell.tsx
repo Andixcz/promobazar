@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { AppModal } from "@/components/landing/app-modal";
 import { ChatWidget } from "@/components/landing/chat-widget";
 import { AppJsBootstrap } from "@/components/landing/app-js-bootstrap";
+import { AppSessionSync } from "@/components/landing/app-session-sync";
+import { SocialProvidersBootstrap } from "@/components/landing/social-providers-bootstrap";
 import { ClientAppScript } from "@/components/landing/client-app-script";
 import { LandingHashScroll } from "@/components/landing/landing-hash-scroll";
 import { CookieBanner } from "@/components/landing/cookie-banner";
@@ -23,6 +25,8 @@ export function LandingShell({ children }: { children: ReactNode }) {
       <CookieSettingsDialog />
       <ChatWidget />
       <AppJsBootstrap />
+      <SocialProvidersBootstrap />
+      <AppSessionSync />
       <ClientAppScript />
     </>
   );

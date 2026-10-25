@@ -9,10 +9,12 @@ import {
   authEmailVerification,
   authUserEmailOptions,
 } from "@/lib/auth-email-hooks";
+import { authBaseUrl } from "@/lib/auth-env";
 import { buildBetterAuthSocialProviders } from "@/lib/auth-social-server";
 
 export const auth = betterAuth({
   appName: "promobazar.cz",
+  baseURL: authBaseUrl(),
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,

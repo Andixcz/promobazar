@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
 import { RegisterRoleField } from "@/components/auth/register-role-field";
 import { SocialSignInButtons } from "@/components/auth/social-sign-in-buttons";
+import { useSocialAuthProviders } from "@/components/auth/use-social-auth-providers";
+import { persistLandingRoleHint } from "@/lib/auth-callback-role";
 import { authClient } from "@/lib/auth-client";
 import { AUTH_LOGIN_PATH } from "@/lib/auth-routes";
 import {
@@ -16,13 +18,7 @@ import {
   isAuthRegisterRole,
   type AuthRegisterRole,
 } from "@/lib/auth-register";
-import type { SocialAuthProviderId } from "@/lib/auth-social";
-
-type SignUpFormProps = {
-  socialProviders?: SocialAuthProviderId[];
-};
-
-export function SignUpForm({ socialProviders }: SignUpFormProps) {
+export function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roleParam = searchParams.get("role");
@@ -37,6 +33,11 @@ export function SignUpForm({ socialProviders }: SignUpFormProps) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const socialProviders = useSocialAuthProviders();
+
+  useEffect(() => {
+    persistLandingRoleHint(memberRole);
+  }, [memberRole]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();

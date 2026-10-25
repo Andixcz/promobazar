@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
@@ -13,14 +13,14 @@ import {
   AUTH_FORGOT_PASSWORD_PATH,
   AUTH_REGISTER_PATH,
 } from "@/lib/auth-routes";
+import {
+  landingRoleFromCallbackUrl,
+  persistLandingRoleHint,
+} from "@/lib/auth-callback-role";
 import { LANDING_FIRMS_PATH } from "@/lib/landing-routes";
-import type { SocialAuthProviderId } from "@/lib/auth-social";
+import { useSocialAuthProviders } from "@/components/auth/use-social-auth-providers";
 
-type SignInFormProps = {
-  socialProviders?: SocialAuthProviderId[];
-};
-
-export function SignInForm({ socialProviders }: SignInFormProps) {
+export function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? LANDING_FIRMS_PATH;
@@ -29,6 +29,12 @@ export function SignInForm({ socialProviders }: SignInFormProps) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const socialProviders = useSocialAuthProviders();
+
+  useEffect(() => {
+    const role = landingRoleFromCallbackUrl(callbackUrl);
+    if (role) persistLandingRoleHint(role);
+  }, [callbackUrl]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
