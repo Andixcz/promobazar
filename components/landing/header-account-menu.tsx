@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { invokeAppGlobal } from "@/lib/app-global";
 import { authClient } from "@/lib/auth-client";
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from "@/lib/auth-routes";
-import { DASHBOARD_HOME_PATH } from "@/lib/dashboard-routes";
+import { DASHBOARD_HOME_PATH, dashboardPath } from "@/lib/dashboard-routes";
 import { isCreatorsLandingPath } from "@/lib/landing-routes";
 import { cn } from "@/lib/utils";
 
@@ -96,7 +96,10 @@ export function HeaderAccountMenu() {
         <Link href={DASHBOARD_HOME_PATH} className={cn(ddOptionClass, "block")}>
           Můj dashboard
         </Link>
-        <Link href="/dashboard/nastaveni" className={cn(ddOptionClass, "block")}>
+        <Link
+          href={dashboardPath("nastaveni")}
+          className={cn(ddOptionClass, "block")}
+        >
           Nastavení účtu
         </Link>
         <button

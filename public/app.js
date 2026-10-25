@@ -828,8 +828,14 @@ var DD_CHEVRON_SVG = '<svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" v
       '</button>';
     }).join('');
   }
-  function goToCreatorDashboard(){
-    window.location.assign('/dashboard?role=creator');
+  async function goToCreatorDashboard(){
+    const session = await fetchBetterAuthSession();
+    const target = '/dashboard?role=creator';
+    if(session && session.user){
+      window.location.assign(target);
+      return;
+    }
+    window.location.assign('/prihlaseni?callbackUrl=' + encodeURIComponent(target));
   }
   function goToBrandDashboard(){
     window.location.assign('/dashboard?role=brand');

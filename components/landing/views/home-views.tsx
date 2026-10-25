@@ -23,6 +23,8 @@ import { CreatorsHeroSection } from "@/components/landing/creators-hero-section"
 import { FaqSection } from "@/components/landing/faq-section";
 import { FirmsHeroSection } from "@/components/landing/firms-hero-section";
 import { invokeAppGlobal, callAppHandler } from "@/lib/app-global";
+import { AUTH_LOGIN_PATH } from "@/lib/auth-routes";
+import { DASHBOARD_HOME_PATH } from "@/lib/dashboard-routes";
 import { landingHref } from "@/lib/landing-routes";
 import {
   emptyState,
@@ -40,6 +42,10 @@ import {
 } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
+const creatorDashboardLoginHref = `${AUTH_LOGIN_PATH}?callbackUrl=${encodeURIComponent(
+  `${DASHBOARD_HOME_PATH}?role=creator`,
+)}`;
+
 function CreatorGateLocked({
   title,
   description,
@@ -55,13 +61,9 @@ function CreatorGateLocked({
       <h3 className={emptyStateTitle}>{title}</h3>
       <p className={emptyStateSubtitle}>{description}</p>
       <div className={emptyStateActions}>
-        <button
-          type="button"
-          className={htmlButtonCta}
-          onClick={() => callAppHandler("goToCreatorDashboard")}
-        >
+        <Link href={creatorDashboardLoginHref} className={htmlButtonCta}>
           Přihlásit se
-        </button>
+        </Link>
       </div>
     </div>
   );

@@ -9,12 +9,17 @@ export async function getAccountAuthContext() {
   const session = await getServerSession();
   if (!session?.user) return null;
 
-  const accounts = await auth.api.listUserAccounts({
-    headers: await headers(),
-  });
-
-  const providers = accounts.map((account) => account.providerId);
-  const hasCredential = providers.includes("credential");
+  let providers: string[] = [];
+  let hasCredential = false;
+  try {
+    const accounts = await auth.api.listUserAccounts({
+      headers: await headers(),
+    });
+    providers = accounts.map((account) => account.providerId);
+    hasCredential = providers.includes("credential");
+  } catch {
+    hasCredential = true;
+  }
 
   return {
     email: session.user.email,
