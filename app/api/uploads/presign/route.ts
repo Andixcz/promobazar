@@ -4,12 +4,7 @@ import { getServerSession } from "@/lib/auth-session";
 import { createPresignedUploadUrl } from "@/lib/storage/b2-client";
 import { isB2Configured } from "@/lib/storage/b2-env";
 import { storagePublicUrl } from "@/lib/storage/storage-url";
-import {
-  allowedContentTypes,
-  buildObjectKey,
-  isUploadPurpose,
-  maxUploadBytes,
-} from "@/lib/storage/upload-policy";
+import { validateUploadInput } from "@/lib/storage/validate-upload";
 
 export async function POST(request: Request) {
   if (!isB2Configured()) {
@@ -36,32 +31,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Neplatný JSON." }, { status: 400 });
   }
 
-  const purpose = body.purpose ?? "";
-  if (!isUploadPurpose(purpose)) {
-    return NextResponse.json({ error: "Neplatný účel nahrání." }, { status: 400 });
-  }
-
-  const contentType = (body.contentType ?? "").trim().toLowerCase();
-  if (!allowedContentTypes(purpose).has(contentType)) {
+  const validated = validateUploadInput(session.user.id, {
+    purpose: body.purpose ?? "",
+    fileName: body.fileName ?? "file",
+    contentType: body.contentType ?? "",
+    size: Number(body.size),
+  });
+  if (!validated.ok) {
     return NextResponse.json(
-      { error: "Tento typ souboru není povolený." },
-      { status: 400 },
+      { error: validated.error },
+      { status: validated.status },
     );
   }
 
-  const size = Number(body.size);
-  if (!Number.isFinite(size) || size <= 0) {
-    return NextResponse.json({ error: "Neplatná velikost souboru." }, { status: 400 });
-  }
-  if (size > maxUploadBytes(purpose)) {
-    return NextResponse.json(
-      { error: "Soubor je příliš velký." },
-      { status: 400 },
-    );
-  }
-
-  const fileName = (body.fileName ?? "file").trim() || "file";
-  const objectKey = buildObjectKey(session.user.id, purpose, fileName);
+  const { objectKey, contentType } = validated.data;
 
   try {
     const uploadUrl = await createPresignedUploadUrl({

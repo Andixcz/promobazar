@@ -7,48 +7,45 @@ export class StorageUnavailableError extends Error {
   }
 }
 
-export type PresignResponse = {
-  uploadUrl: string;
+type UploadResponse = {
   fileUrl: string;
-  objectKey: string;
 };
 
+/** Same-origin upload — nevyžaduje CORS na B2 bucketu (na rozdíl od presigned PUT z prohlížeče). */
 export async function uploadFileToStorage(
   file: File,
   purpose: UploadPurpose,
 ): Promise<string> {
-  const presignRes = await fetch("/api/uploads/presign", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      purpose,
-      fileName: file.name,
-      contentType: file.type || "application/octet-stream",
-      size: file.size,
-    }),
-  });
+  const form = new FormData();
+  form.set("purpose", purpose);
+  form.set("file", file);
 
-  if (!presignRes.ok) {
-    if (presignRes.status === 503) {
+  let res: Response;
+  try {
+    res = await fetch("/api/uploads", {
+      method: "POST",
+      credentials: "include",
+      body: form,
+    });
+  } catch {
+    throw new Error(
+      "Spojení se serverem selhalo. Zkontroluj připojení a zkus to znovu.",
+    );
+  }
+
+  if (!res.ok) {
+    if (res.status === 503) {
       throw new StorageUnavailableError();
     }
-    const body = (await presignRes.json().catch(() => null)) as {
+    const body = (await res.json().catch(() => null)) as {
       error?: string;
     } | null;
-    throw new Error(body?.error ?? "Nepodařilo se připravit nahrání.");
+    throw new Error(body?.error ?? "Nepodařilo se nahrát soubor.");
   }
 
-  const { uploadUrl, fileUrl } = (await presignRes.json()) as PresignResponse;
-
-  const putRes = await fetch(uploadUrl, {
-    method: "PUT",
-    headers: { "Content-Type": file.type || "application/octet-stream" },
-    body: file,
-  });
-
-  if (!putRes.ok) {
-    throw new Error("Nahrání souboru do úložiště selhalo.");
+  const { fileUrl } = (await res.json()) as UploadResponse;
+  if (!fileUrl) {
+    throw new Error("Server nevrátil URL souboru.");
   }
-
   return fileUrl;
 }

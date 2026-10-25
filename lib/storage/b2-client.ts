@@ -55,6 +55,23 @@ export async function createPresignedUploadUrl(input: {
   });
 }
 
+export async function putObjectBuffer(input: {
+  objectKey: string;
+  contentType: string;
+  body: Uint8Array;
+}): Promise<void> {
+  const { config, client } = requireB2Client();
+  const key = withKeyPrefix(config, input.objectKey);
+  await client.send(
+    new PutObjectCommand({
+      Bucket: config.bucket,
+      Key: key,
+      ContentType: input.contentType,
+      Body: input.body,
+    }),
+  );
+}
+
 export async function getObjectStream(objectKey: string) {
   const { config, client } = requireB2Client();
   const key = withKeyPrefix(config, objectKey);
