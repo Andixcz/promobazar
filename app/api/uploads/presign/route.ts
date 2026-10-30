@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth-session";
 import { createPresignedUploadUrl } from "@/lib/storage/b2-client";
 import { isB2Configured } from "@/lib/storage/b2-env";
-import { storagePublicUrl } from "@/lib/storage/storage-url";
+import { profileMediaPublicUrl, storagePublicUrl } from "@/lib/storage/storage-url";
 import { validateUploadInput } from "@/lib/storage/validate-upload";
 
 export async function POST(request: Request) {
@@ -44,17 +44,21 @@ export async function POST(request: Request) {
     );
   }
 
-  const { objectKey, contentType } = validated.data;
+  const { objectKey, contentType, purpose } = validated.data;
 
   try {
     const uploadUrl = await createPresignedUploadUrl({
       objectKey,
       contentType,
     });
+    const fileUrl =
+      purpose === "avatar" || purpose === "banner"
+        ? profileMediaPublicUrl(objectKey)
+        : storagePublicUrl(objectKey);
     return NextResponse.json({
       uploadUrl,
       objectKey,
-      fileUrl: storagePublicUrl(objectKey),
+      fileUrl,
     });
   } catch {
     return NextResponse.json(

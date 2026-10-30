@@ -3,14 +3,19 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth-session";
 import { getObjectStream } from "@/lib/storage/b2-client";
 import { isB2Configured } from "@/lib/storage/b2-env";
+import { canReadOrderBriefObject } from "@/lib/storage/order-brief-access";
 import { isPublicStorageObjectKey } from "@/lib/storage/upload-policy";
 
 type RouteContext = { params: Promise<{ key: string[] }> };
 
-function canReadObject(objectKey: string, userId: string | undefined): boolean {
+async function canReadObject(
+  objectKey: string,
+  userId: string | undefined,
+): Promise<boolean> {
   if (isPublicStorageObjectKey(objectKey)) return true;
   if (!userId) return false;
-  return objectKey.startsWith(`uploads/${userId}/`);
+  if (objectKey.startsWith(`uploads/${userId}/`)) return true;
+  return canReadOrderBriefObject(objectKey, userId);
 }
 
 export async function GET(_request: Request, context: RouteContext) {
@@ -25,7 +30,7 @@ export async function GET(_request: Request, context: RouteContext) {
 
   const objectKey = segments.map((s) => decodeURIComponent(s)).join("/");
   const session = await getServerSession();
-  if (!canReadObject(objectKey, session?.user?.id)) {
+  if (!(await canReadObject(objectKey, session?.user?.id))) {
     return NextResponse.json({ error: "Přístup odepřen." }, { status: 403 });
   }
 

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth-session";
 import { putObjectBuffer } from "@/lib/storage/b2-client";
 import { isB2Configured } from "@/lib/storage/b2-env";
-import { storagePublicUrl } from "@/lib/storage/storage-url";
+import { storagePublicUrl, profileMediaPublicUrl } from "@/lib/storage/storage-url";
 import { validateUploadInput } from "@/lib/storage/validate-upload";
 
 export async function POST(request: Request) {
@@ -45,14 +45,18 @@ export async function POST(request: Request) {
     );
   }
 
-  const { objectKey, contentType } = validated.data;
+  const { objectKey, contentType, purpose: uploadPurpose } = validated.data;
 
   try {
     const body = new Uint8Array(await file.arrayBuffer());
     await putObjectBuffer({ objectKey, contentType, body });
+    const fileUrl =
+      uploadPurpose === "avatar" || uploadPurpose === "banner"
+        ? profileMediaPublicUrl(objectKey)
+        : storagePublicUrl(objectKey);
     return NextResponse.json({
       objectKey,
-      fileUrl: storagePublicUrl(objectKey),
+      fileUrl,
     });
   } catch {
     return NextResponse.json(
