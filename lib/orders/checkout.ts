@@ -1,10 +1,18 @@
 import "server-only";
 
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 import { appPublicBaseUrl } from "@/lib/dashboard/platform-linking-oauth";
 import { db } from "@/lib/db";
 import { creatorPackage, marketplaceOrder, memberProfile } from "@/lib/db/schema";
+import {
+  validateOrderBriefAttachments,
+  type OrderBriefAttachment,
+} from "@/lib/orders/brief-attachments";
+import {
+  firstZodErrorMessage,
+  orderBriefTextSchema,
+} from "@/lib/orders/order-brief-schema";
 import { PLATFORM_FEE_BPS } from "@/lib/orders/money";
 import { getStripe, stripeMissingMessage } from "@/lib/stripe";
 
@@ -20,11 +28,12 @@ function integrationIdentifier() {
   return `pb-order-${suffix}`;
 }
 
-function cleanBrief(brief: string) {
-  const value = brief.trim();
-  if (value.length < 10) return "Brief musí mít aspoň 10 znaků.";
-  if (value.length > 4000) return "Brief je příliš dlouhý.";
-  return null;
+function parseBrief(brief: string): { ok: true; value: string } | { ok: false; error: string } {
+  const result = orderBriefTextSchema.safeParse(brief);
+  if (!result.success) {
+    return { ok: false, error: firstZodErrorMessage(result.error) };
+  }
+  return { ok: true, value: result.data };
 }
 
 async function openCheckout(orderId: string): Promise<CheckoutResult> {
@@ -105,13 +114,17 @@ async function insertAndPay(input: {
   creatorUserId: string;
   title: string;
   brief: string;
+  briefAttachments: OrderBriefAttachment[];
   amountCzk: number;
   deliveryDays: number;
   revisionsAllowed: number;
   packageId: string | null;
 }) {
   if (input.clientUserId === input.creatorUserId) {
-    return { ok: false as const, error: "Vlastní balíček si objednat nejde." };
+    return {
+      ok: false as const,
+      error: "Svůj vlastní balíček si objednat nejde.",
+    };
   }
   if (input.amountCzk < 100 || input.amountCzk > 500_000) {
     return { ok: false as const, error: "Částka musí být mezi 100 a 500 000 Kč." };
@@ -124,6 +137,7 @@ async function insertAndPay(input: {
     clientUserId: input.clientUserId,
     title: input.title,
     brief: input.brief,
+    briefAttachments: input.briefAttachments,
     amountCzk: input.amountCzk,
     platformFeeBps: PLATFORM_FEE_BPS,
     deliveryDays: input.deliveryDays,
@@ -149,9 +163,18 @@ export async function startPackageCheckout(input: {
   clientUserId: string;
   packageId: string;
   brief: string;
+  briefAttachments?: unknown;
 }) {
-  const briefError = cleanBrief(input.brief);
-  if (briefError) return { ok: false as const, error: briefError };
+  const briefParsed = parseBrief(input.brief);
+  if (!briefParsed.ok) return { ok: false as const, error: briefParsed.error };
+
+  const attachmentsResult = validateOrderBriefAttachments(
+    input.clientUserId,
+    input.briefAttachments ?? [],
+  );
+  if (!attachmentsResult.ok) {
+    return { ok: false as const, error: attachmentsResult.error };
+  }
 
   const [row] = await db
     .select({
@@ -161,17 +184,22 @@ export async function startPackageCheckout(input: {
       deliveryDays: creatorPackage.deliveryDays,
       revisions: creatorPackage.revisions,
       creatorUserId: creatorPackage.userId,
+      status: creatorPackage.status,
     })
     .from(creatorPackage)
     .where(eq(creatorPackage.id, input.packageId))
     .limit(1);
   if (!row) return { ok: false as const, error: "Balíček neexistuje." };
+  if (row.status !== "published") {
+    return { ok: false as const, error: "Balíček není aktivní nebo neexistuje." };
+  }
 
   return insertAndPay({
     clientUserId: input.clientUserId,
     creatorUserId: row.creatorUserId,
     title: row.name,
-    brief: input.brief.trim(),
+    brief: briefParsed.value,
+    briefAttachments: attachmentsResult.data,
     amountCzk: row.priceCzk,
     deliveryDays: row.deliveryDays,
     revisionsAllowed: Math.max(0, row.revisions),
@@ -186,9 +214,18 @@ export async function startCustomCheckout(input: {
   amountCzk: number;
   deliveryDays: number;
   brief: string;
+  briefAttachments?: unknown;
 }) {
-  const briefError = cleanBrief(input.brief);
-  if (briefError) return { ok: false as const, error: briefError };
+  const briefParsed = parseBrief(input.brief);
+  if (!briefParsed.ok) return { ok: false as const, error: briefParsed.error };
+
+  const attachmentsResult = validateOrderBriefAttachments(
+    input.clientUserId,
+    input.briefAttachments ?? [],
+  );
+  if (!attachmentsResult.ok) {
+    return { ok: false as const, error: attachmentsResult.error };
+  }
   const title = input.title.trim();
   if (title.length < 3 || title.length > 120) {
     return { ok: false as const, error: "Název zakázky musí mít 3 až 120 znaků." };
@@ -214,7 +251,8 @@ export async function startCustomCheckout(input: {
     clientUserId: input.clientUserId,
     creatorUserId: creator.userId,
     title,
-    brief: input.brief.trim(),
+    brief: briefParsed.value,
+    briefAttachments: attachmentsResult.data,
     amountCzk: input.amountCzk,
     deliveryDays: input.deliveryDays,
     revisionsAllowed: 1,

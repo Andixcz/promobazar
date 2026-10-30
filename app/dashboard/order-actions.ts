@@ -25,9 +25,6 @@ function refresh() {
 
 async function clientContext() {
   const { profile } = await requireDashboard(dashboardPath("objednavky"));
-  if (profile.role === "creator") {
-    return { ok: false as const, error: "Objednat může zákazník." };
-  }
   return { ok: true as const, userId: profile.userId };
 }
 

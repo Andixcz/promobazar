@@ -9,11 +9,13 @@ import {
 } from "@/lib/dashboard/marketplace-order";
 import { db } from "@/lib/db";
 import { creatorPackage, marketplaceOrder, memberProfile } from "@/lib/db/schema";
+import type { OrderBriefAttachment } from "@/lib/orders/brief-attachments";
 
 export type DashboardOrderListItem = {
   id: string;
   title: string;
   brief: string;
+  briefAttachments: OrderBriefAttachment[];
   amountCzk: number;
   payoutCzk: number;
   platformFeeBps: number;
@@ -165,6 +167,7 @@ async function toListItems(
       id: order.id,
       title: order.title,
       brief: order.brief,
+      briefAttachments: order.briefAttachments ?? [],
       amountCzk: order.amountCzk,
       payoutCzk: payoutCzk(order.amountCzk, order.platformFeeBps),
       platformFeeBps: order.platformFeeBps,
@@ -236,6 +239,7 @@ export async function listOrderablePackages(): Promise<OrderablePackage[]> {
     })
     .from(creatorPackage)
     .innerJoin(memberProfile, eq(creatorPackage.userId, memberProfile.userId))
+    .where(eq(creatorPackage.status, "published"))
     .orderBy(desc(creatorPackage.createdAt));
 
   return rows.map((row) => ({
