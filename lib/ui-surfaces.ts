@@ -1,7 +1,10 @@
-/** Sdílené Tailwind třídy pro landing (React + app.js: drž v sync u tlačítek). */
+/** Sdílené Tailwind třídy pro landing a marketing sekce. */
 
 export const section = "px-5 md:px-8 py-16 md:py-12";
 export const sectionX = "px-5 md:px-8";
+
+/** Odsazení hero (#top) pod fixním headerem — nepoužívej `py-*` na stejném prvku (přepíše `pt`). */
+export const landingHeroTopPadding = "pt-40 sm:pt-32";
 
 export const surface = "rounded-md border border-white/[0.09] bg-panel";
 
@@ -46,6 +49,10 @@ export const pricingIcon =
 export const pricingBadge =
   "absolute top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-sm border border-transparent bg-cyan px-4 py-1.5 font-body text-[11px] font-medium uppercase tracking-wide text-void";
 
+/** Ikona u položek seznamu v ceníkových kartách. */
+export const pricingListCheckBox =
+  "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-xs bg-cyan/20 text-cyan [&_svg]:size-4";
+
 const btnBase =
   "inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-violet-400/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-55 disabled:transform-none";
 
@@ -59,9 +66,13 @@ export const htmlButtonOutlineSm = `${btnBase} text-xs border-white/[0.14] bg-wh
 
 export const htmlButtonPill = `${btnBase} text-xs border-transparent bg-transparent h-auto gap-1 px-4 py-2 text-mist hover:text-white [&.active]:bg-cyan [&.active]:text-void`;
 
-/** app.js toggluje `.active` na subtabs job boardu; audience přepínač řídí React (pathname). */
+/** Pill tlačítka s třídou `.active` (např. audience switcher). */
 export const audienceSwitcherActive =
   "[&.active]:border-transparent [&.active]:bg-cyan [&.active]:text-void";
+
+/** Odkazy v mobilním rozbalovacím menu headeru (navigace + účet). */
+export const mobileHeaderMenuLink =
+  "block w-full rounded-md px-3 py-2.5 text-left text-sm font-medium text-white/90 transition-colors hover:bg-white/[0.08] hover:text-white";
 
 /** Pole formuláře v landing sekcích */
 export const fieldControl =
@@ -82,12 +93,12 @@ export const fieldSelectTrigger = `${fieldControl} ${fieldControlSizeDefault} ${
 export const fieldLabel =
   "block font-body text-[11px] font-medium uppercase tracking-wide text-mist";
 
-/** Custom dropdown (hero filtry, formuláře): drž v sync s `PB_DD_*` v public/app.js */
+/** Custom dropdown panely (FieldSelect, header menu). */
 export const dropdownTrigger =
   "dd-trigger flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-sm border border-white/[0.09] bg-white/[0.065] px-3 py-2 text-left text-sm font-medium text-white shadow-none backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.09] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(0,229,255,0.4)] focus-visible:outline-none [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(0,229,255,0.4)]";
 
 const dropdownPanelBase =
-  "dd-panel absolute top-[calc(100%+6px)] z-[100] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 space-y-0.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] shadow-[0_16px_40px_-12px_rgba(0,0,0,0.55)] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100";
+  "dd-panel absolute top-[calc(100%+6px)] z-[100] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 space-y-0.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100";
 
 export const dropdownPanel = `${dropdownPanelBase} left-0 right-0`;
 

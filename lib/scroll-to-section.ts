@@ -1,4 +1,4 @@
-/** Plynulý scroll na kotvu na aktuální stránce (nahrazuje legacy scrollToId z app.js v Reactu). */
+/** Plynulý scroll na kotvu na aktuální stránce. */
 export function scrollToSection(id: string): void {
   if (!id) return;
   window.setTimeout(() => {
