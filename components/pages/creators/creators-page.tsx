@@ -2,19 +2,13 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import {
-  ArrowRight,
-  Check,
-  Link2,
-  MessageSquare,
-  Package,
-  Star,
-  Wallet,
-} from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 import { useMember } from "@/components/shared/member-context";
 import { Button } from "@/components/ui/button";
+import { IllustrationIcon } from "@/components/ui/illustration-icon";
 import { StepIllustration } from "@/components/ui/step-illustration";
+import { PricingSvgAmount } from "@/components/ui/pricing-svg-amount";
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from "@/lib/auth-routes";
 import { DASHBOARD_HOME_PATH, dashboardPath } from "@/lib/dashboard-routes";
 import { landingHref } from "@/lib/landing-routes";
@@ -24,7 +18,7 @@ import {
   htmlButtonOutline,
   landingHeroTopPadding,
   pricingCard,
-  pricingIcon,
+  pricingCardFeatured,
   pricingListCheckBox,
   section,
   sectionX,
@@ -43,12 +37,11 @@ const creatorLoginHref = `${AUTH_LOGIN_PATH}?callbackUrl=${encodeURIComponent(
   `${DASHBOARD_HOME_PATH}?role=creator`,
 )}`;
 
-const stepPanelClass =
-  "relative rounded-2xl border border-white/[0.05] bg-panel p-7";
+const stepPanelClass = cn(surface, "p-7");
 
 function PricingCheckItem({ children }: { children: ReactNode }) {
   return (
-    <li className="flex items-start gap-3">
+    <li className="flex items-center gap-3">
       <span className={pricingListCheckBox} aria-hidden>
         <Check strokeWidth={2.5} />
       </span>
@@ -196,18 +189,14 @@ export function CreatorsPage() {
           </div>
           <div className="mt-12 grid gap-2 md:grid-cols-2">
             <div className={stepPanelClass}>
-              <div className="mb-4 flex size-11 items-center justify-center rounded-sm bg-cyan/15 text-cyan">
-                <Link2 className="size-5" strokeWidth={1.5} aria-hidden />
-              </div>
+              <IllustrationIcon name="Link" className="mb-4 h-7 w-auto" />
               <h3 className="font-display text-lg font-semibold">Sítě propojíš na klik</h3>
               <p className="mt-2 text-sm leading-relaxed text-zinc-200">
                 Instagram, TikTok, co používáš. V katalogu ukážeme dosah a reakce publika.
               </p>
             </div>
             <div className={stepPanelClass}>
-              <div className="mb-4 flex size-11 items-center justify-center rounded-sm bg-cyan/15 text-cyan">
-                <MessageSquare className="size-5" strokeWidth={1.5} aria-hidden />
-              </div>
+              <IllustrationIcon name="Message" className="mb-4 h-7 w-auto" />
               <h3 className="font-display text-lg font-semibold">Chat u zakázky, ne chaos v hlavě</h3>
               <p className="mt-2 text-sm leading-relaxed text-zinc-200">
                 Zadání, soubory, revize. Vše u objednávky, ne roztříštěné po pěti aplikacích.
@@ -235,9 +224,7 @@ export function CreatorsPage() {
           </div>
           <div className="mt-12 grid gap-2 md:grid-cols-3">
             <div className={stepPanelClass}>
-              <div className="mb-4 flex size-11 items-center justify-center rounded-sm bg-cyan/15 text-cyan">
-                <Package className="size-5" strokeWidth={1.5} aria-hidden />
-              </div>
+              <IllustrationIcon name="Package" className="mb-4 h-7 w-auto" />
               <h3 className="font-display text-lg font-semibold">Co přesně dodáš</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Reels, TikTok, UGC, délka, revize, práva k reklamě. Napíšeš to jednou v balíčku a
@@ -245,9 +232,7 @@ export function CreatorsPage() {
               </p>
             </div>
             <div className={stepPanelClass}>
-              <div className="mb-4 flex size-11 items-center justify-center rounded-sm bg-cyan/15 text-cyan">
-                <Wallet className="size-5" strokeWidth={1.5} aria-hidden />
-              </div>
+              <IllustrationIcon name="Wallet" className="mb-4 h-7 w-auto" />
               <h3 className="font-display text-lg font-semibold">Tvoje cena, tvoje pravidla</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Nastavíš ji ty. Značka platí dopředu do úschovy. My peníze pustíme až po schválení.
@@ -255,9 +240,7 @@ export function CreatorsPage() {
               </p>
             </div>
             <div className={stepPanelClass}>
-              <div className="mb-4 flex size-11 items-center justify-center rounded-sm bg-cyan/15 text-cyan">
-                <Check className="size-5" strokeWidth={1.5} aria-hidden />
-              </div>
+              <IllustrationIcon name="Checkmark" className="mb-4 h-7 w-auto" />
               <h3 className="font-display text-lg font-semibold">Víc nabídek, víc příležitostí</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Jedno Reels, balík UGC, licence pro placenou reklamu. V základu pár aktivních balíčků, s Creator PRO
@@ -282,9 +265,7 @@ export function CreatorsPage() {
             <div className={cn(pricingCard, "p-8")}>
               <h3 className="font-display text-xl font-semibold">Základ</h3>
               <p className="mt-1.5 text-sm text-zinc-200">První zakázky, nulové riziko</p>
-              <p className="mt-7 font-display text-4xl font-extrabold">
-                0 Kč <span className="text-sm font-normal text-mist">/ měsíc</span>
-              </p>
+              <PricingSvgAmount value="0" />
               <div className="my-6 h-px bg-white/10" />
               <ul className="space-y-3.5 text-sm text-zinc-200">
                 <PricingCheckItem>Veřejný profil v tržišti a chat u objednávek</PricingCheckItem>
@@ -299,18 +280,13 @@ export function CreatorsPage() {
                 Založit zdarma
               </Link>
             </div>
-            <div className="relative z-10 rounded-2xl border border-cyan/40 bg-panel p-8">
+            <div className={cn(pricingCard, pricingCardFeatured)}>
               <span className="absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-sm border border-transparent bg-cyan px-4 py-1.5 font-body text-[11px] font-medium uppercase tracking-wide text-void">
                 Doporučujeme
               </span>
-              <div className={cn(pricingIcon, "mt-2")} aria-hidden>
-                <Star className="size-6" strokeWidth={1.5} />
-              </div>
               <h3 className="font-display text-xl font-semibold">Creator PRO</h3>
               <p className="mt-1.5 text-sm text-zinc-200">Když to myslíš s tvorbou vážně</p>
-              <p className="mt-7 font-display text-4xl font-extrabold text-cyan">
-                99 Kč <span className="text-sm font-normal text-mist">/ měsíc</span>
-              </p>
+              <PricingSvgAmount value="99" />
               <div className="my-6 h-px bg-white/10" />
               <ul className="space-y-3.5 text-sm text-zinc-200">
                 <PricingCheckItem>Neomezený počet aktivních balíčků</PricingCheckItem>
@@ -328,7 +304,7 @@ export function CreatorsPage() {
       </section>
 
       <section id="creators-cta" className={section}>
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-2xl border border-white/[0.05] bg-panel p-10 text-center md:p-16">
+        <div className={cn(surface, "mx-auto max-w-7xl overflow-hidden p-10 text-center md:p-16")}>
           <h2 className="font-display text-3xl font-bold md:text-4xl">
             Přestaň prodávat sám sebe v inboxu
           </h2>

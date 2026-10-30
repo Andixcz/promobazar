@@ -10,7 +10,7 @@ import { authClient } from "@/lib/auth-client";
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from "@/lib/auth-routes";
 import { DASHBOARD_HOME_PATH, dashboardPath } from "@/lib/dashboard-routes";
 import { isCreatorsLandingPath } from "@/lib/landing-routes";
-import { dropdownOption, dropdownPanelNav, mobileHeaderMenuLink } from "@/lib/ui-surfaces";
+import { dropdownOption, dropdownPanelNav, mobileHeaderMenuLink, avatarPlaceholder } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
 const ddPanelClass = dropdownPanelNav;
@@ -150,7 +150,8 @@ export function HeaderAccountMenu({ layout = "dropdown" }: HeaderAccountMenuProp
         aria-expanded={userMenuOpen}
         className={cn(
           "user-avatar-initials dd-trigger inline-flex size-9 shrink-0 items-center justify-center rounded-full",
-          "bg-gradient-to-br from-violet-500 to-fuchsia-500 font-display text-[10px] font-bold text-white",
+          avatarPlaceholder,
+          "font-display text-[10px] font-bold",
           "transition-opacity hover:opacity-90",
           "outline-none focus-visible:ring-3 focus-visible:ring-cyan/35",
         )}

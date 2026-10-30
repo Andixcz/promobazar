@@ -3,18 +3,23 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Check, Mail } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { FaqSection } from "@/components/pages/faq-section";
 import { FirmsMarketplace } from "@/components/pages/firms/marketplace";
+import { IllustrationIcon } from "@/components/ui/illustration-icon";
 import { StepIllustration } from "@/components/ui/step-illustration";
-import { AUTH_REGISTER_PATH } from "@/lib/auth-routes";
+import { PricingSvgAmount } from "@/components/ui/pricing-svg-amount";
+import type { MarketplaceCreator } from "@/lib/marketplace";
 import { landingHref } from "@/lib/landing-routes";
 import {
   htmlButtonCta,
   htmlButtonOutline,
+  pricingCard,
+  pricingCardFeatured,
   pricingListCheckBox,
+  surface,
 } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
@@ -47,7 +52,7 @@ function BrandPlanCta({ plan }: { plan: BrandPlanId }) {
   if (currentPlan === plan) {
     return (
       <button type="button" disabled className={activePlanButtonClass}>
-        <Check className="size-4 shrink-0" aria-hidden />
+        <IllustrationIcon name="Checkmark" className="h-3.5 w-auto" />
         Aktivní plán
       </button>
     );
@@ -72,7 +77,7 @@ function BrandPlanCta({ plan }: { plan: BrandPlanId }) {
 
 function PricingCheckItem({ children }: { children: ReactNode }) {
   return (
-    <li className="flex items-start gap-3">
+    <li className="flex items-center gap-3">
       <span className={pricingListCheckBox} aria-hidden>
         <Check strokeWidth={2.5} />
       </span>
@@ -108,10 +113,10 @@ function PricingPlanIcon({
 }
 
 /** Obsah homepage `/` — tržiště, ceník, FAQ. */
-export function FirmsPage() {
+export function FirmsPage({ creators }: { creators: MarketplaceCreator[] }) {
   return (
     <main id="view-firms">
-      <FirmsMarketplace />
+      <FirmsMarketplace creators={creators} />
       <section id="jak-to-funguje" className="relative px-5 py-16 md:px-8 md:py-12">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-center font-display text-3xl font-bold md:text-4xl">
@@ -121,7 +126,7 @@ export function FirmsPage() {
             Tři kroky mezi tvým produktem a hotovým promo videem na síti.
           </p>
           <div className="mt-14 grid gap-2 md:grid-cols-3">
-            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-7">
+            <div className={cn(surface, "p-7")}>
               <StepIllustration step={1} />
               <h3 className="font-display text-lg font-semibold">Vybereš influencera</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
@@ -129,14 +134,14 @@ export function FirmsPage() {
                 produkty jako ten tvůj.
               </p>
             </div>
-            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-7">
+            <div className={cn(surface, "p-7")}>
               <StepIllustration step={2} />
               <h3 className="font-display text-lg font-semibold">Zadáš a zaplatíš</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Napíšeš zadání a zaplatíš celou částku. Tvůrce má 48 hodin na přijetí.
               </p>
             </div>
-            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-7">
+            <div className={cn(surface, "p-7")}>
               <StepIllustration step={3} />
               <h3 className="font-display text-lg font-semibold">Schválíš výstup</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
@@ -190,13 +195,11 @@ export function FirmsPage() {
             </div>
           </div>
           <div className="mt-10 grid gap-2 pt-3 md:grid-cols-3 md:items-stretch">
-            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-8">
+            <div className={pricingCard}>
               <PricingPlanIcon plan="starter" />
               <h3 className="font-display text-xl font-semibold">Starter</h3>
               <p className="mt-1.5 text-sm text-zinc-200">Pro první test influencer marketingu</p>
-              <p className="mt-7 font-display text-4xl font-extrabold">
-                0 Kč <span className="text-sm font-normal text-mist">/ měsíc</span>
-              </p>
+              <PricingSvgAmount value="0" />
               <div className="my-6 h-px bg-white/10" />
               <ul className="space-y-3.5 text-sm text-zinc-200">
                 <PricingCheckItem>Neomezené procházení tržiště</PricingCheckItem>
@@ -208,16 +211,14 @@ export function FirmsPage() {
               </ul>
               <BrandPlanCta plan="starter" />
             </div>
-            <div className="relative z-10 rounded-2xl border border-cyan/40 bg-panel p-8">
+            <div className={cn(pricingCard, pricingCardFeatured)}>
               <span className="absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-sm border border-transparent bg-cyan px-4 py-1.5 font-body text-[11px] font-medium uppercase tracking-wide text-void">
                 Nejoblíbenější
               </span>
               <PricingPlanIcon plan="growth" className="mt-2" />
               <h3 className="font-display text-xl font-semibold">Growth</h3>
               <p className="mt-1.5 text-sm text-zinc-200">Pro pravidelné kampaně e-shopů</p>
-              <p className="mt-7 font-display text-4xl font-extrabold text-cyan">
-                2 990 Kč <span className="text-sm font-normal text-mist">/ měsíc</span>
-              </p>
+              <PricingSvgAmount value="2 990" />
               <div className="my-6 h-px bg-white/10" />
               <ul className="space-y-3.5 text-sm text-zinc-200">
                 <PricingCheckItem>Neomezené souběžné objednávky</PricingCheckItem>
@@ -227,13 +228,13 @@ export function FirmsPage() {
               </ul>
               <BrandPlanCta plan="growth" />
             </div>
-            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-8">
+            <div className={pricingCard}>
               <PricingPlanIcon plan="scale" />
               <h3 className="font-display text-xl font-semibold">Scale</h3>
               <p className="mt-1.5 text-sm text-zinc-200">
                 Pro značky s vlastním affiliate programem
               </p>
-              <p className="mt-7 font-display text-4xl font-extrabold">Na míru</p>
+              <p className="mt-7 font-display text-4xl font-extrabold tracking-tight">Na míru</p>
               <div className="my-6 h-px bg-white/10" />
               <ul className="space-y-3.5 text-sm text-zinc-200">
                 <PricingCheckItem>Dedikovaný account manager</PricingCheckItem>
@@ -254,7 +255,7 @@ export function FirmsPage() {
       <FaqSection />
 
       <section id="firms-cta" className="px-5 py-16 md:px-8 md:py-12">
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-2xl border border-white/[0.05] bg-panel p-10 text-center md:p-16">
+        <div className={cn(surface, "mx-auto max-w-7xl overflow-hidden p-10 text-center md:p-16")}>
           <h2 className="font-display text-3xl font-bold md:text-4xl">
             Připraven na první kampaň?
           </h2>

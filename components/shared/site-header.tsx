@@ -18,6 +18,7 @@ import {
   dropdownOption,
   dropdownPanelNav,
   mobileHeaderMenuLink,
+  surface,
 } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
@@ -339,17 +340,23 @@ export function SiteHeader() {
 
   return (
     <>
-      {mobileOpen ? (
-        <button
-          type="button"
-          className="fixed inset-0 z-30 bg-black/45 backdrop-blur-[1px] transition-opacity duration-300 ease-out lg:hidden motion-reduce:transition-none"
-          aria-label="Zavřít menu"
-          onClick={closeMobile}
-        />
-      ) : null}
+      <button
+        type="button"
+        className={cn(
+          "fixed inset-0 z-30 bg-black/45 lg:hidden motion-reduce:transition-none",
+          "transition-[opacity,backdrop-filter] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+          mobileOpen
+            ? "pointer-events-auto opacity-100 backdrop-blur-[6px]"
+            : "pointer-events-none opacity-0 backdrop-blur-none",
+        )}
+        aria-hidden={!mobileOpen}
+        tabIndex={mobileOpen ? 0 : -1}
+        aria-label="Zavřít menu"
+        onClick={closeMobile}
+      />
 
       <header className="fixed top-0 inset-x-0 z-40 px-5 md:px-8 pt-4">
-        <div className="relative mx-auto max-w-7xl overflow-visible rounded-2xl border border-white/[0.05] bg-panel">
+        <div className={cn(surface, "mx-auto max-w-7xl overflow-visible")}>
         <div className="grid max-w-7xl grid-cols-[1fr_auto] items-center gap-3 overflow-visible px-3 py-3 sm:px-4 lg:grid-cols-[auto_1fr_auto] md:px-6 md:gap-4">
           <Link
             href={

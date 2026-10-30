@@ -11,25 +11,26 @@ import {
   type ReactNode,
 } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Search, Users } from "lucide-react";
 
+import {
+  flattenCreatorGigs,
+  MarketplaceGigCard,
+} from "@/components/marketplace/marketplace-gig-card";
 import { Button } from "@/components/ui/button";
 import { FieldSelect } from "@/components/ui/field-select";
 import { Label } from "@/components/ui/label";
 import { AUTH_REGISTER_PATH } from "@/lib/auth-routes";
 import {
-  bestLicenseLabel,
   defaultMarketplaceFilters,
   filterMarketplaceCreators,
   marketplaceCategoryOptions,
-  marketplaceCreatorPlural,
-  marketplaceCreators,
+  marketplaceGigPlural,
   marketplaceLicenseOptions,
   marketplacePlatformOptions,
-  minCreatorPrice,
-  packagesSummary,
-  platformLabel,
   type MarketplaceFilters,
+  type MarketplaceCreator,
 } from "@/lib/marketplace";
 import { landingHref } from "@/lib/landing-routes";
 import { scrollToSection } from "@/lib/scroll-to-section";
@@ -44,6 +45,7 @@ import {
   resultCount,
   section,
   sectionX,
+  surface,
 } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
@@ -51,12 +53,19 @@ type MarketplaceFilterContextValue = {
   filters: MarketplaceFilters;
   setFilters: (patch: Partial<MarketplaceFilters>) => void;
   resetFilters: () => void;
+  creators: MarketplaceCreator[];
 };
 
 const MarketplaceFilterContext =
   createContext<MarketplaceFilterContextValue | null>(null);
 
-export function MarketplaceFilterProvider({ children }: { children: ReactNode }) {
+export function MarketplaceFilterProvider({
+  children,
+  creators,
+}: {
+  children: ReactNode;
+  creators: MarketplaceCreator[];
+}) {
   const [filters, setFiltersState] = useState(defaultMarketplaceFilters);
 
   const setFilters = useCallback((patch: Partial<MarketplaceFilters>) => {
@@ -68,8 +77,8 @@ export function MarketplaceFilterProvider({ children }: { children: ReactNode })
   }, []);
 
   const value = useMemo(
-    () => ({ filters, setFilters, resetFilters }),
-    [filters, setFilters, resetFilters],
+    () => ({ filters, setFilters, resetFilters, creators }),
+    [filters, setFilters, resetFilters, creators],
   );
 
   return (
@@ -120,7 +129,29 @@ function FirmsHeroSection() {
     >
       <div className="mx-auto max-w-5xl animate-fade-up py-8 text-center sm:py-12 lg:py-16">
         <h1 className="font-display text-[2.75rem] font-bold leading-[1.04] tracking-tighter sm:text-6xl md:text-7xl lg:text-[5.5rem]">
-          Značky a tvůrci.
+          <span className="inline-flex items-center justify-center gap-[0.12em] sm:gap-[0.15em]">
+            <Image
+              src="/illustrations/Companies.svg"
+              alt=""
+              width={22}
+              height={21}
+              className="h-[0.7em] w-auto shrink-0"
+              aria-hidden
+            />
+            Značky
+          </span>
+          <span className="inline-block px-[0.1em]">a</span>
+          <span className="ml-[0.15em] inline-flex items-center justify-center gap-[0.12em] sm:gap-[0.15em]">
+            <Image
+              src="/illustrations/Influencers.svg"
+              alt=""
+              width={18}
+              height={20}
+              className="h-[0.7em] w-auto shrink-0"
+              aria-hidden
+            />
+            tvůrci.
+          </span>
           <br />
           <span className="text-cyan">Spolu jim to sedne.</span>
         </h1>
@@ -142,7 +173,7 @@ function FirmsHeroSection() {
         className="mx-auto mt-6 max-w-7xl scroll-mt-28 animate-fade-up"
         style={{ animationDelay: ".1s" }}
       >
-        <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-2.5 md:p-3">
+        <div className={cn(surface, "p-2.5 md:p-3")}>
           <div className="flex flex-col items-stretch lg:flex-row">
             <div className="relative flex-1 px-5 py-3.5 lg:py-3">
               <Label>Kde chceš promo?</Label>
@@ -216,128 +247,42 @@ function FirmsHeroSection() {
 
 
 
-function CreatorCard({
-  creator,
-  index,
-}: {
-  creator: (typeof marketplaceCreators)[number];
-  index: number;
-}) {
-  const initials =
-    creator.initials ||
-    creator.name.slice(0, 2).toUpperCase();
-
-  return (
-    <article
-      className={cn(
-        "flex flex-col rounded-2xl border border-white/[0.05] bg-panel p-6 transition-colors duration-300 hover:border-cyan/40",
-        creator.isPro && "border-cyan/45",
-      )}
-      style={{ animationDelay: `${(index % 8) * 0.04}s` }}
-    >
-      {creator.isPro ? (
-        <span className="mb-3 inline-flex self-start rounded-md px-2.5 py-1 font-mono text-[11px] font-semibold tracking-wide text-white bg-gradient-to-r from-indigo-500 to-violet-500">
-          PRO tvůrce
-        </span>
-      ) : null}
-      <div className="mb-4 flex items-center gap-3">
-        <div className="rounded-full bg-gradient-to-br from-violet via-magenta to-cyan p-[2.5px] shrink-0">
-          {creator.avatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={creator.avatarUrl}
-              alt=""
-              className="size-14 rounded-full object-cover"
-            />
-          ) : (
-            <div
-              className={cn(
-                "flex size-14 items-center justify-center rounded-full font-display text-sm font-bold text-white",
-                creator.grad ?? "bg-gradient-to-br from-violet-500 to-fuchsia-500",
-              )}
-            >
-              {initials}
-            </div>
-          )}
-        </div>
-        <div className="min-w-0">
-          <p className="truncate font-semibold leading-tight">{creator.name}</p>
-          <p className="truncate text-xs text-zinc-200">{creator.categoryLabel}</p>
-        </div>
-      </div>
-      <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] tracking-wide text-mist">
-        <span>
-          <span className="font-semibold text-white">{creator.followers}</span>{" "}
-          sledujících
-        </span>
-        <span>
-          <span className="font-semibold text-white">{creator.reach}</span>{" "}
-          dosah/30 dní
-        </span>
-      </div>
-      <p className="mb-3 font-mono text-[11px] tracking-wide text-zinc-200">
-        Publikum {creator.audienceAge}
-      </p>
-      <div className="mb-3 flex flex-wrap gap-1.5">
-        {creator.platforms.map((p) => (
-          <span
-            key={p}
-            className="rounded-md border border-white/[0.09] bg-white/[0.04] px-2 py-1 font-mono text-[10px] tracking-wide text-cyan/85"
-          >
-            {platformLabel(p)}
-          </span>
-        ))}
-      </div>
-      <span className="mb-3 inline-flex self-start rounded-md border border-white/[0.09] bg-white/[0.04] px-2 py-1 font-mono text-[10px] tracking-wide text-cyan/85">
-        Licence od {bestLicenseLabel(creator)}
-      </span>
-      <p className="mb-4 text-sm text-zinc-200">{packagesSummary(creator)}</p>
-      <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-4">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-wide text-zinc-200">
-            od
-          </p>
-          <p className="font-display text-lg font-bold bg-gradient-to-r from-accent-soft via-magenta to-cyan bg-clip-text text-transparent">
-            {minCreatorPrice(creator).toLocaleString("cs-CZ")} Kč
-          </p>
-        </div>
-        <Button type="button" size="sm" variant="default">
-          Detail a balíčky
-        </Button>
-      </div>
-    </article>
-  );
-}
-
 function MarketplaceGrid() {
-  const { filters, resetFilters } = useMarketplaceFilters();
-  const filtered = filterMarketplaceCreators(marketplaceCreators, filters);
-  const totalCreators = marketplaceCreators.length;
+  const { filters, resetFilters, creators } = useMarketplaceFilters();
+  const filtered = filterMarketplaceCreators(creators, filters);
+  const gigs = flattenCreatorGigs(filtered);
+  const totalCreators = creators.length;
   const emptyCatalog = totalCreators === 0;
 
   return (
     <section id="marketplace" className={section}>
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+        <div className="mb-6 flex flex-col gap-4 border-b border-white/[0.08] pb-6 md:flex-row md:items-end md:justify-between">
           <div>
             <h2 className="font-display text-3xl font-bold md:text-4xl">
-              Tržiště tvůrců
+              Tržiště balíčků
             </h2>
-            <p className="mt-2 max-w-xl text-zinc-200">
-              Nastav platformu, obor a rozpočet. Seznam tvůrců se hned přizpůsobí,
-              abys rychle našel ty, kteří sedí tvé značce i kampani.
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-200">
+              Každá karta je konkrétní nabídka tvůrce. Najdi formát, obor a cenu,
+              pak otevři detail balíčku.
             </p>
-          </div>
-          <div className={resultCount} aria-live="polite">
-            {filtered.length} {marketplaceCreatorPlural(filtered.length)} odpovídá
-            filtru
           </div>
         </div>
 
-        {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filtered.map((creator, index) => (
-              <CreatorCard key={`${creator.name}-${index}`} creator={creator} index={index} />
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className={resultCount} aria-live="polite">
+            {gigs.length} {marketplaceGigPlural(gigs.length)} odpovídá filtru
+          </div>
+          <p className="text-xs text-mist">Řazení: doporučené</p>
+        </div>
+
+        {gigs.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {gigs.map((listing) => (
+              <MarketplaceGigCard
+                key={`${listing.creator.slug}-${listing.pkg.id}`}
+                listing={listing}
+              />
             ))}
           </div>
         ) : (
@@ -380,9 +325,13 @@ function MarketplaceGrid() {
   );
 }
 
-export function FirmsMarketplace() {
+export function FirmsMarketplace({
+  creators,
+}: {
+  creators: MarketplaceCreator[];
+}) {
   return (
-    <MarketplaceFilterProvider>
+    <MarketplaceFilterProvider creators={creators}>
       <FirmsHeroSection />
       <MarketplaceGrid />
     </MarketplaceFilterProvider>

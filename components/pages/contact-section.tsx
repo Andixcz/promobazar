@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { IllustrationIcon } from "@/components/ui/illustration-icon";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { section } from "@/lib/ui-surfaces";
+import { section, surface } from "@/lib/ui-surfaces";
+import { cn } from "@/lib/utils";
 
 const SUPPORT_EMAIL = "podpora@promobazar.cz";
 
@@ -21,7 +22,7 @@ function ContactForm() {
     const name = String(data.get("name") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
     const message = String(data.get("message") ?? "").trim();
-    const subject = encodeURIComponent(`Kontakt promobazar — ${name}`);
+    const subject = encodeURIComponent(`Kontakt promobazar: ${name}`);
     const body = encodeURIComponent(
       `Jméno: ${name}\nE-mail: ${email}\n\n${message}`,
     );
@@ -65,7 +66,7 @@ function ContactForm() {
 export function ContactSection() {
   return (
     <section id="kontakt" className={section}>
-      <div className="mx-auto grid max-w-7xl gap-10 rounded-2xl border border-white/[0.05] bg-panel p-8 md:grid-cols-2 md:p-14">
+      <div className={cn(surface, "mx-auto grid max-w-7xl gap-10 p-8 md:grid-cols-2 md:p-14")}>
         <div>
           <h2 className="font-display text-3xl font-bold md:text-4xl">
             Máš dotaz? Ozveme se.
@@ -75,12 +76,7 @@ export function ContactSection() {
           </p>
           <div className="mt-8 space-y-4 text-sm">
             <div className="flex items-center gap-3">
-              <span
-                className="flex size-10 shrink-0 items-center justify-center rounded-sm bg-cyan text-void"
-                aria-hidden
-              >
-                <Mail className="size-4" />
-              </span>
+              <IllustrationIcon name="Email" className="h-4 w-auto shrink-0" aria-hidden />
               {SUPPORT_EMAIL}
             </div>
           </div>

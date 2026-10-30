@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { landingCardStack } from "@/lib/ui-surfaces";
 
 export type FaqItem = { question: string; answer: string };
 
@@ -73,9 +74,10 @@ export function FaqSection({ items = BRAND_FAQ_ITEMS }: { items?: readonly FaqIt
               <div
                 key={item.question}
                 className={cn(
-                  "overflow-hidden rounded-md first:rounded-t-2xl last:rounded-b-2xl border bg-panel transition-[border-color,background-color,box-shadow] duration-300 ease-out",
+                  landingCardStack,
+                  "overflow-hidden rounded-md first:rounded-t-2xl last:rounded-b-2xl border transition-[border-color,background-color,box-shadow] duration-300 ease-out",
                   isOpen
-                    ? "border-cyan bg-cyan"
+                    ? "border-cyan bg-[var(--color-cyan)]"
                     : "border-white/[0.09] hover:border-white/[0.16]"
                 )}
               >
