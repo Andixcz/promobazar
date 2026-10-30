@@ -72,7 +72,7 @@ function NavMoreDropdown({
         />
       </Button>
       <div
-        className={cn(dropdownPanelNav, open && "open z-[200]")}
+        className={cn(dropdownPanelNav, "rounded-xl", open && "open z-[200]")}
         onClick={() => setOpen(false)}
       >
         {children}
@@ -172,7 +172,7 @@ function AudienceActionButtons({
         size="sm"
         variant="outline"
         className={cn(
-          "px-2.5 text-xs sm:px-4 sm:text-sm",
+          "rounded-lg px-2.5 text-xs sm:px-4 sm:text-sm",
           audienceSwitcherActive,
           !isCreators && "active",
         )}
@@ -188,7 +188,7 @@ function AudienceActionButtons({
         size="sm"
         variant="outline"
         className={cn(
-          "px-2.5 text-xs sm:px-4 sm:text-sm",
+          "rounded-lg px-2.5 text-xs sm:px-4 sm:text-sm",
           audienceSwitcherActive,
           isCreators && "active",
         )}
@@ -349,7 +349,7 @@ export function SiteHeader() {
       ) : null}
 
       <header className="fixed top-0 inset-x-0 z-40 px-5 md:px-8 pt-4">
-        <div className="relative mx-auto max-w-7xl overflow-visible rounded-md border border-white/[0.09] bg-panel">
+        <div className="relative mx-auto max-w-7xl overflow-visible rounded-2xl border border-white/[0.05] bg-panel">
         <div className="grid max-w-7xl grid-cols-[1fr_auto] items-center gap-3 overflow-visible px-3 py-3 sm:px-4 lg:grid-cols-[auto_1fr_auto] md:px-6 md:gap-4">
           <Link
             href={
@@ -382,7 +382,7 @@ export function SiteHeader() {
               type="button"
               variant="outline"
               size="icon"
-              className="lg:hidden shrink-0"
+              className="shrink-0 rounded-lg lg:hidden"
               aria-expanded={mobileOpen}
               aria-controls="site-mobile-nav"
               aria-label={mobileOpen ? "Zavřít menu" : "Otevřít menu"}

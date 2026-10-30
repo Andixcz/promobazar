@@ -65,7 +65,7 @@ export function FaqSection({ items = BRAND_FAQ_ITEMS }: { items?: readonly FaqIt
         <h2 className="text-center font-display text-3xl font-bold md:text-4xl">
           Časté otázky
         </h2>
-        <div className="mt-12 space-y-3">
+        <div className="mt-12 flex flex-col gap-2">
           {items.map((item, index) => {
             const isOpen = openIndex === index;
 
@@ -73,9 +73,9 @@ export function FaqSection({ items = BRAND_FAQ_ITEMS }: { items?: readonly FaqIt
               <div
                 key={item.question}
                 className={cn(
-                  "overflow-hidden rounded-md border bg-panel transition-[border-color,background-color,box-shadow] duration-300 ease-out",
+                  "overflow-hidden rounded-md first:rounded-t-2xl last:rounded-b-2xl border bg-panel transition-[border-color,background-color,box-shadow] duration-300 ease-out",
                   isOpen
-                    ? "border-cyan/35 bg-cyan/[0.09] shadow-[inset_0_1px_0_0_rgba(0,229,255,0.22)]"
+                    ? "border-cyan bg-cyan"
                     : "border-white/[0.09] hover:border-white/[0.16]"
                 )}
               >
@@ -88,15 +88,15 @@ export function FaqSection({ items = BRAND_FAQ_ITEMS }: { items?: readonly FaqIt
                   <span
                     className={cn(
                       "pr-2 font-semibold leading-snug transition-colors duration-200",
-                      isOpen ? "text-white" : "text-foreground/95"
+                      isOpen ? "text-void" : "text-foreground/95"
                     )}
                   >
                     {item.question}
                   </span>
                   <ChevronDown
                     className={cn(
-                      "size-5 shrink-0 text-cyan transition-transform duration-300 ease-out",
-                      isOpen && "rotate-180"
+                      "size-5 shrink-0 transition-transform duration-300 ease-out",
+                      isOpen ? "rotate-180 text-void" : "text-cyan"
                     )}
                     aria-hidden
                   />
@@ -113,11 +113,11 @@ export function FaqSection({ items = BRAND_FAQ_ITEMS }: { items?: readonly FaqIt
                       className={cn(
                         "border-t px-5 pb-5 pt-4 transition-[opacity,background-color,border-color] duration-300 md:px-6 md:pb-6",
                         isOpen
-                          ? "border-cyan/20 bg-cyan/[0.06] opacity-100"
+                          ? "border-void/10 bg-void/65 opacity-100"
                           : "border-white/[0.08] opacity-0"
                       )}
                     >
-                      <p className="text-sm leading-relaxed text-zinc-200 md:max-w-3/4">
+                      <p className={cn("text-sm leading-relaxed md:max-w-3/4", isOpen ? "text-white" : "text-zinc-200")}>
                         {item.answer}
                       </p>
                     </div>

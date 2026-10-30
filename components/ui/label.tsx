@@ -11,7 +11,7 @@ const labelVariants = cva(fieldLabel, {
   variants: {
     size: {
       default: "mb-1.5",
-      sm: "mb-1.5 text-[10px]",
+      sm: "mb-1.5 text-[11px]",
       lg: "mb-2",
     },
   },

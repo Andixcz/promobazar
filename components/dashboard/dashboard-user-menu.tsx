@@ -41,7 +41,7 @@ export function DashboardUserMenu({
       {isSidebar ? (
         <button
           type="button"
-          className="flex w-full items-center gap-2.5 rounded-sm px-2.5 py-2 text-left transition-colors hover:bg-white/[0.04]"
+          className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-white/[0.04]"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-haspopup="menu"

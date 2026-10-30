@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 type BrandPlanId = "starter" | "growth";
 const BRAND_PLAN_STORAGE_KEY = "pb_brand_plan";
 const activePlanButtonClass =
-  "mt-8 flex w-full cursor-default items-center justify-center gap-2 rounded-sm border border-white/[0.08] bg-white/[0.04] py-3.5 text-sm font-semibold text-mist";
+  "mt-8 flex w-full cursor-default items-center justify-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] py-3.5 text-sm font-semibold text-mist";
 
 function readBrandPlan(): BrandPlanId {
   if (typeof window === "undefined") return "starter";
@@ -95,8 +95,8 @@ export function FirmsPage() {
           <p className="mx-auto mt-3 max-w-xl text-center text-zinc-200">
             Tři kroky mezi tvým produktem a hotovým promo videem na síti.
           </p>
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
-            <div className="relative rounded-md border border-white/[0.09] bg-panel p-7">
+          <div className="mt-14 grid gap-2 md:grid-cols-3">
+            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-7">
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
                 1
               </div>
@@ -106,7 +106,7 @@ export function FirmsPage() {
                 produkty jako ten tvůj.
               </p>
             </div>
-            <div className="relative rounded-md border border-white/[0.09] bg-panel p-7">
+            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-7">
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
                 2
               </div>
@@ -115,7 +115,7 @@ export function FirmsPage() {
                 Napíšeš zadání a zaplatíš celou částku. Tvůrce má 48 hodin na přijetí.
               </p>
             </div>
-            <div className="relative rounded-md border border-white/[0.09] bg-panel p-7">
+            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-7">
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
                 3
               </div>
@@ -129,7 +129,7 @@ export function FirmsPage() {
       </section>
 
       <section className="px-5 py-16 md:px-8 md:py-12">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 rounded-md border border-white/[0.09] bg-panel p-8 md:flex-row md:p-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 rounded-2xl border border-white/[0.05] bg-panel p-8 md:flex-row md:p-10">
           <div>
             <span className="font-body text-[11px] font-medium uppercase tracking-wide text-cyan">
               Jsi influencer nebo UGC tvůrce?
@@ -179,8 +179,8 @@ export function FirmsPage() {
               </p>
             </div>
           </div>
-          <div className="mt-10 grid gap-7 pt-3 md:grid-cols-3 md:items-stretch">
-            <div className="relative rounded-md border border-white/[0.09] bg-panel p-8">
+          <div className="mt-10 grid gap-2 pt-3 md:grid-cols-3 md:items-stretch">
+            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-8">
               <h3 className="font-display text-xl font-semibold">Starter</h3>
               <p className="mt-1.5 text-sm text-zinc-200">Pro první test influencer marketingu</p>
               <p className="mt-7 font-display text-4xl font-extrabold">
@@ -197,7 +197,7 @@ export function FirmsPage() {
               </ul>
               <BrandPlanCta plan="starter" />
             </div>
-            <div className="relative z-10 rounded-md border border-magenta/40 border-white/[0.09] bg-panel p-8">
+            <div className="relative z-10 rounded-2xl border border-cyan/40 bg-panel p-8">
               <span className="absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-sm border border-transparent bg-cyan px-4 py-1.5 font-body text-[11px] font-medium uppercase tracking-wide text-void">
                 Nejoblíbenější
               </span>
@@ -215,7 +215,7 @@ export function FirmsPage() {
               </ul>
               <BrandPlanCta plan="growth" />
             </div>
-            <div className="relative rounded-md border border-white/[0.09] bg-panel p-8">
+            <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-8">
               <h3 className="font-display text-xl font-semibold">Scale</h3>
               <p className="mt-1.5 text-sm text-zinc-200">
                 Pro značky s vlastním affiliate programem
@@ -241,7 +241,7 @@ export function FirmsPage() {
       <FaqSection />
 
       <section id="firms-cta" className="px-5 py-16 md:px-8 md:py-12">
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-md border border-white/[0.09] bg-panel p-10 text-center md:p-16">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-2xl border border-white/[0.05] bg-panel p-10 text-center md:p-16">
           <h2 className="font-display text-3xl font-bold md:text-4xl">
             Připraven na první kampaň?
           </h2>

@@ -45,7 +45,7 @@ function MarkdownTextarea({
         <button
           type="button"
           className={cn(
-            "rounded-sm px-2 py-1 font-medium transition-colors",
+            "rounded-lg px-2 py-1 font-medium transition-colors",
             mode === "write"
               ? "bg-white/[0.1] text-white"
               : "text-mist hover:text-white",
@@ -57,7 +57,7 @@ function MarkdownTextarea({
         <button
           type="button"
           className={cn(
-            "rounded-sm px-2 py-1 font-medium transition-colors",
+            "rounded-lg px-2 py-1 font-medium transition-colors",
             mode === "preview"
               ? "bg-white/[0.1] text-white"
               : "text-mist hover:text-white",

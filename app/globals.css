@@ -9,15 +9,15 @@
 @source "../lib/**/*.{js,ts}";
 
 @theme {
-  --color-void: #08070d;
+  --color-void: #0d0c0f;
   --color-ink: #0e0c17;
-  --color-panel: #13111e;
+  --color-panel: #1c1b20;
   --color-violet: #7c3aed;
   --color-violet-400: #9f67ff;
   --color-violet-600: #6425d0;
   --color-magenta: #e838ff;
-  --color-cyan: #00e5ff;
-  --color-mist: #a5a0be;
+  --color-cyan: #7dbcff;
+  --color-mist: #d4d4d8;
   --color-foreground: #f2f0fa;
   --color-accent-soft: #b98cff;
   --color-indigo-glow: #a5b4fc;
@@ -74,23 +74,7 @@
 
   body {
     @apply font-body antialiased bg-background text-foreground;
-    background:
-      radial-gradient(
-        1100px 600px at 12% -10%,
-        color-mix(in srgb, var(--color-violet) 35%, transparent),
-        transparent 60%
-      ),
-      radial-gradient(
-        900px 500px at 90% 0%,
-        color-mix(in srgb, var(--color-cyan) 16%, transparent),
-        transparent 55%
-      ),
-      radial-gradient(
-        800px 700px at 50% 110%,
-        color-mix(in srgb, var(--color-magenta) 18%, transparent),
-        transparent 55%
-      ),
-      var(--color-void);
+    background: var(--color-void);
   }
 
   body.dashboard-app {
@@ -228,8 +212,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: #7dbcff;
+  --primary-foreground: #08070d;
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -248,8 +232,8 @@
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: #7dbcff;
+  --sidebar-primary-foreground: #08070d;
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
@@ -257,24 +241,24 @@
 }
 
 .dark {
-  --background: #08070d;
+  --background: #0d0c0f;
   --foreground: #f2f0fa;
   --card: #13111e;
   --card-foreground: #f2f0fa;
   --popover: #15161f;
   --popover-foreground: #f2f0fa;
-  --primary: #7c3aed;
-  --primary-foreground: #f2f0fa;
+  --primary: #7dbcff;
+  --primary-foreground: #08070d;
   --secondary: color-mix(in srgb, #f2f0fa 8%, #13111e);
   --secondary-foreground: #f2f0fa;
   --muted: color-mix(in srgb, #f2f0fa 6%, #13111e);
-  --muted-foreground: #a5a0be;
+  --muted-foreground: #d4d4d8;
   --accent: color-mix(in srgb, #7c3aed 22%, #13111e);
   --accent-foreground: #f2f0fa;
   --destructive: #ef4444;
   --border: color-mix(in srgb, #f2f0fa 12%, transparent);
   --input: color-mix(in srgb, #f2f0fa 14%, transparent);
-  --ring: #9f67ff;
+  --ring: #7dbcff;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -282,8 +266,8 @@
   --chart-5: oklch(0.269 0 0);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: #7dbcff;
+  --sidebar-primary-foreground: #08070d;
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);

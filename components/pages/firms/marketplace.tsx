@@ -135,7 +135,7 @@ function FirmsHeroSection() {
         className="mx-auto mt-11 max-w-7xl animate-fade-up"
         style={{ animationDelay: ".1s" }}
       >
-        <div className="relative rounded-md border border-white/[0.09] bg-panel p-2.5 md:p-3">
+        <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-2.5 md:p-3">
           <div className="flex flex-col items-stretch lg:flex-row">
             <div className="relative flex-1 px-5 py-3.5 lg:py-3">
               <Label>Kde chceš promo?</Label>
@@ -223,8 +223,8 @@ function CreatorCard({
   return (
     <article
       className={cn(
-        "flex flex-col rounded-md border border-white/[0.09] bg-panel p-6 transition-colors duration-300 hover:border-magenta/40",
-        creator.isPro && "border-violet-500/45",
+        "flex flex-col rounded-2xl border border-white/[0.05] bg-panel p-6 transition-colors duration-300 hover:border-cyan/40",
+        creator.isPro && "border-cyan/45",
       )}
       style={{ animationDelay: `${(index % 8) * 0.04}s` }}
     >
@@ -275,13 +275,13 @@ function CreatorCard({
         {creator.platforms.map((p) => (
           <span
             key={p}
-            className="rounded-md border border-white/[0.09] bg-white/[0.04] px-2 py-1 font-mono text-[10px] tracking-wide text-cyan-200"
+            className="rounded-md border border-white/[0.09] bg-white/[0.04] px-2 py-1 font-mono text-[10px] tracking-wide text-cyan/85"
           >
             {platformLabel(p)}
           </span>
         ))}
       </div>
-      <span className="mb-3 inline-flex self-start rounded-md border border-white/[0.09] bg-white/[0.04] px-2 py-1 font-mono text-[10px] tracking-wide text-cyan-200">
+      <span className="mb-3 inline-flex self-start rounded-md border border-white/[0.09] bg-white/[0.04] px-2 py-1 font-mono text-[10px] tracking-wide text-cyan/85">
         Licence od {bestLicenseLabel(creator)}
       </span>
       <p className="mb-4 text-sm text-zinc-200">{packagesSummary(creator)}</p>
@@ -328,7 +328,7 @@ function MarketplaceGrid() {
         </div>
 
         {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((creator, index) => (
               <CreatorCard key={`${creator.name}-${index}`} creator={creator} index={index} />
             ))}

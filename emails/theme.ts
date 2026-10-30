@@ -4,8 +4,8 @@ export const emailColors = {
   panel: "#13111e",
   ink: "#0e0c17",
   foreground: "#f2f0fa",
-  mist: "#a5a0be",
-  cyan: "#00e5ff",
+  mist: "#d4d4d8",
+  cyan: "#7dbcff",
   violet: "#7c3aed",
   border: "rgba(255, 255, 255, 0.12)",
 } as const;

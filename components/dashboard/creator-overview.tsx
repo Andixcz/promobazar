@@ -46,7 +46,7 @@ export function CreatorOverview({
 
   return (
     <div className="space-y-10">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-5">
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
           <DashboardStat
             key={s.label}
@@ -62,7 +62,7 @@ export function CreatorOverview({
         <h2 className="mb-3 font-body text-[11px] font-medium uppercase tracking-wide text-mist">
           Další sekce
         </h2>
-        <div className="grid gap-4 md:grid-cols-2 md:gap-5">
+        <div className="grid gap-2 md:grid-cols-2">
           <DashboardSectionLink
             href={dashboardPath("objednavky")}
             icon={Receipt}

@@ -13,7 +13,7 @@ import { isCreatorsLandingPath } from "@/lib/landing-routes";
 import { dropdownPanelNav, mobileHeaderMenuLink } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
-const ddPanelClass = dropdownPanelNav;
+const ddPanelClass = cn(dropdownPanelNav, "rounded-xl");
 
 const ddOptionClass =
   "dd-option cursor-pointer rounded-sm px-3 py-2 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white";
@@ -87,7 +87,7 @@ export function HeaderAccountMenu({ layout = "dropdown" }: HeaderAccountMenuProp
           size="icon"
           aria-label="Účet"
           aria-expanded={authMenuOpen}
-          className="dd-trigger shrink-0"
+          className="dd-trigger shrink-0 rounded-lg"
           onClick={(e) => {
             e.stopPropagation();
             setAuthMenuOpen((was) => !was);
@@ -153,7 +153,7 @@ export function HeaderAccountMenu({ layout = "dropdown" }: HeaderAccountMenuProp
           "user-avatar-initials dd-trigger inline-flex size-9 shrink-0 items-center justify-center rounded-full",
           "bg-gradient-to-br from-violet-500 to-fuchsia-500 font-display text-[10px] font-bold text-white",
           "transition-opacity hover:opacity-90",
-          "outline-none focus-visible:ring-3 focus-visible:ring-violet-400/35",
+          "outline-none focus-visible:ring-3 focus-visible:ring-cyan/35",
         )}
         onClick={(e) => {
           e.stopPropagation();

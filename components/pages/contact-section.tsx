@@ -65,7 +65,7 @@ function ContactForm() {
 export function ContactSection() {
   return (
     <section id="kontakt" className={section}>
-      <div className="mx-auto grid max-w-7xl gap-10 rounded-md border border-white/[0.09] bg-panel p-8 md:grid-cols-2 md:p-14">
+      <div className="mx-auto grid max-w-7xl gap-10 rounded-2xl border border-white/[0.05] bg-panel p-8 md:grid-cols-2 md:p-14">
         <div>
           <span className={eyebrow}>Kontakt</span>
           <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">

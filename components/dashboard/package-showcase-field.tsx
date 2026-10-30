@@ -130,7 +130,7 @@ export function PackageShowcaseField({
             type="button"
             disabled={disabled || uploading}
             onClick={() => inputRef.current?.click()}
-            className="flex aspect-[4/3] flex-col items-center justify-center gap-1.5 rounded-sm border border-dashed border-white/[0.18] bg-white/[0.02] text-mist transition-colors hover:border-white/[0.28] hover:bg-white/[0.04] hover:text-white disabled:opacity-50"
+            className="flex aspect-[4/3] flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-white/[0.18] bg-white/[0.02] text-mist transition-colors hover:border-white/[0.28] hover:bg-white/[0.04] hover:text-white disabled:opacity-50"
           >
             <ImagePlus className="size-5" aria-hidden />
             <span className="text-xs font-medium">

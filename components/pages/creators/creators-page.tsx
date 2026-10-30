@@ -44,7 +44,7 @@ const creatorLoginHref = `${AUTH_LOGIN_PATH}?callbackUrl=${encodeURIComponent(
 )}`;
 
 const stepPanelClass =
-  "relative rounded-md border border-white/[0.09] bg-panel p-7";
+  "relative rounded-2xl border border-white/[0.05] bg-panel p-7";
 
 function PricingCheckItem({ children }: { children: ReactNode }) {
   return (
@@ -155,7 +155,7 @@ export function CreatorsPage() {
           <p className="mx-auto mt-3 max-w-xl text-center text-zinc-200">
             Tři kroky. Žádné domlouvání ve zprávách. Jen jasný proces a peníze, které nepřijdou pozdě.
           </p>
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
+          <div className="mt-14 grid gap-2 md:grid-cols-3">
             <div className={stepPanelClass}>
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
                 1
@@ -202,7 +202,7 @@ export function CreatorsPage() {
               chodí přes platformu.
             </p>
           </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <div className="mt-12 grid gap-2 md:grid-cols-2">
             <div className={stepPanelClass}>
               <div className="mb-4 flex size-11 items-center justify-center rounded-sm bg-cyan/15 text-cyan">
                 <Link2 className="size-5" strokeWidth={1.5} aria-hidden />
@@ -242,7 +242,7 @@ export function CreatorsPage() {
               makáš.
             </p>
           </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mt-12 grid gap-2 md:grid-cols-3">
             <div className={stepPanelClass}>
               <div className="mb-4 flex size-11 items-center justify-center rounded-sm bg-cyan/15 text-cyan">
                 <Package className="size-5" strokeWidth={1.5} aria-hidden />
@@ -288,7 +288,7 @@ export function CreatorsPage() {
               Základ ti stačí na rozjezd. Když objednávek přibude, PRO tě posune výš ve vyhledávání.
             </p>
           </div>
-          <div className="mt-10 grid gap-7 pt-3 md:grid-cols-2 md:items-stretch lg:mx-auto lg:max-w-4xl">
+          <div className="mt-10 grid gap-2 pt-3 md:grid-cols-2 md:items-stretch lg:mx-auto lg:max-w-4xl">
             <div className={cn(pricingCard, "p-8")}>
               <h3 className="font-display text-xl font-semibold">Základ</h3>
               <p className="mt-1.5 text-sm text-zinc-200">První zakázky, nulové riziko</p>
@@ -309,7 +309,7 @@ export function CreatorsPage() {
                 Založit zdarma
               </Link>
             </div>
-            <div className="relative z-10 rounded-md border border-magenta/40 border-white/[0.09] bg-panel p-8">
+            <div className="relative z-10 rounded-2xl border border-cyan/40 bg-panel p-8">
               <span className="absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-sm border border-transparent bg-cyan px-4 py-1.5 font-body text-[11px] font-medium uppercase tracking-wide text-void">
                 Doporučujeme
               </span>
@@ -338,7 +338,7 @@ export function CreatorsPage() {
       </section>
 
       <section id="creators-cta" className={section}>
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-md border border-white/[0.09] bg-panel p-10 text-center md:p-16">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-2xl border border-white/[0.05] bg-panel p-10 text-center md:p-16">
           <h2 className="font-display text-3xl font-bold md:text-4xl">
             Přestaň prodávat sám sebe v inboxu
           </h2>
