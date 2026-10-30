@@ -11,3 +11,5 @@ export function dashboardPackageNewPath() {
 export function dashboardPackageEditPath(packageId: string) {
   return `${dashboardPackagesListPath()}/${packageId}`;
 }
+
+export { packagePublicPath } from "@/lib/marketplace/public-routes";

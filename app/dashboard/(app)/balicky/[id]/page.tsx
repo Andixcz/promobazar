@@ -39,7 +39,12 @@ export default async function DashboardEditPackagePage({ params }: PageProps) {
 
   return (
     <DashboardShell title="Upravit balíček">
-      <CreatorPackageEditor mode="edit" packageId={pkg.id} initial={pkg} />
+      <CreatorPackageEditor
+        mode="edit"
+        packageId={pkg.id}
+        initial={pkg}
+        creatorSlug={profile.slug}
+      />
     </DashboardShell>
   );
 }

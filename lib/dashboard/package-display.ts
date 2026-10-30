@@ -28,6 +28,7 @@ export type PackagePreviewFields = {
   description: string;
   showcaseUrls: string[];
   bannerUrl: string | null;
+  previewVideoUrl: string;
 };
 
 export function formatPackagePrice(priceCzk: number) {
@@ -52,6 +53,14 @@ export const PACKAGE_META_CHIP =
 export const PACKAGE_META_CHIP_ACCENT =
   "inline-flex items-center rounded-sm border border-cyan/25 bg-cyan/[0.07] px-2 py-0.5 text-[11px] font-medium text-cyan";
 
+import type { CreatorPackageStatus } from "@/lib/db/schema";
+
+export function packageStatusLabel(status: CreatorPackageStatus) {
+  if (status === "published") return "Aktivní";
+  if (status === "private") return "Neaktivní";
+  return "Koncept";
+}
+
 export const DEFAULT_PACKAGE_EDITOR_VALUES: PackagePreviewFields = {
   name: "",
   format: "reel",
@@ -62,4 +71,5 @@ export const DEFAULT_PACKAGE_EDITOR_VALUES: PackagePreviewFields = {
   description: "",
   showcaseUrls: [],
   bannerUrl: null,
+  previewVideoUrl: "",
 };

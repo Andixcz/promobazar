@@ -5,6 +5,15 @@ export const MARKETPLACE_CATEGORIES = [
   { value: "gastro", label: "Gastro & Jídlo" },
   { value: "tech", label: "Tech & Gadgets" },
   { value: "lifestyle", label: "Lifestyle" },
+  { value: "travel", label: "Cestování" },
+  { value: "finance", label: "Finance & podnikání" },
+  { value: "education", label: "Vzdělávání" },
+  { value: "home", label: "Domov & DIY" },
+  { value: "auto", label: "Auto & mobilita" },
+  { value: "pets", label: "Mazlíčci" },
+  { value: "culture", label: "Kultura & eventy" },
+  { value: "eco", label: "Udržitelnost" },
+  { value: "sport", label: "Sport & outdoor" },
 ] as const;
 
 export const PACKAGE_FORMATS = [

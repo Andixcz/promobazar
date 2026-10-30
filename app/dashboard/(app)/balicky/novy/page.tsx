@@ -22,7 +22,7 @@ export default async function DashboardNewPackagePage() {
       title="Nový balíček"
       description="Nastav cenu, formát a co balíček obsahuje."
     >
-      <CreatorPackageEditor mode="create" />
+      <CreatorPackageEditor mode="create" creatorSlug={profile.slug} />
     </DashboardShell>
   );
 }

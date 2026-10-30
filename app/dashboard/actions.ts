@@ -19,6 +19,10 @@ import {
   normalizePackageShowcaseUrls,
   PACKAGE_SHOWCASE_MAX,
 } from "@/lib/dashboard/package-media";
+import {
+  normalizePackagePreviewVideoUrl,
+  packagePreviewVideoError,
+} from "@/lib/dashboard/package-video";
 import { isAllowedProfileMediaUrl } from "@/lib/storage/storage-url";
 import {
   DELIVERY_OPTIONS,
@@ -28,7 +32,9 @@ import {
 import {
   brandJobPost,
   creatorPackage,
+  creatorPackageStatusValues,
   memberProfile,
+  type CreatorPackageStatus,
   type MemberRole,
 } from "@/lib/db/schema";
 
@@ -43,6 +49,8 @@ function revalidateDashboard(packageId?: string) {
   }
   revalidatePath(dashboardPath("poptavky"));
   revalidatePath(dashboardPath("objednavky"));
+  revalidatePath("/");
+  revalidatePath("/tvurce", "layout");
 }
 
 async function ownedProfile() {
@@ -127,6 +135,8 @@ export type PackageInput = {
   description: string;
   showcaseUrls?: string[];
   bannerUrl?: string | null;
+  previewVideoUrl?: string | null;
+  status?: CreatorPackageStatus;
 };
 
 /** Stejná pravidla pro vytvoření i úpravu; cena drží limity checkoutu (100 až 500 000 Kč). */
@@ -163,6 +173,16 @@ function validatePackage(input: PackageInput, userId: string) {
   }
   const showcaseUrls = normalizePackageShowcaseUrls(input.showcaseUrls, userId);
   const bannerUrl = normalizePackageBannerUrl(input.bannerUrl, showcaseUrls);
+  const videoError = packagePreviewVideoError(input.previewVideoUrl);
+  if (videoError) {
+    return { ok: false as const, error: videoError };
+  }
+  const previewVideoUrl = normalizePackagePreviewVideoUrl(input.previewVideoUrl);
+  const status =
+    input.status &&
+    (creatorPackageStatusValues as readonly string[]).includes(input.status)
+      ? input.status
+      : "draft";
 
   return {
     ok: true as const,
@@ -176,6 +196,8 @@ function validatePackage(input: PackageInput, userId: string) {
       description,
       showcaseUrls,
       bannerUrl,
+      previewVideoUrl,
+      status,
     },
   };
 }
@@ -217,6 +239,36 @@ export async function updateCreatorPackage(packageId: string, input: PackageInpu
   const [updated] = await db
     .update(creatorPackage)
     .set(valid.values)
+    .where(
+      and(
+        eq(creatorPackage.id, packageId),
+        eq(creatorPackage.userId, profile.userId),
+      ),
+    )
+    .returning({ id: creatorPackage.id });
+  if (!updated) return { ok: false as const, error: "Balíček jsme nenašli." };
+
+  revalidateDashboard(packageId);
+  return { ok: true as const };
+}
+
+export async function setCreatorPackageStatus(
+  packageId: string,
+  status: CreatorPackageStatus,
+) {
+  const ctx = await ownedProfile();
+  if (!ctx.ok) return ctx;
+  const { profile } = ctx;
+  if (profile.role !== "creator") {
+    return { ok: false as const, error: "Balíčky může spravovat jen tvůrce." };
+  }
+  if (!(creatorPackageStatusValues as readonly string[]).includes(status)) {
+    return { ok: false as const, error: "Neplatný stav balíčku." };
+  }
+
+  const [updated] = await db
+    .update(creatorPackage)
+    .set({ status })
     .where(
       and(
         eq(creatorPackage.id, packageId),
