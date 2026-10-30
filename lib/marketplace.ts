@@ -1,4 +1,5 @@
 import type { FieldSelectOption } from "@/components/ui/field-select";
+import { MARKETPLACE_CATEGORIES } from "@/lib/dashboard/categories";
 
 export const marketplacePlatformOptions: FieldSelectOption[] = [
   { value: "all", label: "Všechny formáty" },
@@ -11,12 +12,7 @@ export const marketplacePlatformOptions: FieldSelectOption[] = [
 
 export const marketplaceCategoryOptions: FieldSelectOption[] = [
   { value: "all", label: "Všechny obory" },
-  { value: "fitness", label: "Fitness & Health" },
-  { value: "fashion", label: "Móda & Beauty" },
-  { value: "gaming", label: "Gaming & E-sports" },
-  { value: "gastro", label: "Gastro & Jídlo" },
-  { value: "tech", label: "Tech & Gadgets" },
-  { value: "lifestyle", label: "Lifestyle" },
+  ...MARKETPLACE_CATEGORIES,
 ];
 
 export const marketplaceLicenseOptions: FieldSelectOption[] = [
@@ -41,8 +37,9 @@ export const defaultMarketplaceFilters: MarketplaceFilters = {
   budget: 15_000,
 };
 
-/** Veřejný profil tvůrce v landing tržišti (zdroj: později API / DB). */
+/** Veřejný profil tvůrce v landing tržišti (zdroj: DB). */
 export type MarketplaceCreator = {
+  slug: string;
   name: string;
   initials: string;
   category: string;
@@ -51,7 +48,15 @@ export type MarketplaceCreator = {
   reach: string;
   audienceAge: string;
   platforms: string[];
-  packages: { name: string; price: number; license?: string }[];
+  packages: {
+    id: string;
+    name: string;
+    price: number;
+    license?: string;
+    format?: string;
+    bannerUrl?: string | null;
+    showcaseUrls?: string[];
+  }[];
   isPro?: boolean;
   grad?: string;
   avatarUrl?: string | null;
@@ -115,4 +120,10 @@ export function marketplaceCreatorPlural(n: number): string {
   if (n === 1) return "tvůrce";
   if (n >= 2 && n <= 4) return "tvůrci";
   return "tvůrců";
+}
+
+export function marketplaceGigPlural(n: number): string {
+  if (n === 1) return "balíček";
+  if (n >= 2 && n <= 4) return "balíčky";
+  return "balíčků";
 }
