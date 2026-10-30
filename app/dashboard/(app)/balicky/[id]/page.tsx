@@ -1,4 +1,5 @@
 import { and, eq } from "drizzle-orm";
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import { CreatorPackageEditor } from "@/components/dashboard/creator-package-editor";
@@ -7,6 +8,10 @@ import { dashboardPath } from "@/lib/dashboard-routes";
 import { requireDashboard } from "@/lib/dashboard/require-dashboard";
 import { db } from "@/lib/db";
 import { creatorPackage } from "@/lib/db/schema";
+
+export const metadata: Metadata = {
+  title: "Upravit balíček",
+};
 
 type PageProps = {
   params: Promise<{ id: string }>;

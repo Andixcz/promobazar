@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Strichpunkt_Sans, Geist } from "next/font/google";
 import "./globals.css";
+import { rootMetadataTitle } from "@/lib/site-metadata";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
@@ -27,8 +28,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title:
-    "Tržiště influencerů a UGC tvůrců | promobazar.cz",
+  title: rootMetadataTitle,
   description:
     "Tržiště influencerů a UGC tvůrců pro firmy a tvůrce. Vyber promo, nastav rozpočet a získej prodeje.",
 };

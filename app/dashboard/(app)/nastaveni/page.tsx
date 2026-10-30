@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
+
 import { AccountSettingsPanel } from "@/components/dashboard/account-settings-panel";
 import { StripePayoutCard } from "@/components/dashboard/stripe-payout-card";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { getAccountAuthContext } from "@/lib/auth-account-server";
 import { dashboardPath } from "@/lib/dashboard-routes";
 import { requireDashboard } from "@/lib/dashboard/require-dashboard";
+
+export const metadata: Metadata = {
+  title: "Nastavení",
+};
 
 export default async function DashboardAccountSettingsPage({
   searchParams,

@@ -1,4 +1,5 @@
 import { desc, eq } from "drizzle-orm";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { BrandJobsPanel } from "@/components/dashboard/brand-jobs-panel";
@@ -7,6 +8,10 @@ import { dashboardPath } from "@/lib/dashboard-routes";
 import { requireDashboard } from "@/lib/dashboard/require-dashboard";
 import { db } from "@/lib/db";
 import { brandJobPost } from "@/lib/db/schema";
+
+export const metadata: Metadata = {
+  title: "Poptávky",
+};
 
 export default async function DashboardJobsPage() {
   const { profile } = await requireDashboard();

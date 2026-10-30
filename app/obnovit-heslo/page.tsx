@@ -3,16 +3,16 @@ import { Suspense } from "react";
 
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
 import { ResetPasswordForm } from "@/components/auth/reset-password-form";
-import { LandingShell } from "@/components/landing/landing-shell";
+import { SiteShell } from "@/components/shared/site-shell";
 
 export const metadata: Metadata = {
-  title: "Obnovení hesla | promobazar.cz",
+  title: "Obnovení hesla",
   description: "Nastavení nového hesla k účtu promobazar.cz",
 };
 
 export default function ResetPasswordPage() {
   return (
-    <LandingShell>
+    <SiteShell>
       <AuthPageShell
         title="Nové heslo"
         description="Zvol si nové heslo pro přihlášení e-mailem."
@@ -21,6 +21,6 @@ export default function ResetPasswordPage() {
           <ResetPasswordForm />
         </Suspense>
       </AuthPageShell>
-    </LandingShell>
+    </SiteShell>
   );
 }

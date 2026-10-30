@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { NewOrderForm } from "@/components/dashboard/new-order-form";
@@ -14,6 +15,10 @@ import { marketplaceOrderStatusValues } from "@/lib/db/schema";
 import type { MarketplaceOrderStatus } from "@/lib/dashboard/marketplace-order";
 import { dashboardPath } from "@/lib/dashboard-routes";
 import { requireDashboard } from "@/lib/dashboard/require-dashboard";
+
+export const metadata: Metadata = {
+  title: "Objednávky",
+};
 
 export default async function DashboardOrdersPage({
   searchParams,

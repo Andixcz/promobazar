@@ -7,7 +7,6 @@
 @source "../components/**/*.{js,ts,jsx,tsx}";
 @source "../app/**/*.{js,ts,jsx,tsx}";
 @source "../lib/**/*.{js,ts}";
-@source "../public/app.js";
 
 @theme {
   --color-void: #08070d;
@@ -50,6 +49,7 @@
 @layer base {
   html {
     @apply scroll-smooth font-sans;
+    scroll-padding-top: calc(var(--spacing) * 24);
   }
 
   * {

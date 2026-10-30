@@ -1,4 +1,5 @@
 import { asc, eq } from "drizzle-orm";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { CreatorPackagesPanel } from "@/components/dashboard/creator-packages-panel";
@@ -7,6 +8,10 @@ import { dashboardPath } from "@/lib/dashboard-routes";
 import { requireDashboard } from "@/lib/dashboard/require-dashboard";
 import { db } from "@/lib/db";
 import { creatorPackage } from "@/lib/db/schema";
+
+export const metadata: Metadata = {
+  title: "Balíčky",
+};
 
 export default async function DashboardPackagesPage() {
   const { profile } = await requireDashboard();

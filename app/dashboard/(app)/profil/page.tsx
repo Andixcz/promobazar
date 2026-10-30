@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
@@ -8,6 +9,10 @@ import { listCreatorPlatformConnections } from "@/lib/dashboard/platform-linking
 import { canUsePlatformLinking } from "@/lib/dashboard/member-role";
 import { computeBadges } from "@/lib/dashboard/profile-server";
 import { requireDashboard } from "@/lib/dashboard/require-dashboard";
+
+export const metadata: Metadata = {
+  title: "Profil",
+};
 
 export default async function DashboardProfilePage() {
   const { session, profile } = await requireDashboard();

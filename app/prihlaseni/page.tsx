@@ -3,17 +3,17 @@ import { Suspense } from "react";
 
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
 import { SignInForm } from "@/components/auth/sign-in-form";
-import { LandingShell } from "@/components/landing/landing-shell";
+import { SiteShell } from "@/components/shared/site-shell";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Přihlášení | promobazar.cz",
+  title: "Přihlášení",
   description: "Přihlášení do účtu promobazar.cz",
 };
 
 export default function LoginPage() {
   return (
-    <LandingShell>
+    <SiteShell>
       <AuthPageShell
         title="Přihlášení"
         description="Zadej e-mail a heslo ke svému účtu."
@@ -22,6 +22,6 @@ export default function LoginPage() {
           <SignInForm />
         </Suspense>
       </AuthPageShell>
-    </LandingShell>
+    </SiteShell>
   );
 }

@@ -1,4 +1,5 @@
 import { count, eq } from "drizzle-orm";
+import type { Metadata } from "next";
 
 import { BrandOverview } from "@/components/dashboard/brand-overview";
 import { BuyerOverview } from "@/components/dashboard/buyer-overview";
@@ -8,6 +9,19 @@ import { getOrderStatsForUser } from "@/lib/dashboard/orders-server";
 import { requireDashboard } from "@/lib/dashboard/require-dashboard";
 import { db } from "@/lib/db";
 import { brandJobPost } from "@/lib/db/schema";
+
+function dashboardOverviewTitle(
+  role: "creator" | "buyer" | "brand",
+): string {
+  if (role === "creator") return "Dashboard pro tvůrce";
+  if (role === "buyer") return "Účet nakupujícího";
+  return "Panel pro značky";
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { profile } = await requireDashboard();
+  return { title: dashboardOverviewTitle(profile.role) };
+}
 
 export default async function DashboardOverviewPage() {
   const { profile } = await requireDashboard();
@@ -22,12 +36,7 @@ export default async function DashboardOverviewPage() {
     jobCount = row?.total ?? 0;
   }
 
-  const title =
-    profile.role === "creator"
-      ? "Dashboard pro tvůrce"
-      : profile.role === "buyer"
-        ? "Účet nakupujícího"
-        : "Panel pro značky";
+  const title = dashboardOverviewTitle(profile.role);
 
   const description =
     profile.role === "creator"
