@@ -9,9 +9,10 @@ import {
 } from "@/lib/storage/upload-file";
 
 import { Button } from "@/components/ui/button";
+import { ImageCropDialog } from "@/components/ui/image-crop-dialog";
 import { profileInitials } from "@/lib/dashboard/profile-display";
 import type { MemberProfileRow } from "@/lib/dashboard/profile-types";
-import { avatarPlaceholder, surface } from "@/lib/ui-surfaces";
+import { avatarPlaceholder, profileBannerAspect, profileBannerPlaceholder, surface } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
 type ProfileMediaHeaderProps = {
@@ -46,6 +47,7 @@ export function ProfileMediaHeader({
   const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl);
   const [bannerUrl, setBannerUrl] = useState(profile.bannerUrl);
   const [error, setError] = useState<string | null>(null);
+  const [crop, setCrop] = useState<{ file: File; kind: "avatar" | "banner" } | null>(null);
   const [uploading, setUploading] = useState<"avatar" | "banner" | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
   const bannerInput = useRef<HTMLInputElement>(null);
@@ -54,6 +56,18 @@ export function ProfileMediaHeader({
     email,
   );
   const name = displayName.trim() || profile.displayName || "Tvůj profil";
+
+  function selectFile(event: React.ChangeEvent<HTMLInputElement>, kind: "avatar" | "banner") {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = "";
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setError("Použij obrázek JPEG, PNG nebo WebP.");
+      return;
+    }
+    setError(null);
+    setCrop({ file, kind });
+  }
 
   async function onPick(
     file: File | undefined,
@@ -92,8 +106,8 @@ export function ProfileMediaHeader({
     <div className={cn(surface, "overflow-hidden")}>
       <div
         className={cn(
-          "relative h-36 w-full md:h-40",
-          !bannerUrl && "bg-gradient-to-br from-cyan/20 via-panel to-magenta/10",
+          "relative", profileBannerAspect,
+          !bannerUrl && profileBannerPlaceholder,
         )}
         style={
           bannerUrl
@@ -119,15 +133,16 @@ export function ProfileMediaHeader({
       <input
         ref={bannerInput}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp"
         className="hidden"
-        onChange={(e) => onPick(e.target.files?.[0], "banner")}
+        onChange={(e) => selectFile(e, "banner")}
       />
 
       <div className="relative flex flex-col gap-4 px-5 pb-5 pt-0 md:flex-row md:items-end md:px-6">
         <div className="-mt-10 flex shrink-0 items-end gap-4">
           <button
             type="button"
+            aria-label="Změnit profilovou fotku"
             onClick={() => avatarInput.current?.click()}
             disabled={uploading !== null}
             className="group relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-cyan/50 bg-panel p-0.5 disabled:opacity-60 md:size-[88px]"
@@ -155,9 +170,9 @@ export function ProfileMediaHeader({
           <input
             ref={avatarInput}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             className="hidden"
-            onChange={(e) => onPick(e.target.files?.[0], "avatar")}
+            onChange={(e) => selectFile(e, "avatar")}
           />
           <Button
             type="button"
@@ -201,6 +216,21 @@ export function ProfileMediaHeader({
           {error}
         </p>
       ) : null}
+      <ImageCropDialog
+        open={crop !== null}
+        file={crop?.file ?? null}
+        title={crop?.kind === "avatar" ? "Oříznout profilovou fotku" : "Oříznout banner"}
+        description={crop?.kind === "avatar" ? "Vyber část fotky, která se zobrazí v profilu." : "Vyber část banneru v poměru 5:2."}
+        aspect={crop?.kind === "avatar" ? 1 : 5 / 2}
+        circularCrop={crop?.kind === "avatar"}
+        preserveTransparency
+        onOpenChange={(open) => { if (!open) setCrop(null); }}
+        onConfirm={async (file) => {
+          if (!crop) return;
+          await onPick(file, crop.kind);
+          setCrop(null);
+        }}
+      />
     </div>
   );
 }

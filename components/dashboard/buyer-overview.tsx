@@ -53,6 +53,7 @@ export function BuyerOverview({
             icon={UserRound}
             title="Profil"
             description="Kontaktní údaje pro objednávky a komunikaci."
+            className="md:col-span-2"
           />
         </div>
       </div>

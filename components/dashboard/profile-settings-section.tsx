@@ -17,7 +17,7 @@ export function ProfileSettingsSection({
   className,
 }: ProfileSettingsSectionProps) {
   return (
-    <section className={cn(surface, className)}>
+    <section className={cn(surface, "overflow-visible", className)}>
       <div className="border-b border-white/[0.08] px-5 py-4 md:px-6">
         <h2 className="font-display text-base font-semibold text-white">
           {title}

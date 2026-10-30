@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { DashboardUserMenu } from "@/components/dashboard/dashboard-user-menu";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { dashboardPath } from "@/lib/dashboard-routes";
 import type { MemberProfileRow } from "@/lib/dashboard/profile-types";
 import { LANDING_FIRMS_PATH } from "@/lib/landing-routes";
@@ -76,12 +76,16 @@ function NavItem({
         "flex items-center gap-2.5 rounded-sm font-medium transition-colors",
         compact ? "shrink-0 px-3 py-2 text-xs" : "px-2.5 py-2 text-[13px]",
         active
-          ? "bg-white/[0.08] text-white"
+          ? "bg-cyan/12 text-white"
           : "text-mist hover:bg-white/[0.04] hover:text-white",
       )}
       aria-current={active ? "page" : undefined}
     >
-      <Icon className="size-[18px] shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
+      <Icon
+        className={cn("size-[18px] shrink-0", active ? "text-cyan" : "text-cyan/55")}
+        strokeWidth={1.5}
+        aria-hidden
+      />
       {label}
     </Link>
   );
@@ -91,18 +95,9 @@ function SidebarBrand() {
   return (
     <Link
       href={LANDING_FIRMS_PATH}
-      className="inline-flex items-center gap-2.5 text-white transition-opacity hover:opacity-90"
+      className="inline-flex text-white transition-opacity hover:opacity-90"
     >
-      <Image
-        src="/logo.png"
-        alt=""
-        width={28}
-        height={28}
-        className="size-7 rounded-sm object-contain"
-      />
-      <span className="font-display text-sm font-bold tracking-tight uppercase">
-        promobazar
-      </span>
+      <BrandMark />
     </Link>
   );
 }
@@ -119,14 +114,14 @@ export function DashboardSidebar({
 
   return (
     <aside
-      className="hidden h-screen shrink-0 flex-col overflow-hidden border-r border-white/[0.08] bg-ink lg:flex lg:w-[248px]"
+      className="hidden h-screen shrink-0 flex-col overflow-hidden border-r border-white/[0.05] bg-panel lg:flex lg:w-[248px] 2xl:w-[280px]"
     >
-      <div className="flex h-14 items-center px-4">
+      <div className="flex items-center px-5 py-4 2xl:px-6">
         <SidebarBrand />
       </div>
 
       <nav
-        className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2"
+        className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2 2xl:px-4"
         aria-label="Dashboard"
       >
         <p className="px-2.5 pb-1 pt-2 font-body text-[10px] font-medium uppercase tracking-wider text-mist/90">
@@ -141,7 +136,7 @@ export function DashboardSidebar({
         ))}
       </nav>
 
-      <div className="space-y-2 border-t border-white/[0.08] px-3 py-4">
+      <div className="space-y-2 border-t border-white/[0.08] px-3 py-4 2xl:px-4">
         <Link
           href={LANDING_FIRMS_PATH}
           className="inline-flex items-center gap-2 px-2.5 text-[13px] font-medium text-mist transition-colors hover:text-white"
@@ -161,7 +156,7 @@ export function DashboardMobileNav({ profile }: { profile: MemberProfileRow }) {
 
   return (
     <nav
-      className="flex gap-1 overflow-x-auto border-b border-white/[0.08] bg-ink px-3 py-2 lg:hidden"
+      className="flex gap-1 overflow-x-auto border-b border-white/[0.05] bg-panel px-3 py-2 lg:hidden"
       aria-label="Dashboard"
     >
       {items.map((item) => (

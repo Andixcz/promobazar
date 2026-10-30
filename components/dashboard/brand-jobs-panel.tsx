@@ -14,7 +14,15 @@ import { MarkdownContent } from "@/components/ui/markdown-content";
 import { MarkdownTextarea } from "@/components/ui/markdown-textarea";
 import { categoryLabel, MARKETPLACE_CATEGORIES } from "@/lib/dashboard/categories";
 import type { MemberProfileRow } from "@/lib/dashboard/profile-types";
-import { resultCount, surface } from "@/lib/ui-surfaces";
+import {
+  emptyState,
+  emptyStateActions,
+  emptyStateAccentIcon,
+  emptyStateSubtitle,
+  emptyStateTitle,
+  resultCount,
+  surface,
+} from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 import type { brandJobPost } from "@/lib/db/schema";
 
@@ -79,25 +87,18 @@ export function BrandJobsPanel({
 
       <div className={cn(surface, "mt-5 overflow-hidden")}>
         {jobs.length === 0 ? (
-          <div className="flex flex-col items-center px-6 py-16 text-center">
-            <div className="mb-4 flex size-11 items-center justify-center rounded-sm border border-white/[0.1] bg-white/[0.03] text-mist">
-              <ClipboardList className="size-5" strokeWidth={1.5} aria-hidden />
-            </div>
-            <p className="font-display text-base font-semibold text-white">
-              Zatím nemáš žádnou poptávku
-            </p>
-            <p className="mt-2 max-w-sm text-sm leading-relaxed text-mist">
+          <div className={emptyState}>
+            <ClipboardList className={emptyStateAccentIcon} strokeWidth={1.5} aria-hidden />
+            <p className={emptyStateTitle}>Zatím nemáš žádnou poptávku</p>
+            <p className={emptyStateSubtitle}>
               Publikuj první zakázku. Tvůrci ji najdou v tržišti na hlavní stránce.
             </p>
-            <Button
-              type="button"
-              className="mt-6"
-              size="sm"
-              onClick={() => setDialogOpen(true)}
-            >
-              <Plus className="size-4" aria-hidden />
-              Vytvořit poptávku
-            </Button>
+            <div className={emptyStateActions}>
+              <Button type="button" size="sm" onClick={() => setDialogOpen(true)}>
+                <Plus className="size-4" aria-hidden />
+                Vytvořit poptávku
+              </Button>
+            </div>
           </div>
         ) : (
           <ul className="divide-y divide-white/[0.08]">

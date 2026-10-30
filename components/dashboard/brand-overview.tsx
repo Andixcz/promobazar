@@ -51,6 +51,7 @@ export function BrandOverview({
             icon={UserRound}
             title="Profil"
             description="Jméno, bio, banner a média veřejného profilu značky."
+            className="md:col-span-2"
           />
         </div>
       </div>

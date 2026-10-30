@@ -5,7 +5,14 @@ import type { DashboardOrderListItem } from "@/lib/dashboard/orders-server";
 import { OrderStatusBadge } from "@/components/dashboard/order-status-badge";
 import { orderStatusHint } from "@/lib/dashboard/marketplace-order";
 import type { MemberRole } from "@/lib/db/schema";
-import { emptyState, emptyStateIcon, resultCount, surface } from "@/lib/ui-surfaces";
+import {
+  emptyState,
+  emptyStateAccentIcon,
+  emptyStateSubtitle,
+  emptyStateTitle,
+  resultCount,
+  surface,
+} from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
 function formatOrderDate(value: Date) {
@@ -115,15 +122,9 @@ export function OrdersPanel({ orders, total, filtered, memberRole }: OrdersPanel
       <div className={cn(surface, "mt-5 overflow-hidden")}>
         {orders.length === 0 ? (
           <div className={emptyState}>
-            <div className={emptyStateIcon}>
-              <Receipt className="size-5" strokeWidth={1.5} aria-hidden />
-            </div>
-            <p className="font-display text-base font-semibold text-white">
-              {empty.title}
-            </p>
-            <p className="mt-2 max-w-sm text-sm leading-relaxed text-mist">
-              {empty.body}
-            </p>
+            <Receipt className={emptyStateAccentIcon} strokeWidth={1.5} aria-hidden />
+            <p className={emptyStateTitle}>{empty.title}</p>
+            <p className={emptyStateSubtitle}>{empty.body}</p>
           </div>
         ) : (
           <ul className="divide-y divide-white/[0.08]">
@@ -143,11 +144,27 @@ export function OrdersPanel({ orders, total, filtered, memberRole }: OrdersPanel
                       </time>
                       {deadlineLine(order) ? <> · {deadlineLine(order)}</> : null}
                     </p>
-                    <p className="text-xs text-zinc-300">
+                    <p className="text-xs text-zinc-200">
                       {orderStatusHint(order.status, order.viewerRole)}
                     </p>
                     {order.brief ? (
-                      <p className="line-clamp-2 text-sm text-zinc-300">{order.brief}</p>
+                      <p className="line-clamp-2 text-sm text-zinc-200">{order.brief}</p>
+                    ) : null}
+                    {order.briefAttachments.length > 0 ? (
+                      <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                        {order.briefAttachments.map((file) => (
+                          <li key={file.url}>
+                            <a
+                              href={file.url}
+                              className="text-sm text-cyan underline-offset-2 hover:underline"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {file.name}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
                     ) : null}
                     {order.deliverableUrl && order.status !== "in_progress" ? (
                       <a

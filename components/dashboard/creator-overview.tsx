@@ -80,6 +80,7 @@ export function CreatorOverview({
             icon={UserRound}
             title="Profil"
             description="Avatar, bio, sítě a portfolio ve veřejném profilu."
+            className="md:col-span-2"
           />
         </div>
       </div>

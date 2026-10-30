@@ -15,9 +15,9 @@ type DashboardLayoutProps = {
 
 export function DashboardLayout({ profile, email, children }: DashboardLayoutProps) {
   return (
-    <div className="flex h-screen overflow-hidden bg-void">
+    <div className="flex h-screen overflow-hidden bg-background">
       <DashboardSidebar profile={profile} email={email} />
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-void">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background">
         <DashboardTopbar profile={profile} email={email} />
         <DashboardMobileNav profile={profile} />
         <main className="min-h-0 flex-1 overflow-y-auto px-4 py-8 md:px-8 md:py-10 lg:px-10">

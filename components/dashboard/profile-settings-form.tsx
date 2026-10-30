@@ -17,6 +17,7 @@ import { ProfileSettingsSection } from "@/components/dashboard/profile-settings-
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { FieldSelect } from "@/components/ui/field-select";
 import { Textarea } from "@/components/ui/textarea";
 import { MARKETPLACE_CATEGORIES } from "@/lib/dashboard/categories";
@@ -245,39 +246,38 @@ export function ProfileSettingsForm({
                 </FormField>
               ) : null}
 
-              <FormField label="Bio" htmlFor="bio">
-                <div className="space-y-1.5">
-                  <div className="flex justify-end">
-                    <span
-                      className={cn(
-                        "text-[11px] tabular-nums text-mist",
-                        bioLength > BIO_MAX && "text-error-soft",
-                      )}
-                    >
-                      {bioLength}/{BIO_MAX}
-                    </span>
-                  </div>
-                  <Textarea
-                    id="bio"
-                    name="bio"
-                    rows={5}
-                    maxLength={BIO_MAX}
-                    defaultValue={profile.bio ?? ""}
-                    className="min-h-[140px]"
-                    placeholder={
-                      profile.role === "creator"
-                        ? "Kdo jsi, jaký obsah tvoříš a s jakými značkami chceš spolupracovat…"
-                        : profile.role === "brand"
-                          ? "Co děláte, koho hledáte a jak probíhá spolupráce…"
-                          : "Krátké představení pro komunikaci při objednávkách…"
-                    }
-                    onChange={(e) => {
-                      setBioLength(e.target.value.length);
-                      setDirty(true);
-                    }}
-                  />
+              <div className="min-w-0">
+                <div className="mb-1.5 flex items-baseline justify-between gap-2">
+                  <Label htmlFor="bio">Bio (podporuje Markdown)</Label>
+                  <span
+                    className={cn(
+                      "text-[11px] tabular-nums text-mist",
+                      bioLength > BIO_MAX && "text-error-soft",
+                    )}
+                  >
+                    {bioLength}/{BIO_MAX}
+                  </span>
                 </div>
-              </FormField>
+                <Textarea
+                  id="bio"
+                  name="bio"
+                  rows={5}
+                  maxLength={BIO_MAX}
+                  defaultValue={profile.bio ?? ""}
+                  className="min-h-[140px]"
+                  placeholder={
+                    profile.role === "creator"
+                      ? "Kdo jsi, jaký obsah tvoříš a s jakými značkami chceš spolupracovat…"
+                      : profile.role === "brand"
+                        ? "Co děláte, koho hledáte a jak probíhá spolupráce…"
+                        : "Krátké představení pro komunikaci při objednávkách…"
+                  }
+                  onChange={(e) => {
+                    setBioLength(e.target.value.length);
+                    setDirty(true);
+                  }}
+                />
+              </div>
             </ProfileSettingsSection>
 
             {platformLinkingSlot}
@@ -332,7 +332,7 @@ export function ProfileSettingsForm({
         >
           <div
             className={cn(
-              "pointer-events-auto flex w-full max-w-3xl flex-col gap-3 rounded-md border border-white/[0.12] bg-ink px-4 py-3",
+              "pointer-events-auto flex w-full max-w-3xl flex-col gap-3 rounded-md border border-white/[0.12] bg-panel px-4 py-3",
               "shadow-[0_12px_48px_-12px_rgba(0,0,0,0.75)] sm:flex-row sm:items-center sm:justify-between sm:gap-4",
             )}
           >
