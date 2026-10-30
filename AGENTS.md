@@ -8,39 +8,40 @@ Tržiště influencerů a UGC tvůrců: UI **čeština**, téma **dark** (`app/l
 
 | Skupina | Route | Obsah |
 |--------|-------|--------|
-| Značky | `/` | Tržiště, job board, ceník, kontakt |
+| Značky | `/` | Tržiště, poptávky, ceník, kontakt |
 | Tvůrci | `/pro-tvurce` | Profil, balíčky, FAQ, kontakt |
 
 Dev: `bun install` → `bun run dev`. Env: `.env.example` → `.env.local`.
 
 ## Architektura (shrnutí)
 
-- **Next.js App Router**: `app/page.tsx`, `app/pro-tvurce/page.tsx`, sdílený `LandingShell`
-- **React**: struktura landingu (`components/landing/`, `components/ui/`)
-- **`public/app.js`**: klientská logika (auth, grid, chat, dropdowny); načítá `ClientAppScript`
-- **`lib/`**: `landing-routes.ts`, `ui-surfaces.ts`, `app-global.ts` (volání handlerů z Reactu)
+Veškeré UI a interaktivita na landingu i v dashboardu = **React + App Router + Tailwind** (`components/ui`, server actions, Route Handlers).
 
-React a `app.js` sdílejí **stejná DOM id** a **styly**: při změnách v interaktivních sekcích načti skill `promobazar-app-js`.
+- **Next.js App Router**: `app/page.tsx`, `app/pro-tvurce/page.tsx`, sdílený `LandingShell`
+- **React**: marketing (`components/shared/`, `components/pages/`), auth, dashboard
+- **Better Auth + Drizzle (Neon)**: session, role, data
+- **`lib/`**: `landing-routes.ts`, `ui-surfaces.ts`, `scroll-to-section.ts`, cookie consent, dashboard helpers
+
+Session na landingu: `LandingMemberProvider` + `CreatorGate`. Auth = Better Auth stránky, ne legacy modal.
 
 ## Skills (kdy je načíst)
 
 | Skill | Načti když… |
 |-------|-------------|
 | [promobazar-landing](.cursor/skills/promobazar-landing/SKILL.md) | Routy, header/footer, hero, `home-views`, nová landing sekce |
-| [promobazar-app-js](.cursor/skills/promobazar-app-js/SKILL.md) | `app.js`, `invokeAppGlobal`, mount pointy, id v JSX, job board / marketplace / profil |
 | [promobazar-design-system](.cursor/skills/promobazar-design-system/SKILL.md) | `globals.css`, Tailwind tokeny, tlačítka, `ui-surfaces.ts`, lucide |
 
 ## Formuláře (React)
 
-Vždy `components/ui`: **`FormField`** + **`Label`** (uvnitř FormField) + **`Input`** / **`FieldSelect`** / **`Textarea`**. Nepoužívej raw `<input>`, `<select>`, `<textarea>` ani `fieldControl` v JSX: tokeny jsou jen v UI kitu. Výběr z možností = **`FieldSelect`** (stejný vzhled jako hero filtry v `app.js`), ne nativní `<select>`. Modaly: **`Modal`**.
+Vždy `components/ui`: **`FormField`** + **`Label`** (uvnitř FormField) + **`Input`** / **`FieldSelect`** / **`Textarea`**. Nepoužívej raw `<input>`, `<select>`, `<textarea>` ani `fieldControl` v JSX: tokeny jsou jen v UI kitu. Výběr z možností = **`FieldSelect`**. Modaly: **`Modal`**.
 
 ## Rychlá pravidla
 
 1. Audience **Najít promo / Pro tvůrce** = navigace (`/` ↔ `/pro-tvurce`), ne jedna stránka se skrytými view.
-2. **Routing, hash scroll, cookies**: React (`landing-routes.ts`, `landing-nav.ts`, `scroll-to-section.ts`, `cookie-consent.ts`). Do `app.js` to nepřidávej.
-3. Nový handler v `app.js` volaný z Reactu → typ v `lib/app-global.ts` (`AppGlobal`).
-3. Změna stylu CTA/outline tlačítek → sync `lib/ui-surfaces.ts` a `PB_BTN_*` v `public/app.js`.
-4. Před merge: obě landing routy + `bun run build` (Tailwind scanuje i `public/app.js`).
+2. **Routing, hash scroll, cookies**: React (`landing-routes.ts`, `landing-nav.ts`, `scroll-to-section.ts`, `cookie-consent.ts`).
+3. Nová landing feature = React komponenta + typy v `lib/`, ne globální skripty.
+4. Změna stylu CTA/outline tlačítek → `lib/ui-surfaces.ts`.
+5. Před merge: obě landing routy + `bun run build`.
 
 Lidský přehled: `README.md`.
 

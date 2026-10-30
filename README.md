@@ -41,7 +41,7 @@ Zdroj pravdy je `lib/db/schema.ts`. SQL migrace jsou v `drizzle/` včetně `meta
 
 Baseline jen označí aktuální `0000_initial` jako aplikovanou: nespouští `CREATE TABLE` znovu.
 
-Auth a dashboard jedou přes **Better Auth + Drizzle**, ne přes Supabase DB. Volitelné `NEXT_PUBLIC_SUPABASE_*` jsou jen pro legacy `public/app.js`.
+Volitelné `NEXT_PUBLIC_SUPABASE_*` v `.env.example` jsou **legacy** (starý klient); produkce používá Better Auth + Neon.
 
 ### Přihlášení Google a Discord
 
@@ -51,7 +51,7 @@ Auth a dashboard jedou přes **Better Auth + Drizzle**, ne přes Supabase DB. Vo
    - v produkci `https://promobazar.cz/api/auth/callback/...`
 3. `BETTER_AUTH_SECRET` (min. 32 znaků) a `BETTER_AUTH_URL` musí sedět s doménou, na které běží appka.
 
-Tlačítka se zobrazí na `/prihlaseni`, `/registrace` a v auth modalu na landingu, jakmile jsou creds na serveru.
+Tlačítka se zobrazí na `/prihlaseni` a `/registrace`, jakmile jsou creds na serveru.
 
 **Registrace:** na `/registrace` zvol typ účtu (tvůrce / značka), pak e-mail nebo OAuth. Po úspěchu redirect na `/dashboard?role=…` vytvoří `member_profile` (cookie `pb_dashboard_role` nastaví `proxy.ts`). Z `/pro-tvurce` odkaz Registrace v menu přidá `?role=creator`.
 
@@ -59,17 +59,13 @@ Ověření: `GET /api/auth/ok` → `{ "status": "ok" }`.
 
 ## Struktura homepage
 
-- **`/`**: Najít promo (`FirmsView`)
-- **`/pro-tvurce`**: Pro tvůrce (`CreatorsView`)
-- `components/landing/landing-shell.tsx`: sdílený obal stránek
+- **`/`**: `FirmsPage` (`components/pages/firms/firms-page.tsx`)
+- **`/pro-tvurce`**: `CreatorsPage` (`components/pages/creators/creators-page.tsx`)
+- **`components/shared/site-shell.tsx`**: header, footer, session, cookies (jako rexcare `shared/`)
+- **`components/pages/`**: obsah marketingových rout
 - `lib/landing-routes.ts`: cesty a anchor odkazy
+- **`lib/marketplace.ts`**: filtry a data tržiště
 - `AGENTS.md`: rozcestník pro agenty; detaily v `.cursor/skills/promobazar-*`
-- `public/app.js`: klientská logika (auth, tržiště, chat, …)
-- `app/globals.css`: Tailwind v4 + design tokeny (`@theme`)
-- `lib/ui-surfaces.ts`: sdílené Tailwind třídy pro React / `app.js`
-- `components/ui/*`: sdílené UI (shadcn, tlačítka, …)
-- `components/landing/*`: header, hero, modaly, footer
-- `lib/app-global.ts`: typované volání handlerů z `app.js` z Reactu
 
 ## Deploy
 
