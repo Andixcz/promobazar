@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown } from "lucide-react";
 
 import {
@@ -53,11 +54,42 @@ function FieldSelect({
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(initial);
   const rootRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const [panelRect, setPanelRect] = React.useState<{
+    top: number;
+    left: number;
+    width: number;
+  } | null>(null);
+
+  const syncPanelRect = React.useCallback(() => {
+    const el = triggerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setPanelRect({
+      top: rect.bottom + 6,
+      left: rect.left,
+      width: rect.width,
+    });
+  }, []);
 
   React.useEffect(() => {
     if (valueProp === undefined) return;
     setValue(String(valueProp));
   }, [valueProp]);
+
+  React.useLayoutEffect(() => {
+    if (!open) {
+      setPanelRect(null);
+      return;
+    }
+    syncPanelRect();
+    window.addEventListener("scroll", syncPanelRect, true);
+    window.addEventListener("resize", syncPanelRect);
+    return () => {
+      window.removeEventListener("scroll", syncPanelRect, true);
+      window.removeEventListener("resize", syncPanelRect);
+    };
+  }, [open, syncPanelRect]);
 
   React.useEffect(() => {
     function onDocumentClick(event: MouseEvent) {
@@ -72,6 +104,53 @@ function FieldSelect({
   const selected =
     options.find((o) => o.value === value) ?? options[0] ?? null;
 
+  const listbox = (
+    <div
+      role="listbox"
+      className={cn(
+        dropdownPanel,
+        "left-auto right-auto max-h-[min(280px,50vh)]",
+        open && panelRect && "open",
+      )}
+      style={
+        panelRect
+          ? {
+              position: "fixed",
+              top: panelRect.top,
+              left: panelRect.left,
+              width: panelRect.width,
+              zIndex: 300,
+            }
+          : undefined
+      }
+    >
+      {options.map((option) => {
+        const isActive = option.value === value;
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="option"
+            aria-selected={isActive}
+            className={cn(
+              dropdownOption,
+              "w-full text-left",
+              isActive && "active",
+            )}
+            onClick={(event) => {
+              event.stopPropagation();
+              setValue(option.value);
+              onValueChange?.(option.value);
+              setOpen(false);
+            }}
+          >
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div
       ref={rootRef}
@@ -84,6 +163,7 @@ function FieldSelect({
     >
       <input type="hidden" name={name} value={value} required={required} />
       <button
+        ref={triggerRef}
         type="button"
         id={id}
         disabled={disabled}
@@ -111,35 +191,9 @@ function FieldSelect({
           aria-hidden
         />
       </button>
-      <div
-        role="listbox"
-        className={cn(dropdownPanel, open && "open")}
-      >
-        {options.map((option) => {
-          const isActive = option.value === value;
-          return (
-            <button
-              key={option.value}
-              type="button"
-              role="option"
-              aria-selected={isActive}
-              className={cn(
-                dropdownOption,
-                "w-full text-left",
-                isActive && "active",
-              )}
-              onClick={(event) => {
-                event.stopPropagation();
-                setValue(option.value);
-                onValueChange?.(option.value);
-                setOpen(false);
-              }}
-            >
-              {option.label}
-            </button>
-          );
-        })}
-      </div>
+      {open && panelRect && typeof document !== "undefined"
+        ? createPortal(listbox, document.body)
+        : null}
     </div>
   );
 }

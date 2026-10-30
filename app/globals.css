@@ -74,7 +74,7 @@
 
   body {
     @apply font-body font-normal antialiased bg-background text-foreground;
-    background: var(--color-void);
+    background: var(--background);
   }
 
   h1,
@@ -84,15 +84,12 @@
   h5,
   h6 {
     font-weight: 600;
+    @apply tracking-tight;
   }
 
   body.dashboard-app {
-    background: var(--color-void);
+    background: var(--background);
     overflow: hidden;
-  }
-
-  body.dashboard-app.grain::before {
-    content: none;
   }
 
   .grain::before {
@@ -281,4 +278,22 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* react-image-crop — dark dashboard / modal */
+.dark .ReactCrop__crop-selection {
+  border-color: color-mix(in srgb, var(--color-cyan) 85%, white);
+  box-shadow: none;
+}
+
+.dark .ReactCrop__drag-handle::after {
+  background-color: var(--color-cyan);
+  border: 1px solid color-mix(in srgb, var(--color-cyan) 60%, black);
+}
+
+.dark .ReactCrop__rule-of-thirds-vt::before,
+.dark .ReactCrop__rule-of-thirds-vt::after,
+.dark .ReactCrop__rule-of-thirds-hz::before,
+.dark .ReactCrop__rule-of-thirds-hz::after {
+  background-color: color-mix(in srgb, white 35%, transparent);
 }

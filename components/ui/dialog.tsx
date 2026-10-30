@@ -40,7 +40,7 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 isolate z-50 duration-200 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        "fixed inset-0 isolate z-[100] duration-200 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
         modalScrim,
         className
       )}
@@ -63,7 +63,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] max-h-[88vh] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-3xl p-6 text-sm text-foreground duration-200 outline-none sm:max-w-2xl md:p-8 md:pt-10 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "fixed top-1/2 left-1/2 z-[101] grid w-full max-w-[calc(100%-2rem)] max-h-[88vh] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-3xl p-6 text-sm text-foreground duration-200 outline-none sm:max-w-2xl md:p-8 md:pt-10 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           glassPanel,
           className
         )}
@@ -131,7 +131,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn("font-display text-xl font-bold leading-tight", className)}
+      className={cn("font-display text-xl font-bold leading-tight tracking-tight", className)}
       {...props}
     />
   )
