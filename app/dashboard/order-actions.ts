@@ -23,16 +23,14 @@ function refresh() {
   revalidatePath(dashboardPath("nastaveni"));
 }
 
-async function clientContext() {
+async function clientUserId() {
   const { profile } = await requireDashboard(dashboardPath("objednavky"));
-  return { ok: true as const, userId: profile.userId };
+  return profile.userId;
 }
 
 export async function payForPackage(input: { packageId: string; brief: string }) {
-  const ctx = await clientContext();
-  if (!ctx.ok) return ctx;
   const result = await startPackageCheckout({
-    clientUserId: ctx.userId,
+    clientUserId: await clientUserId(),
     packageId: input.packageId,
     brief: input.brief,
   });
@@ -47,10 +45,8 @@ export async function payForCustomOffer(input: {
   deliveryDays: number;
   brief: string;
 }) {
-  const ctx = await clientContext();
-  if (!ctx.ok) return ctx;
   const result = await startCustomCheckout({
-    clientUserId: ctx.userId,
+    clientUserId: await clientUserId(),
     ...input,
   });
   refresh();
@@ -58,9 +54,7 @@ export async function payForCustomOffer(input: {
 }
 
 export async function payPendingOrder(orderId: string) {
-  const ctx = await clientContext();
-  if (!ctx.ok) return ctx;
-  return resumeCheckout(orderId, ctx.userId);
+  return resumeCheckout(orderId, await clientUserId());
 }
 
 export async function acceptMarketplaceOrder(orderId: string) {
