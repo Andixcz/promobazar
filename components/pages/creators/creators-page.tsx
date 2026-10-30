@@ -14,12 +14,12 @@ import {
 
 import { useMember } from "@/components/shared/member-context";
 import { Button } from "@/components/ui/button";
+import { StepIllustration } from "@/components/ui/step-illustration";
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from "@/lib/auth-routes";
 import { DASHBOARD_HOME_PATH, dashboardPath } from "@/lib/dashboard-routes";
 import { landingHref } from "@/lib/landing-routes";
 import { scrollToSection } from "@/lib/scroll-to-section";
 import {
-  eyebrow,
   htmlButtonCta,
   htmlButtonOutline,
   landingHeroTopPadding,
@@ -67,8 +67,7 @@ function CreatorDashboardBanner() {
       <div className="mx-auto max-w-7xl">
         <div className={cn(surface, "flex flex-col items-center gap-6 p-8 text-center md:flex-row md:p-10 md:text-left")}>
           <div className="min-w-0 flex-1">
-            <span className={eyebrow}>Tvůj účet</span>
-            <h2 className="mt-2 font-display text-2xl font-bold md:text-3xl">
+            <h2 className="font-display text-2xl font-bold md:text-3xl">
               Profil, balíčky, objednávky. Jdeme na to.
             </h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-200">
@@ -98,7 +97,7 @@ export function CreatorsPage() {
         className={cn("relative pb-16 md:pb-20", landingHeroTopPadding, sectionX)}
       >
         <div className="mx-auto max-w-7xl animate-fade-up text-center">
-          <h1 className="font-display text-[2.15rem] font-extrabold leading-[1.08] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="font-display text-[2.15rem] font-extrabold leading-[1.08] tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
             Tvoje videa prodávají.
             <br />
             <span className="text-cyan">Ať ti za to taky zaplatí.</span>
@@ -157,9 +156,7 @@ export function CreatorsPage() {
           </p>
           <div className="mt-14 grid gap-2 md:grid-cols-3">
             <div className={stepPanelClass}>
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
-                1
-              </div>
+              <StepIllustration step={1} />
               <h3 className="font-display text-lg font-semibold">Profil, co zaujme na první pohled</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Propoj sítě, ukaž portfolio, nastav obor. Značky vidí kartu s čísly, ne tvůj soukromý
@@ -167,9 +164,7 @@ export function CreatorsPage() {
               </p>
             </div>
             <div className={stepPanelClass}>
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
-                2
-              </div>
+              <StepIllustration step={2} />
               <h3 className="font-display text-lg font-semibold">Objednávka bez vyjednávání</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Cenu, rozsah a termín máš v balíčku. Značka objedná z tržiště. Ty do 48 hodin
@@ -177,9 +172,7 @@ export function CreatorsPage() {
               </p>
             </div>
             <div className={stepPanelClass}>
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
-                3
-              </div>
+              <StepIllustration step={3} />
               <h3 className="font-display text-lg font-semibold">Schváleno znamená zaplaceno</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Zadání, soubory i opravy u jedné objednávky v chatu. Značka schválí hotový obsah, my
@@ -193,8 +186,7 @@ export function CreatorsPage() {
       <section id="propojeni" className={section}>
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
-            <span className={eyebrow}>Tvůj profil</span>
-            <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">
+            <h2 className="font-display text-3xl font-bold md:text-4xl">
               Ať tě značky poznaj, ne obtěžují
             </h2>
             <p className="mt-3 text-zinc-200">
@@ -233,8 +225,7 @@ export function CreatorsPage() {
       <section id="balicky" className={section}>
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
-            <span className={eyebrow}>Balíčky</span>
-            <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">
+            <h2 className="font-display text-3xl font-bold md:text-4xl">
               Řekni cenu dřív, než natočíš první snímek
             </h2>
             <p className="mt-3 text-zinc-200">
@@ -280,8 +271,7 @@ export function CreatorsPage() {
       <section id="creator-pro" className={section}>
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <span className={eyebrow}>Plány</span>
-            <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">
+            <h2 className="font-display text-3xl font-bold md:text-4xl">
               Začni zdarma. Šlápni na plyn s PRO.
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-zinc-200">

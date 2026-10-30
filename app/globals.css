@@ -28,8 +28,8 @@
   --color-danger: #ef4444;
   --color-error-soft: #ff8fd6;
 
-  --font-display: var(--font-strichpunkt-sans), ui-sans-serif, sans-serif;
-  --font-body: var(--font-inter), ui-sans-serif, sans-serif;
+  --font-display: var(--font-sans), ui-sans-serif, sans-serif;
+  --font-body: var(--font-sans), ui-sans-serif, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 
   --animate-fade-up: fade-up 0.7s ease both;
@@ -73,8 +73,17 @@
   }
 
   body {
-    @apply font-body antialiased bg-background text-foreground;
+    @apply font-body font-normal antialiased bg-background text-foreground;
     background: var(--color-void);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
   }
 
   body.dashboard-app {

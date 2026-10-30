@@ -10,7 +10,7 @@ import { sectionX, surface } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
 const headingClass =
-  "mb-4 font-body text-[11px] font-medium uppercase tracking-wide text-cyan";
+  "mb-4 font-body text-[11px] font-medium uppercase tracking-wide text-mist";
 
 const linkClass =
   "text-sm text-zinc-200 transition-colors hover:text-white";

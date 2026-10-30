@@ -14,9 +14,6 @@ export const glassPanel = surface;
 export const modalScrim =
   "bg-[rgba(4,3,8,0.72)] backdrop-blur-[6px]";
 
-export const eyebrow =
-  "font-body text-[11px] font-medium uppercase tracking-wide text-cyan";
-
 export const resultCount =
   "self-start rounded-sm border border-white/[0.09] bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-mist tabular-nums";
 
@@ -35,8 +32,8 @@ export const emptyStateSubtitle =
 export const emptyStateActions =
   "mt-6 flex flex-wrap items-center justify-center gap-3";
 
-export const stepBadge =
-  "mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void";
+/** Dekorativní číslo kroku (SVG z `/illustrations/`). */
+export const stepIllustration = "mb-3 h-14 w-auto shrink-0";
 
 export const pricingCard =
   "relative rounded-2xl border border-white/[0.05] bg-panel p-8";
@@ -98,14 +95,14 @@ export const dropdownTrigger =
   "dd-trigger flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-white/[0.09] bg-white/[0.065] px-3 py-2 text-left text-sm font-medium text-white shadow-none backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.09] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(125,188,255,0.4)] focus-visible:outline-none [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(125,188,255,0.4)]";
 
 const dropdownPanelBase =
-  "dd-panel absolute top-[calc(100%+6px)] z-[100] max-h-[280px] overflow-y-auto rounded-sm border border-white/[0.12] bg-dd-panel p-1 space-y-0.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100";
+  "dd-panel absolute top-[calc(100%+6px)] z-[100] flex max-h-[280px] flex-col gap-1 overflow-y-auto rounded-xl border border-white/[0.09] bg-panel p-1.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100";
 
 export const dropdownPanel = `${dropdownPanelBase} left-0 right-0`;
 
 export const dropdownPanelNav = `${dropdownPanelBase} right-0 min-w-[190px]`;
 
 export const dropdownOption =
-  "dd-option cursor-pointer rounded-sm px-3 py-2 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white";
+  "dd-option cursor-pointer rounded-lg px-3 py-2.5 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white";
 
 /** Aktivní položka v dashboard přepínači (nav, typ účtu). */
 export const switcherActive =

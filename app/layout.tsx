@@ -1,24 +1,15 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Strichpunkt_Sans, Geist } from "next/font/google";
+import { JetBrains_Mono, Stack_Sans_Text } from "next/font/google";
 import "./globals.css";
 import { rootMetadataTitle } from "@/lib/site-metadata";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const strichpunktSans = Strichpunkt_Sans({
+const stackSansText = Stack_Sans_Text({
   subsets: ["latin", "latin-ext"],
-  variable: "--font-strichpunkt-sans",
+  variable: "--font-sans",
   display: "swap",
-  // Next.js has no size-adjust metrics for this font yet (build warning otherwise).
-  adjustFontFallback: false,
+  weight: ["400", "600"],
   fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
-});
-
-const inter = Inter({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-inter",
-  display: "swap",
 });
 
 const jetbrains = JetBrains_Mono({
@@ -44,10 +35,8 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={cn(
         "dark font-sans",
-        strichpunktSans.variable,
-        inter.variable,
+        stackSansText.variable,
         jetbrains.variable,
-        geist.variable,
       )}
     >
       <body className="grain antialiased">{children}</body>

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { eyebrow, section } from "@/lib/ui-surfaces";
+import { section } from "@/lib/ui-surfaces";
 
 const SUPPORT_EMAIL = "podpora@promobazar.cz";
 
@@ -67,8 +67,7 @@ export function ContactSection() {
     <section id="kontakt" className={section}>
       <div className="mx-auto grid max-w-7xl gap-10 rounded-2xl border border-white/[0.05] bg-panel p-8 md:grid-cols-2 md:p-14">
         <div>
-          <span className={eyebrow}>Kontakt</span>
-          <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">
+          <h2 className="font-display text-3xl font-bold md:text-4xl">
             Máš dotaz? Ozveme se.
           </h2>
           <p className="mt-4 max-w-md text-zinc-200">

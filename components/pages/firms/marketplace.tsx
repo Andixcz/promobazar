@@ -31,6 +31,7 @@ import {
   platformLabel,
   type MarketplaceFilters,
 } from "@/lib/marketplace";
+import { landingHref } from "@/lib/landing-routes";
 import { scrollToSection } from "@/lib/scroll-to-section";
 import {
   emptyState,
@@ -117,22 +118,28 @@ function FirmsHeroSection() {
       id="top"
       className={cn("relative pb-8", landingHeroTopPadding, sectionX)}
     >
-      <div className="mx-auto max-w-7xl animate-fade-up text-center">
-        <h1 className="font-display text-[2.35rem] font-extrabold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[4.2rem]">
-          Vyber si influencera.
+      <div className="mx-auto max-w-5xl animate-fade-up py-8 text-center sm:py-12 lg:py-16">
+        <h1 className="font-display text-[2.75rem] font-bold leading-[1.04] tracking-tighter sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+          Značky a tvůrci.
           <br />
-          Nastav rozpočet.
-          <br />
-          <span className="text-cyan">Získej prodeje.</span>
+          <span className="text-cyan">Spolu jim to sedne.</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-base text-zinc-200 md:text-lg">
-          Víš, že potřebuješ promo, ale ne vždy víš, komu napsat a jestli tomu můžeš
-          věřit. Tady porovnáš tvůrce na jednom místě a oslovíš jen toho, kdo ti sedí.
+        <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-zinc-200 md:mt-8 md:text-lg">
+          Místo, kde značky najdou tvůrce pro své promo a tvůrci získají spolupráce, které jim dávají smysl.
         </p>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 md:mt-10">
+          <Button asChild size="lg">
+            <a href="#hledat-promo">Jsem značka</a>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <Link href={landingHref("creators", "top")}>Jsem tvůrce</Link>
+          </Button>
+        </div>
       </div>
 
       <div
-        className="mx-auto mt-11 max-w-7xl animate-fade-up"
+        id="hledat-promo"
+        className="mx-auto mt-6 max-w-7xl scroll-mt-28 animate-fade-up"
         style={{ animationDelay: ".1s" }}
       >
         <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-2.5 md:p-3">

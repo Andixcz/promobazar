@@ -2,20 +2,19 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, Mail, Star, Tag } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Check, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { FaqSection } from "@/components/pages/faq-section";
 import { FirmsMarketplace } from "@/components/pages/firms/marketplace";
+import { StepIllustration } from "@/components/ui/step-illustration";
 import { AUTH_REGISTER_PATH } from "@/lib/auth-routes";
 import { landingHref } from "@/lib/landing-routes";
 import {
-  eyebrow,
   htmlButtonCta,
   htmlButtonOutline,
-  pricingIcon,
   pricingListCheckBox,
-  section,
 } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
@@ -82,6 +81,32 @@ function PricingCheckItem({ children }: { children: ReactNode }) {
   );
 }
 
+const PRICING_PLAN_SVG = {
+  starter: { file: "Starter", width: 36, height: 44, imgClass: "h-14 w-auto" },
+  growth: { file: "Growth", width: 36, height: 40, imgClass: "h-14 w-auto" },
+  scale: { file: "Scale", width: 44, height: 44, imgClass: "h-14 w-auto" },
+} as const;
+
+function PricingPlanIcon({
+  plan,
+  className,
+}: {
+  plan: keyof typeof PRICING_PLAN_SVG;
+  className?: string;
+}) {
+  const { file, width, height, imgClass } = PRICING_PLAN_SVG[plan];
+  return (
+    <Image
+      src={`/illustrations/${file}.svg`}
+      alt=""
+      width={width}
+      height={height}
+      className={cn("mb-6 shrink-0", imgClass, className)}
+      aria-hidden
+    />
+  );
+}
+
 /** Obsah homepage `/` — tržiště, ceník, FAQ. */
 export function FirmsPage() {
   return (
@@ -97,9 +122,7 @@ export function FirmsPage() {
           </p>
           <div className="mt-14 grid gap-2 md:grid-cols-3">
             <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-7">
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
-                1
-              </div>
+              <StepIllustration step={1} />
               <h3 className="font-display text-lg font-semibold">Vybereš influencera</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Podle ceny, platformy a oboru najdeš přesně toho tvůrce, jehož publikum kupuje
@@ -107,45 +130,30 @@ export function FirmsPage() {
               </p>
             </div>
             <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-7">
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
-                2
-              </div>
+              <StepIllustration step={2} />
               <h3 className="font-display text-lg font-semibold">Zadáš a zaplatíš</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Napíšeš zadání a zaplatíš celou částku. Tvůrce má 48 hodin na přijetí.
               </p>
             </div>
             <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-7">
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-sm bg-cyan font-display text-xl font-bold text-void">
-                3
-              </div>
+              <StepIllustration step={3} />
               <h3 className="font-display text-lg font-semibold">Schválíš výstup</h3>
               <p className="text-sm leading-relaxed text-zinc-200">
                 Máš 3 dny na schválení nebo jednu úpravu.
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="px-5 py-16 md:px-8 md:py-12">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 rounded-2xl border border-white/[0.05] bg-panel p-8 md:flex-row md:p-10">
-          <div>
-            <span className="font-body text-[11px] font-medium uppercase tracking-wide text-cyan">
-              Jsi influencer nebo UGC tvůrce?
-            </span>
-            <h3 className="mt-2 font-display text-2xl font-bold md:text-3xl">
-              Nabídni spolupráci značkám s jasnou cenou a pravidly
-            </h3>
-            <p className="mt-2 max-w-lg text-zinc-200">
-              Založ profil v tržišti, nastav balíčky a přijímej placené objednávky. Platba jde do
-              úschovy a komunikace probíhá na platformě.
-            </p>
-          </div>
-          <Link href={landingHref("creators", "jak-to-funguje")} className={htmlButtonCta}>
-            Pro tvůrce: jak to funguje
-            <ArrowRight className="size-4 shrink-0" aria-hidden />
-          </Link>
+          <p className="mx-auto mt-12 max-w-lg text-center text-sm leading-relaxed text-mist">
+            Jsi influencer nebo UGC tvůrce?{" "}
+            <Link
+              href={landingHref("creators", "jak-to-funguje")}
+              className="inline-flex items-center gap-1 font-medium text-white transition-colors hover:text-cyan"
+            >
+              Jak promobazar funguje pro tvůrce
+              <ArrowRight className="size-3.5 shrink-0" aria-hidden />
+            </Link>
+          </p>
         </div>
       </section>
 
@@ -159,20 +167,22 @@ export function FirmsPage() {
           </p>
           <div className="mt-6 w-full">
             <div
-              className="flex w-full items-start gap-3 rounded-md border border-cyan/20 bg-cyan/[0.05] px-4 py-3 text-left md:items-center"
+              className="flex w-full items-start gap-3 rounded-md border border-transparent bg-cyan px-4 py-3 text-left text-void md:items-center"
               role="note"
             >
-              <span
-                className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-cyan/15 text-cyan"
+              <Image
+                src="/illustrations/Ad.svg"
+                alt=""
+                width={28}
+                height={20}
+                className="mt-0.5 h-5 w-auto shrink-0 md:mt-0"
                 aria-hidden
-              >
-                <Tag className="size-4" />
-              </span>
-              <p className="text-sm leading-relaxed text-zinc-200">
-                <span className="font-medium text-white">
+              />
+              <p className="text-sm leading-relaxed text-void">
+                <span className="font-semibold">
                   Tvé video může fungovat i v placené reklamě.
                 </span>
-                <span className="text-mist">
+                <span className="text-void/85">
                   {" "}
                   Licence pro Meta a TikTok Ads je v ceně balíčku na 30 až 90 dní.
                 </span>
@@ -181,6 +191,7 @@ export function FirmsPage() {
           </div>
           <div className="mt-10 grid gap-2 pt-3 md:grid-cols-3 md:items-stretch">
             <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-8">
+              <PricingPlanIcon plan="starter" />
               <h3 className="font-display text-xl font-semibold">Starter</h3>
               <p className="mt-1.5 text-sm text-zinc-200">Pro první test influencer marketingu</p>
               <p className="mt-7 font-display text-4xl font-extrabold">
@@ -201,7 +212,8 @@ export function FirmsPage() {
               <span className="absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-sm border border-transparent bg-cyan px-4 py-1.5 font-body text-[11px] font-medium uppercase tracking-wide text-void">
                 Nejoblíbenější
               </span>
-              <h3 className="mt-2 font-display text-xl font-semibold">Growth</h3>
+              <PricingPlanIcon plan="growth" className="mt-2" />
+              <h3 className="font-display text-xl font-semibold">Growth</h3>
               <p className="mt-1.5 text-sm text-zinc-200">Pro pravidelné kampaně e-shopů</p>
               <p className="mt-7 font-display text-4xl font-extrabold text-cyan">
                 2 990 Kč <span className="text-sm font-normal text-mist">/ měsíc</span>
@@ -216,6 +228,7 @@ export function FirmsPage() {
               <BrandPlanCta plan="growth" />
             </div>
             <div className="relative rounded-2xl border border-white/[0.05] bg-panel p-8">
+              <PricingPlanIcon plan="scale" />
               <h3 className="font-display text-xl font-semibold">Scale</h3>
               <p className="mt-1.5 text-sm text-zinc-200">
                 Pro značky s vlastním affiliate programem

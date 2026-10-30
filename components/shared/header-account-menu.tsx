@@ -10,13 +10,12 @@ import { authClient } from "@/lib/auth-client";
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from "@/lib/auth-routes";
 import { DASHBOARD_HOME_PATH, dashboardPath } from "@/lib/dashboard-routes";
 import { isCreatorsLandingPath } from "@/lib/landing-routes";
-import { dropdownPanelNav, mobileHeaderMenuLink } from "@/lib/ui-surfaces";
+import { dropdownOption, dropdownPanelNav, mobileHeaderMenuLink } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
-const ddPanelClass = cn(dropdownPanelNav, "rounded-xl");
+const ddPanelClass = dropdownPanelNav;
 
-const ddOptionClass =
-  "dd-option cursor-pointer rounded-sm px-3 py-2 text-sm leading-snug text-white/90 transition-colors duration-150 hover:bg-white/[0.08] [&.active]:bg-white/[0.12] [&.active]:text-white";
+const ddOptionClass = dropdownOption;
 
 function useClickOutsideClose(
   rootRef: RefObject<HTMLElement | null>,

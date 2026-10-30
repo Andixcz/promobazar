@@ -72,7 +72,7 @@ function NavMoreDropdown({
         />
       </Button>
       <div
-        className={cn(dropdownPanelNav, "rounded-xl", open && "open z-[200]")}
+        className={cn(dropdownPanelNav, open && "open z-[200]")}
         onClick={() => setOpen(false)}
       >
         {children}

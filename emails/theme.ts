@@ -11,8 +11,9 @@ export const emailColors = {
 } as const;
 
 export const emailFonts = {
-  body: 'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
+  body:
+    '"Stack Sans Text", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
   display:
-    'ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
+    '"Stack Sans Text", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
   mono: 'ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace',
 } as const;
