@@ -1,0 +1,1 @@
+ALTER TABLE "creator_package" ADD COLUMN "preview_video_url" text;

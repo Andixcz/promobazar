@@ -10,11 +10,15 @@ import {
 } from "drizzle-orm/pg-core";
 
 import type { CreatorPlatformId } from "@/lib/dashboard/creator-platform";
+import type { OrderBriefAttachment } from "@/lib/orders/brief-attachments";
 
 import { user } from "./auth-schema";
 
 export const memberRoleValues = ["creator", "brand", "buyer"] as const;
 export type MemberRole = (typeof memberRoleValues)[number];
+
+export const creatorPackageStatusValues = ["draft", "published", "private"] as const;
+export type CreatorPackageStatus = (typeof creatorPackageStatusValues)[number];
 
 /** Veřejný profil značky / tvůrce (1:1 s uživatelem Better Auth). */
 export const memberProfile = pgTable(
@@ -91,6 +95,11 @@ export const creatorPackage = pgTable(
     description: text("description").notNull(),
     showcaseUrls: jsonb("showcase_urls").$type<string[]>().default([]).notNull(),
     bannerUrl: text("banner_url"),
+    previewVideoUrl: text("preview_video_url"),
+    status: text("status")
+      .notNull()
+      .$type<CreatorPackageStatus>()
+      .default("draft"),
     sortOrder: integer("sort_order").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
@@ -150,6 +159,10 @@ export const marketplaceOrder = pgTable(
       .references(() => memberProfile.userId, { onDelete: "cascade" }),
     title: text("title").notNull(),
     brief: text("brief").default("").notNull(),
+    briefAttachments: jsonb("brief_attachments")
+      .$type<OrderBriefAttachment[]>()
+      .default([])
+      .notNull(),
     amountCzk: integer("amount_czk").notNull(),
     /** Provize platformy v setinách procenta. 1200 = 12 %. */
     platformFeeBps: integer("platform_fee_bps").default(1200).notNull(),

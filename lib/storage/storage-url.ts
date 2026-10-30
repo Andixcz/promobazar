@@ -5,10 +5,16 @@ export function storagePublicUrl(objectKey: string): string {
   return `${STORAGE_PREFIX}${segments.join("/")}`;
 }
 
+/** Veřejné URL profilového média; `?v=` obchází cache po přepsání stejného objektu v B2. */
+export function profileMediaPublicUrl(objectKey: string): string {
+  return `${storagePublicUrl(objectKey)}?v=${Date.now()}`;
+}
+
 export function parseStoragePublicUrl(url: string): string | null {
   const trimmed = url.trim();
-  if (!trimmed.startsWith(STORAGE_PREFIX)) return null;
-  const rest = trimmed.slice(STORAGE_PREFIX.length);
+  const pathOnly = trimmed.split("?")[0]?.split("#")[0] ?? trimmed;
+  if (!pathOnly.startsWith(STORAGE_PREFIX)) return null;
+  const rest = pathOnly.slice(STORAGE_PREFIX.length);
   if (!rest || rest.includes("..")) return null;
   try {
     return rest
