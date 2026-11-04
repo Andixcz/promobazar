@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ExternalLink,
   Eye,
   MoreHorizontal,
   Package,
@@ -23,7 +22,9 @@ import {
   PackageStatusBadge,
   packagePublicPreviewQuery,
 } from "@/components/dashboard/package-status-badge";
+import { StripeConnectRequiredModal } from "@/components/dashboard/stripe-connect-required-modal";
 import {
+  formatPackagePrice,
   packageOptionLabel,
   PACKAGE_META_CHIP,
   revisionsLabel,
@@ -45,6 +46,7 @@ import {
   emptyStateAccentIcon,
   emptyStateSubtitle,
   emptyStateTitle,
+  htmlButtonPill,
   resultCount,
   surface,
 } from "@/lib/ui-surfaces";
@@ -88,6 +90,7 @@ export function CreatorPackagesPanel({
   const [pending, startTransition] = useTransition();
   const [deleting, setDeleting] = useState<PackageRow | null>(null);
   const [tab, setTab] = useState<FilterTab>("all");
+  const stripeReady = profile.stripeTransfersStatus === "active";
 
   const filtered = useMemo(() => {
     if (tab === "published") {
@@ -124,58 +127,61 @@ export function CreatorPackagesPanel({
   }
 
   return (
-    <div className="space-y-0">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="space-y-2">
-          <span className={resultCount}>{packagesCountLabel(filtered.length, tab)}</span>
-          <p className="text-sm text-mist">
-            Spravuj gigy jako na Fiverru: koncept, náhled, publikace na{" "}
-            <Link
-              href={creatorPublicPath(profile.slug)}
-              className="text-cyan hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              veřejném profilu
-            </Link>
-            .
-          </p>
-        </div>
-        <Link
-          href={dashboardPackageNewPath()}
-          className={buttonVariants({ size: "sm" })}
-        >
-          <Plus className="size-4" aria-hidden />
-          Nový balíček
-        </Link>
-      </div>
+    <>
+      <StripeConnectRequiredModal stripeTransfersStatus={profile.stripeTransfersStatus} />
 
-      {packages.length > 0 ? (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {(
-            [
-              ["all", "Vše"],
-              ["published", `Aktivní (${publishedCount})`],
-              ["private", `Neaktivní (${privateCount})`],
-              ["draft", `Koncepty (${draftCount})`],
-            ] as const
-          ).map(([value, label]) => (
-            <Button
-              key={value}
-              type="button"
-              size="sm"
-              variant={tab === value ? "default" : "outline"}
-              onClick={() => setTab(value)}
-            >
-              {label}
-            </Button>
-          ))}
+      <div className={cn(!stripeReady && "pointer-events-none select-none opacity-40")}>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-2">
+            <span className={resultCount}>
+              {packagesCountLabel(filtered.length, tab)}
+            </span>
+            <p className="max-w-lg text-sm leading-relaxed text-mist">
+              Spravuj gigy jako na Fiverru: koncept, náhled, publikace na{" "}
+              <Link
+                href={creatorPublicPath(profile.slug)}
+                className="text-cyan hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                veřejném profilu
+              </Link>
+              .
+            </p>
+          </div>
+          <Link
+            href={dashboardPackageNewPath()}
+            className={buttonVariants({ size: "sm" })}
+          >
+            <Plus className="size-4" aria-hidden />
+            Nový balíček
+          </Link>
         </div>
-      ) : null}
 
-      <div className={cn(surface, "mt-5 overflow-hidden p-0")}>
+        {packages.length > 0 ? (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {(
+              [
+                ["all", "Vše"],
+                ["published", `Aktivní (${publishedCount})`],
+                ["private", `Neaktivní (${privateCount})`],
+                ["draft", `Koncepty (${draftCount})`],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                className={cn(htmlButtonPill, tab === value && "active")}
+                onClick={() => setTab(value)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        ) : null}
+
         {packages.length === 0 ? (
-          <div className={emptyState}>
+          <div className={cn(emptyState, "mt-6")}>
             <Package className={emptyStateAccentIcon} strokeWidth={1.5} aria-hidden />
             <p className={emptyStateTitle}>Zatím nemáš žádné balíčky</p>
             <p className={emptyStateSubtitle}>
@@ -193,11 +199,11 @@ export function CreatorPackagesPanel({
             </div>
           </div>
         ) : filtered.length === 0 ? (
-          <p className="px-6 py-10 text-center text-sm text-mist">
+          <div className={cn(surface, "mt-6 px-6 py-12 text-center text-sm text-mist")}>
             V této záložce nic není.
-          </p>
+          </div>
         ) : (
-          <ul className="grid gap-0 sm:grid-cols-2 xl:grid-cols-3">
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {filtered.map((pkg) => {
               const previewHref = packagePublicPath(
                 profile.slug,
@@ -209,97 +215,103 @@ export function CreatorPackagesPanel({
               const isPrivate = pkg.status === "private";
 
               return (
-                <li
-                  key={pkg.id}
-                  className="flex flex-col border-b border-white/[0.08] p-4 sm:border-r sm:last:border-r-0 xl:border-b-0"
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-md border border-white/[0.08] bg-white/[0.03]">
-                    {thumb ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={thumb}
-                        alt=""
-                        className="size-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex size-full items-center justify-center text-xs text-mist">
-                        Bez náhledu
-                      </div>
+                <li key={pkg.id}>
+                  <article
+                    className={cn(
+                      surface,
+                      "flex h-full flex-col overflow-hidden p-0 transition-colors hover:border-cyan/30",
                     )}
-                    <PackageStatusBadge
-                      status={pkg.status}
-                      className="absolute top-2 left-2"
-                    />
-                  </div>
-
-                  <div className="mt-3 min-w-0 flex-1 space-y-2">
-                    <p className="truncate font-display text-base font-semibold text-white">
-                      {pkg.name}
-                    </p>
-                    <div className="flex flex-wrap gap-1">
-                      <span className={PACKAGE_META_CHIP}>
-                        {packageOptionLabel(PACKAGE_FORMATS, pkg.format)}
-                      </span>
-                      <span className={PACKAGE_META_CHIP}>
-                        {packageOptionLabel(DELIVERY_OPTIONS, pkg.deliveryDays)}
-                      </span>
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden border-b border-white/[0.06] bg-white/[0.03]">
+                      {thumb ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={thumb}
+                          alt=""
+                          className="size-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex size-full items-center justify-center text-xs text-mist">
+                          Bez náhledu
+                        </div>
+                      )}
+                      <PackageStatusBadge
+                        status={pkg.status}
+                        className="absolute top-2.5 left-2.5"
+                      />
                     </div>
-                    <p className="text-sm font-semibold tabular-nums text-white">
-                      {pkg.priceCzk.toLocaleString("cs-CZ")} Kč
-                    </p>
-                    <p className="line-clamp-2 text-xs text-mist">
-                      {revisionsLabel(pkg.revisions)} · {pkg.description}
-                    </p>
-                  </div>
 
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Link
-                      href={dashboardPackageEditPath(pkg.id)}
-                      className={buttonVariants({ variant: "outline", size: "sm" })}
-                    >
-                      <Pencil className="size-3.5" aria-hidden />
-                      Upravit
-                    </Link>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      asChild
-                    >
-                      <Link href={previewHref} target="_blank" rel="noopener noreferrer">
-                        <Eye className="size-3.5" aria-hidden />
-                        Náhled
+                    <div className="flex min-w-0 flex-1 flex-col gap-2 p-4">
+                      <h3 className="line-clamp-2 font-display text-base font-semibold leading-snug text-white">
+                        {pkg.name}
+                      </h3>
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className={PACKAGE_META_CHIP}>
+                          {packageOptionLabel(PACKAGE_FORMATS, pkg.format)}
+                        </span>
+                        <span className={PACKAGE_META_CHIP}>
+                          {packageOptionLabel(DELIVERY_OPTIONS, pkg.deliveryDays)}
+                        </span>
+                      </div>
+                      <p className="font-display text-lg font-bold tabular-nums text-white">
+                        {formatPackagePrice(pkg.priceCzk)}
+                      </p>
+                      <p className="line-clamp-2 text-xs leading-relaxed text-mist">
+                        {revisionsLabel(pkg.revisions)} · {pkg.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-white/[0.08] px-4 py-3">
+                      <Link
+                        href={dashboardPackageEditPath(pkg.id)}
+                        className={buttonVariants({ variant: "outline", size: "sm" })}
+                      >
+                        <Pencil className="size-3.5" aria-hidden />
+                        Upravit
                       </Link>
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={isPublished ? "ghost" : "default"}
-                      size="sm"
-                      disabled={pending}
-                      onClick={() =>
-                        setPackageStatus(
-                          pkg,
-                          isPublished ? "private" : "published",
-                        )
-                      }
-                    >
-                      <MoreHorizontal className="size-3.5" aria-hidden />
-                      {isPublished
-                        ? "Deaktivovat"
-                        : isPrivate
-                          ? "Aktivovat"
-                          : "Publikovat"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      disabled={pending}
-                      onClick={() => setDeleting(pkg)}
-                    >
-                      <Trash2 className="size-3.5" aria-hidden />
-                    </Button>
-                  </div>
+                      <Button type="button" variant="outline" size="sm" asChild>
+                        <Link
+                          href={previewHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Eye className="size-3.5" aria-hidden />
+                          Náhled
+                        </Link>
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={isPublished ? "ghost" : "default"}
+                        size="sm"
+                        disabled={pending}
+                        className="ml-auto"
+                        onClick={() =>
+                          setPackageStatus(
+                            pkg,
+                            isPublished ? "private" : "published",
+                          )
+                        }
+                      >
+                        <MoreHorizontal className="size-3.5" aria-hidden />
+                        {isPublished
+                          ? "Deaktivovat"
+                          : isPrivate
+                            ? "Aktivovat"
+                            : "Publikovat"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={pending}
+                        className="border-rose/30 text-rose hover:border-rose/45 hover:bg-rose/10"
+                        onClick={() => setDeleting(pkg)}
+                        aria-label="Smazat balíček"
+                      >
+                        <Trash2 className="size-3.5" aria-hidden />
+                      </Button>
+                    </div>
+                  </article>
                 </li>
               );
             })}
@@ -325,8 +337,9 @@ export function CreatorPackagesPanel({
             </Button>
             <Button
               type="button"
-              variant="destructive"
+              variant="outline"
               disabled={pending}
+              className="border-rose/40 text-rose hover:bg-rose/10"
               onClick={onConfirmDelete}
             >
               {pending ? "Mažu…" : "Smazat"}
@@ -334,6 +347,6 @@ export function CreatorPackagesPanel({
           </>
         }
       />
-    </div>
+    </>
   );
 }
