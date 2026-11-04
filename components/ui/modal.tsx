@@ -17,6 +17,8 @@ type ModalProps = React.ComponentProps<typeof Dialog> & {
   footer?: React.ReactNode;
   contentClassName?: string;
   showCloseButton?: boolean;
+  /** Když false, nejde zavřít klikem mimo ani Esc. */
+  dismissible?: boolean;
   children?: React.ReactNode;
 };
 
@@ -26,6 +28,7 @@ function Modal({
   footer,
   contentClassName,
   showCloseButton = true,
+  dismissible = true,
   children,
   ...dialogProps
 }: ModalProps) {
@@ -33,7 +36,9 @@ function Modal({
     <Dialog {...dialogProps}>
       <DialogContent
         className={contentClassName}
-        showCloseButton={showCloseButton}
+        showCloseButton={dismissible && showCloseButton}
+        onPointerDownOutside={dismissible ? undefined : (event) => event.preventDefault()}
+        onEscapeKeyDown={dismissible ? undefined : (event) => event.preventDefault()}
       >
         {(title || description) && (
           <DialogHeader>
