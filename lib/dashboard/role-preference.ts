@@ -8,6 +8,9 @@ export const DASHBOARD_ROLE_HEADER = "x-pb-dashboard-role";
 /** Aktuální dashboard URL pro `callbackUrl` při redirectu na přihlášení. */
 export const DASHBOARD_CALLBACK_HEADER = "x-pb-dashboard-callback";
 
+/** Záloha callback cesty, když proxy header v RSC neprojde. */
+export const DASHBOARD_CALLBACK_COOKIE = "pb_dashboard_callback";
+
 export function parseDashboardRole(
   value: string | null | undefined,
 ): MemberRole | undefined {

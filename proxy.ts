@@ -6,6 +6,7 @@ import {
   isReservedDashboardSegment,
 } from "@/lib/dashboard-routes";
 import {
+  DASHBOARD_CALLBACK_COOKIE,
   DASHBOARD_CALLBACK_HEADER,
   DASHBOARD_ROLE_COOKIE,
   DASHBOARD_ROLE_HEADER,
@@ -30,6 +31,13 @@ function forwardDashboardRequest(request: NextRequest): NextResponse {
   }
   const response = NextResponse.next({
     request: { headers: requestHeaders },
+  });
+  const callbackPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+  response.cookies.set(DASHBOARD_CALLBACK_COOKIE, callbackPath, {
+    path: "/",
+    maxAge: 300,
+    httpOnly: true,
+    sameSite: "lax",
   });
   if (roleCookie) {
     response.cookies.delete(DASHBOARD_ROLE_COOKIE);
