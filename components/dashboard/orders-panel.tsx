@@ -115,22 +115,19 @@ export function OrdersPanel({ orders, total, filtered, memberRole }: OrdersPanel
 
   return (
     <div className="space-y-0">
-      <span className={resultCount}>
-        {ordersCountLabel(total)}
-      </span>
+      <span className={resultCount}>{ordersCountLabel(total)}</span>
 
-      <div className={cn(surface, "mt-5 overflow-hidden")}>
-        {orders.length === 0 ? (
-          <div className={emptyState}>
-            <Receipt className={emptyStateAccentIcon} strokeWidth={1.5} aria-hidden />
-            <p className={emptyStateTitle}>{empty.title}</p>
-            <p className={emptyStateSubtitle}>{empty.body}</p>
-          </div>
-        ) : (
-          <ul className="divide-y divide-white/[0.08]">
-            {orders.map((order) => (
-              <li key={order.id} className="space-y-3 px-5 py-4 md:px-6">
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+      {orders.length === 0 ? (
+        <div className={cn(emptyState, "mt-6")}>
+          <Receipt className={emptyStateAccentIcon} strokeWidth={1.5} aria-hidden />
+          <p className={emptyStateTitle}>{empty.title}</p>
+          <p className={emptyStateSubtitle}>{empty.body}</p>
+        </div>
+      ) : (
+        <ul className="mt-6 space-y-4">
+          {orders.map((order) => (
+            <li key={order.id} className={cn(surface, "space-y-4 p-5 md:p-6")}>
+              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div className="min-w-0 space-y-1">
                     <p className="font-display text-base font-semibold text-white">
                       {order.title}
@@ -190,9 +187,8 @@ export function OrdersPanel({ orders, total, filtered, memberRole }: OrdersPanel
                 <OrderControls order={order} />
               </li>
             ))}
-          </ul>
-        )}
-      </div>
+        </ul>
+      )}
     </div>
   );
 }

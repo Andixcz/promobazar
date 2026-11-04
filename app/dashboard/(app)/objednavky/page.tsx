@@ -66,7 +66,7 @@ export default async function DashboardOrdersPage({
         </p>
       ) : null}
       {profile.role === "creator" ? null : (
-        <div className="mb-8">
+        <div className="mb-6">
           <NewOrderForm packages={packages} />
         </div>
       )}

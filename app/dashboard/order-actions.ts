@@ -54,7 +54,9 @@ export async function payForCustomOffer(input: {
 }
 
 export async function payPendingOrder(orderId: string) {
-  return resumeCheckout(orderId, await clientUserId());
+  const result = await resumeCheckout(orderId, await clientUserId());
+  refresh();
+  return result;
 }
 
 export async function acceptMarketplaceOrder(orderId: string) {
