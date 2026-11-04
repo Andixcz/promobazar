@@ -157,7 +157,7 @@ export function AccountSettingsPanel({
   }
 
   return (
-    <div className="space-y-6 max-w-xl">
+    <div className="space-y-8">
       <ProfileSettingsSection
         title="Přihlášení"
         description="Způsoby, jak se přihlašuješ k účtu."
@@ -304,7 +304,9 @@ export function AccountSettingsPanel({
         description="Trvalé odstranění profilu a dat. Akce nejde vrátit."
       >
         <form
-          className={cn("space-y-4 rounded-md border border-error-soft/25 bg-error-soft/5 p-4")}
+          className={cn(
+            "space-y-4 rounded-xl border border-rose/25 bg-rose/[0.06] p-5",
+          )}
           onSubmit={onDeleteAccount}
         >
           <p className="text-sm text-zinc-200">
@@ -339,7 +341,7 @@ export function AccountSettingsPanel({
               variant="outline"
               size="sm"
               disabled={deletePending || !hasCredential}
-              className="border-error-soft/40 text-error-soft hover:bg-error-soft/10"
+              className="border-rose/40 text-rose hover:border-rose/55 hover:bg-rose/10"
             >
               {deletePending ? "Odesílám…" : "Smazat účet"}
             </Button>

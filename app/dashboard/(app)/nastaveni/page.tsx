@@ -25,7 +25,7 @@ export default async function DashboardAccountSettingsPage({
 
   return (
     <DashboardShell title="Nastavení" description="Účet a přihlášení.">
-      <div className="max-w-xl space-y-6">
+      <div className="max-w-2xl space-y-8">
         {profile.role === "creator" ? (
           <StripePayoutCard
             status={profile.stripeTransfersStatus}
