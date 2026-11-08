@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { MarketplaceCardCarousel } from "@/components/marketplace/marketplace-card-carousel";
 import { formatPackagePrice } from "@/lib/dashboard/package-display";
 import type { MarketplaceCreator } from "@/lib/marketplace";
 import { platformLabel } from "@/lib/marketplace";
@@ -15,20 +14,6 @@ export type MarketplaceGigListing = {
   creator: MarketplaceCreator;
   pkg: MarketplaceCreator["packages"][number];
 };
-
-export function packageListingGalleryUrls(
-  pkg: Pick<
-    MarketplaceCreator["packages"][number],
-    "bannerUrl" | "showcaseUrls"
-  >,
-): string[] {
-  const showcase = pkg.showcaseUrls ?? [];
-  const urls = [
-    ...(pkg.bannerUrl ? [pkg.bannerUrl] : []),
-    ...showcase.filter((url) => url !== pkg.bannerUrl),
-  ];
-  return urls;
-}
 
 export function flattenCreatorGigs(
   creators: MarketplaceCreator[],
@@ -46,7 +31,6 @@ export function MarketplaceGigCard({ listing }: MarketplaceGigCardProps) {
   const { creator, pkg } = listing;
   const href = packagePublicPath(creator.slug, pkg.id);
   const profileHref = creatorPublicPath(creator.slug);
-  const gallery = packageListingGalleryUrls(pkg);
   const formatKey = pkg.format ?? creator.platforms[0];
   const formatLabel = formatKey ? platformLabel(formatKey) : null;
 
@@ -59,7 +43,20 @@ export function MarketplaceGigCard({ listing }: MarketplaceGigCardProps) {
       )}
     >
       <Link href={href} className="block">
-        <MarketplaceCardCarousel urls={gallery} />
+        {pkg.bannerUrl ? (
+          <div className="relative aspect-[16/10] overflow-hidden bg-[#0a0910]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={pkg.bannerUrl}
+              alt=""
+              className="size-full object-cover"
+            />
+          </div>
+        ) : (
+          <div className="flex aspect-[16/10] items-center justify-center bg-white/[0.04] text-xs text-mist">
+            Bez náhledu
+          </div>
+        )}
       </Link>
 
       <div className="flex flex-1 flex-col gap-2 p-3.5 pt-3">
