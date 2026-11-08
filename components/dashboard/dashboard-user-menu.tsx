@@ -6,13 +6,13 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { authClient } from "@/lib/auth-client";
 import { dashboardPath } from "@/lib/dashboard-routes";
 import { profileInitials, roleLabel } from "@/lib/dashboard/profile-display";
 import type { MemberProfileRow } from "@/lib/dashboard/profile-types";
 import { LANDING_FIRMS_PATH } from "@/lib/landing-routes";
 import {
-  avatarPlaceholder,
   dropdownOption,
   dropdownPanelNav,
   dropdownPanelNavAbove,
@@ -34,6 +34,7 @@ export function DashboardUserMenu({
   const [open, setOpen] = useState(false);
   const initials = profileInitials(profile, email);
   const displayName = profile.displayName?.trim() || roleLabel(profile.role);
+  const avatarSrc = profile.avatarUrl;
   const isSidebar = variant === "sidebar";
 
   async function onLogout() {
@@ -64,15 +65,12 @@ export function DashboardUserMenu({
           aria-expanded={open}
           aria-haspopup="menu"
         >
-          <span
-            className={cn(
-              "flex size-8 shrink-0 items-center justify-center rounded-full font-display text-[10px] font-bold",
-              avatarPlaceholder,
-            )}
+          <UserAvatar
+            src={avatarSrc}
+            initials={initials}
+            className="size-8 text-[10px]"
             aria-hidden
-          >
-            {initials}
-          </span>
+          />
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-medium text-white">
               {displayName}
@@ -97,15 +95,12 @@ export function DashboardUserMenu({
           aria-expanded={open}
           aria-haspopup="menu"
         >
-          <span
-            className={cn(
-              "flex size-7 items-center justify-center rounded-full font-display text-[10px] font-bold",
-              avatarPlaceholder,
-            )}
+          <UserAvatar
+            src={avatarSrc}
+            initials={initials}
+            className="size-7 text-[10px]"
             aria-hidden
-          >
-            {initials}
-          </span>
+          />
           <span className="max-w-[140px] truncate hidden sm:inline">{email}</span>
           <ChevronDown
             className={cn(

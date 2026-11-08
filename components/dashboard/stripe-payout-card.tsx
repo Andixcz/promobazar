@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { ProfileSettingsSection } from "@/components/dashboard/profile-settings-section";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -35,19 +33,19 @@ export function StripePayoutCard({
       ) : null}
       <div className="flex flex-wrap gap-2">
         {status === "active" ? (
-          <Link
+          <a
             href="/api/stripe/connect/login"
             className={buttonVariants({ size: "sm", variant: "outline" })}
           >
             Otevřít výplaty
-          </Link>
+          </a>
         ) : (
-          <Link
+          <a
             href="/api/stripe/connect"
             className={buttonVariants({ size: "sm", variant: "outline" })}
           >
             {status ? "Dokončit ověření" : "Propojit výplaty"}
-          </Link>
+          </a>
         )}
       </div>
     </ProfileSettingsSection>
