@@ -2,7 +2,11 @@ import { asc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { CreatorPackagesPanel } from "@/components/dashboard/creator-packages-panel";
+import {
+  CreatorNewPackageLink,
+  CreatorPackagesPanel,
+} from "@/components/dashboard/creator-packages-panel";
+import { StripeConnectGate } from "@/components/dashboard/stripe-connect-gate";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { dashboardPath } from "@/lib/dashboard-routes";
 import { requireDashboard } from "@/lib/dashboard/require-dashboard";
@@ -30,7 +34,13 @@ export default async function DashboardPackagesPage() {
     <DashboardShell
       title="Balíčky"
       description="Nabídky, které značky vidí na tvém profilu v tržišti."
+      actions={
+        <CreatorNewPackageLink
+          stripeReady={profile.stripeTransfersStatus === "active"}
+        />
+      }
     >
+      <StripeConnectGate stripeTransfersStatus={profile.stripeTransfersStatus} />
       <CreatorPackagesPanel profile={profile} packages={packages} />
     </DashboardShell>
   );

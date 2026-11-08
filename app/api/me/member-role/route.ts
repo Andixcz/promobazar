@@ -10,5 +10,8 @@ export async function GET() {
   }
 
   const profile = await getProfileByUserId(session.user.id);
-  return NextResponse.json({ role: profile?.role ?? null });
+  return NextResponse.json({
+    role: profile?.role ?? null,
+    avatarUrl: profile?.avatarUrl ?? null,
+  });
 }

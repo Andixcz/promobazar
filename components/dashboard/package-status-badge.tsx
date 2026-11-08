@@ -4,12 +4,12 @@ import { cn } from "@/lib/utils";
 
 function statusTone(status: CreatorPackageStatus) {
   if (status === "published") {
-    return "border-cyan/30 bg-cyan/[0.08] text-cyan";
+    return "border-transparent bg-cyan text-void";
   }
   if (status === "private") {
-    return "border-white/[0.12] bg-white/[0.05] text-zinc-300";
+    return "border-white/[0.14] bg-void/90 text-white/90 backdrop-blur-[6px]";
   }
-  return "border-white/[0.1] bg-white/[0.04] text-mist";
+  return "border-white/[0.12] bg-void/90 text-zinc-200 backdrop-blur-[6px]";
 }
 
 export function PackageStatusBadge({
@@ -22,7 +22,7 @@ export function PackageStatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-sm border px-2 py-0.5 text-[11px] font-medium leading-none",
+        "inline-flex items-center rounded-sm border px-2 py-1 text-[11px] font-medium leading-none",
         statusTone(status),
         className,
       )}

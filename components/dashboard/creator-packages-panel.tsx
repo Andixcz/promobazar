@@ -2,10 +2,12 @@
 
 import {
   Eye,
-  MoreHorizontal,
   Package,
+  Pause,
   Pencil,
+  Play,
   Plus,
+  Rocket,
   Trash2,
 } from "lucide-react";
 import { useMemo, useState, useTransition } from "react";
@@ -22,7 +24,6 @@ import {
   PackageStatusBadge,
   packagePublicPreviewQuery,
 } from "@/components/dashboard/package-status-badge";
-import { StripeConnectRequiredModal } from "@/components/dashboard/stripe-connect-required-modal";
 import {
   formatPackagePrice,
   packageOptionLabel,
@@ -34,7 +35,6 @@ import {
   dashboardPackageNewPath,
   packagePublicPath,
 } from "@/lib/dashboard/package-paths";
-import { creatorPublicPath } from "@/lib/marketplace/public-routes";
 import {
   DELIVERY_OPTIONS,
   PACKAGE_FORMATS,
@@ -46,9 +46,8 @@ import {
   emptyStateAccentIcon,
   emptyStateSubtitle,
   emptyStateTitle,
-  htmlButtonPill,
-  resultCount,
   surface,
+  switcherActive,
 } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 import type { creatorPackage, CreatorPackageStatus } from "@/lib/db/schema";
@@ -57,26 +56,40 @@ type PackageRow = typeof creatorPackage.$inferSelect;
 
 type FilterTab = "all" | "published" | "draft" | "private";
 
-function packagesCountLabel(count: number, tab: FilterTab) {
-  if (tab === "published") {
-    if (count === 0) return "Žádné aktivní balíčky";
-    if (count === 1) return "1 aktivní balíček";
-    return `${count} aktivních balíčků`;
-  }
-  if (tab === "draft") {
-    if (count === 0) return "Žádné koncepty";
-    if (count === 1) return "1 koncept";
-    return `${count} konceptů`;
-  }
-  if (tab === "private") {
-    if (count === 0) return "Žádné neaktivní balíčky";
-    if (count === 1) return "1 neaktivní balíček";
-    return `${count} neaktivních balíčků`;
-  }
-  if (count === 0) return "Žádné balíčky";
-  if (count === 1) return "1 balíček";
-  if (count < 5) return `${count} balíčky`;
-  return `${count} balíčků`;
+const packageCardActionClass =
+  "size-8 text-mist hover:bg-white/[0.06] hover:text-white";
+
+const tabEmptyCopy: Record<
+  Exclude<FilterTab, "all">,
+  { title: string; hint: string }
+> = {
+  published: {
+    title: "Žádné aktivní balíčky",
+    hint: "Aktivní balíčky vidí značky v tržišti. Publikuj koncept nebo znovu zapni neaktivní.",
+  },
+  private: {
+    title: "Žádné neaktivní balíčky",
+    hint: "Tady jsou balíčky mimo tržiště. Kdykoli je můžeš znovu aktivovat.",
+  },
+  draft: {
+    title: "Žádné koncepty",
+    hint: "Koncept uložíš bez publikace. Doladíš náhled a teprve pak ho pustíš ven.",
+  },
+};
+
+export function CreatorNewPackageLink({ stripeReady }: { stripeReady: boolean }) {
+  return (
+    <Link
+      href={dashboardPackageNewPath()}
+      className={cn(
+        buttonVariants({ size: "sm" }),
+        !stripeReady && "pointer-events-none opacity-40",
+      )}
+    >
+      <Plus className="size-4" aria-hidden />
+      Nový balíček
+    </Link>
+  );
 }
 
 export function CreatorPackagesPanel({
@@ -128,55 +141,52 @@ export function CreatorPackagesPanel({
 
   return (
     <>
-      <StripeConnectRequiredModal stripeTransfersStatus={profile.stripeTransfersStatus} />
-
       <div className={cn(!stripeReady && "pointer-events-none select-none opacity-40")}>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="space-y-2">
-            <span className={resultCount}>
-              {packagesCountLabel(filtered.length, tab)}
-            </span>
-            <p className="max-w-lg text-sm leading-relaxed text-mist">
-              Spravuj gigy jako na Fiverru: koncept, náhled, publikace na{" "}
-              <Link
-                href={creatorPublicPath(profile.slug)}
-                className="text-cyan hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                veřejném profilu
-              </Link>
-              .
-            </p>
-          </div>
-          <Link
-            href={dashboardPackageNewPath()}
-            className={buttonVariants({ size: "sm" })}
-          >
-            <Plus className="size-4" aria-hidden />
-            Nový balíček
-          </Link>
-        </div>
-
         {packages.length > 0 ? (
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div
+            role="tablist"
+            aria-label="Filtr balíčků"
+            className="inline-flex max-w-full flex-wrap gap-1 rounded-lg border border-white/[0.09] bg-panel p-1"
+          >
             {(
               [
-                ["all", "Vše"],
-                ["published", `Aktivní (${publishedCount})`],
-                ["private", `Neaktivní (${privateCount})`],
-                ["draft", `Koncepty (${draftCount})`],
+                ["all", "Vše", null],
+                ["published", "Aktivní", publishedCount],
+                ["private", "Neaktivní", privateCount],
+                ["draft", "Koncepty", draftCount],
               ] as const
-            ).map(([value, label]) => (
-              <button
-                key={value}
-                type="button"
-                className={cn(htmlButtonPill, tab === value && "active")}
-                onClick={() => setTab(value)}
-              >
-                {label}
-              </button>
-            ))}
+            ).map(([value, label, count]) => {
+              const selected = tab === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-cyan/35 sm:text-sm",
+                    selected
+                      ? switcherActive
+                      : "text-white/75 hover:bg-white/[0.06] hover:text-white",
+                  )}
+                  onClick={() => setTab(value)}
+                >
+                  {label}
+                  {count !== null ? (
+                    <span
+                      className={cn(
+                        "min-w-[1.25rem] rounded px-1 text-center text-[11px] font-normal tabular-nums sm:text-xs",
+                        selected
+                          ? "bg-void/15 text-void"
+                          : "bg-white/[0.06] text-mist",
+                      )}
+                    >
+                      {count}
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })}
           </div>
         ) : null}
 
@@ -198,9 +208,38 @@ export function CreatorPackagesPanel({
               </Link>
             </div>
           </div>
-        ) : filtered.length === 0 ? (
-          <div className={cn(surface, "mt-6 px-6 py-12 text-center text-sm text-mist")}>
-            V této záložce nic není.
+        ) : filtered.length === 0 && tab !== "all" ? (
+          <div className={cn(emptyState, "mt-6 px-6 py-10 md:py-12")}>
+            <Package
+              className={cn(emptyStateAccentIcon, "mb-4 size-8")}
+              strokeWidth={1.5}
+              aria-hidden
+            />
+            <p className={cn(emptyStateTitle, "text-base md:text-lg")}>
+              {tabEmptyCopy[tab].title}
+            </p>
+            <p className={cn(emptyStateSubtitle, "mt-2 max-w-sm text-zinc-300")}>
+              {tabEmptyCopy[tab].hint}
+            </p>
+            <div className={emptyStateActions}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setTab("all")}
+              >
+                Zobrazit vše
+              </Button>
+              {tab === "draft" ? (
+                <Link
+                  href={dashboardPackageNewPath()}
+                  className={buttonVariants({ size: "sm" })}
+                >
+                  <Plus className="size-4" aria-hidden />
+                  Nový balíček
+                </Link>
+              ) : null}
+            </div>
           </div>
         ) : (
           <ul className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -213,6 +252,12 @@ export function CreatorPackagesPanel({
               const thumb = pkg.bannerUrl ?? pkg.showcaseUrls?.[0] ?? null;
               const isPublished = pkg.status === "published";
               const isPrivate = pkg.status === "private";
+              const statusActionLabel = isPublished
+                ? "Deaktivovat"
+                : isPrivate
+                  ? "Aktivovat"
+                  : "Publikovat";
+              const StatusIcon = isPublished ? Pause : isPrivate ? Play : Rocket;
 
               return (
                 <li key={pkg.id}>
@@ -252,64 +297,88 @@ export function CreatorPackagesPanel({
                         <span className={PACKAGE_META_CHIP}>
                           {packageOptionLabel(DELIVERY_OPTIONS, pkg.deliveryDays)}
                         </span>
+                        <span className={PACKAGE_META_CHIP}>
+                          {revisionsLabel(pkg.revisions)}
+                        </span>
                       </div>
                       <p className="font-display text-lg font-bold tabular-nums text-white">
                         {formatPackagePrice(pkg.priceCzk)}
                       </p>
-                      <p className="line-clamp-2 text-xs leading-relaxed text-mist">
-                        {revisionsLabel(pkg.revisions)} · {pkg.description}
-                      </p>
                     </div>
 
-                    <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-white/[0.08] px-4 py-3">
-                      <Link
-                        href={dashboardPackageEditPath(pkg.id)}
-                        className={buttonVariants({ variant: "outline", size: "sm" })}
-                      >
-                        <Pencil className="size-3.5" aria-hidden />
-                        Upravit
-                      </Link>
-                      <Button type="button" variant="outline" size="sm" asChild>
-                        <Link
-                          href={previewHref}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                    <div className="mt-auto flex items-center justify-between border-t border-white/[0.06] px-2 py-1.5">
+                      <div className="flex items-center">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className={packageCardActionClass}
+                          asChild
                         >
-                          <Eye className="size-3.5" aria-hidden />
-                          Náhled
-                        </Link>
-                      </Button>
-                      <Button
-                        type="button"
-                        variant={isPublished ? "ghost" : "default"}
-                        size="sm"
-                        disabled={pending}
-                        className="ml-auto"
-                        onClick={() =>
-                          setPackageStatus(
-                            pkg,
-                            isPublished ? "private" : "published",
-                          )
-                        }
-                      >
-                        <MoreHorizontal className="size-3.5" aria-hidden />
-                        {isPublished
-                          ? "Deaktivovat"
-                          : isPrivate
-                            ? "Aktivovat"
-                            : "Publikovat"}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        disabled={pending}
-                        className="border-rose/30 text-rose hover:border-rose/45 hover:bg-rose/10"
-                        onClick={() => setDeleting(pkg)}
-                        aria-label="Smazat balíček"
-                      >
-                        <Trash2 className="size-3.5" aria-hidden />
-                      </Button>
+                          <Link
+                            href={dashboardPackageEditPath(pkg.id)}
+                            title="Upravit"
+                            aria-label="Upravit balíček"
+                          >
+                            <Pencil className="size-4" strokeWidth={1.75} aria-hidden />
+                          </Link>
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className={packageCardActionClass}
+                          asChild
+                        >
+                          <Link
+                            href={previewHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Náhled"
+                            aria-label="Náhled balíčku"
+                          >
+                            <Eye className="size-4" strokeWidth={1.75} aria-hidden />
+                          </Link>
+                        </Button>
+                      </div>
+                      <div className="flex items-center">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          disabled={pending}
+                          title={statusActionLabel}
+                          aria-label={statusActionLabel}
+                          className={cn(
+                            packageCardActionClass,
+                            !isPublished &&
+                              "text-cyan hover:bg-cyan/10 hover:text-cyan",
+                          )}
+                          onClick={() =>
+                            setPackageStatus(
+                              pkg,
+                              isPublished ? "private" : "published",
+                            )
+                          }
+                        >
+                          <StatusIcon className="size-4" strokeWidth={1.75} aria-hidden />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          disabled={pending}
+                          title="Smazat"
+                          aria-label="Smazat balíček"
+                          className={cn(
+                            packageCardActionClass,
+                            "hover:bg-rose/10 hover:text-rose",
+                          )}
+                          onClick={() => setDeleting(pkg)}
+                        >
+                          <Trash2 className="size-4" strokeWidth={1.75} aria-hidden />
+                        </Button>
+                      </div>
                     </div>
                   </article>
                 </li>
@@ -332,16 +401,22 @@ export function CreatorPackagesPanel({
         }
         footer={
           <>
-            <Button type="button" variant="ghost" onClick={() => setDeleting(null)}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setDeleting(null)}
+            >
               Zrušit
             </Button>
             <Button
               type="button"
-              variant="outline"
+              variant="destructive"
+              size="sm"
               disabled={pending}
-              className="border-rose/40 text-rose hover:bg-rose/10"
               onClick={onConfirmDelete}
             >
+              <Trash2 className="size-4" aria-hidden />
               {pending ? "Mažu…" : "Smazat"}
             </Button>
           </>

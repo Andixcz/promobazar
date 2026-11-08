@@ -7,6 +7,7 @@ import { isCreatorPlatformLinkingConfigured } from "@/lib/dashboard/platform-lin
 import { removeCreatorPlatformConnection } from "@/lib/dashboard/platform-linking-connections";
 import { revalidatePath } from "next/cache";
 
+import { creatorPublishLimitError } from "@/lib/billing/limits";
 import { getServerSession } from "@/lib/auth-session";
 import { dashboardPath } from "@/lib/dashboard-routes";
 import {
@@ -264,6 +265,28 @@ export async function setCreatorPackageStatus(
   }
   if (!(creatorPackageStatusValues as readonly string[]).includes(status)) {
     return { ok: false as const, error: "Neplatný stav balíčku." };
+  }
+
+  if (status === "published") {
+    const [existing] = await db
+      .select({ status: creatorPackage.status })
+      .from(creatorPackage)
+      .where(
+        and(
+          eq(creatorPackage.id, packageId),
+          eq(creatorPackage.userId, profile.userId),
+        ),
+      )
+      .limit(1);
+    if (!existing) {
+      return { ok: false as const, error: "Balíček jsme nenašli." };
+    }
+    if (existing.status !== "published") {
+      const limitErr = await creatorPublishLimitError(profile);
+      if (limitErr) {
+        return { ok: false as const, error: limitErr };
+      }
+    }
   }
 
   const [updated] = await db

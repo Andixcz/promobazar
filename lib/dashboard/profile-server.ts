@@ -9,6 +9,7 @@ import {
   memberProfile,
   type MemberRole,
 } from "@/lib/db/schema";
+import { defaultBillingPlanForRole } from "@/lib/billing/plans";
 import type {
   DashboardBadge,
   MemberProfileRow,
@@ -60,6 +61,7 @@ export async function ensureMemberProfile(
       displayName: name.trim() || email,
       category: "fitness",
       portfolioUrls: [],
+      billingPlan: defaultBillingPlanForRole(role),
     })
     .returning();
 

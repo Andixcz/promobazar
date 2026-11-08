@@ -216,7 +216,7 @@ export function CreatorPackageEditor({
             title="Balíček"
             description="Název, cena, formát a popis, které uvidí zákazníci v tržišti."
           >
-            <FormField label="Název" htmlFor="pkg-name">
+            <FormField label="Název" htmlFor="pkg-name" required>
               <Input
                 id="pkg-name"
                 name="name"
@@ -230,7 +230,7 @@ export function CreatorPackageEditor({
             </FormField>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Formát" htmlFor="format">
+              <FormField label="Formát" htmlFor="format" required>
                 <FieldSelect
                   id="format"
                   name="format"
@@ -239,7 +239,7 @@ export function CreatorPackageEditor({
                   onValueChange={(value) => patch("format", value)}
                 />
               </FormField>
-              <FormField label="Doručení" htmlFor="deliveryDays">
+              <FormField label="Doručení" htmlFor="deliveryDays" required>
                 <FieldSelect
                   id="deliveryDays"
                   name="deliveryDays"
@@ -254,7 +254,7 @@ export function CreatorPackageEditor({
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Revize" htmlFor="revisions">
+              <FormField label="Revize" htmlFor="revisions" required>
                 <Input
                   id="revisions"
                   name="revisions"
@@ -268,7 +268,7 @@ export function CreatorPackageEditor({
                   }
                 />
               </FormField>
-              <FormField label="Cena (Kč)" htmlFor="priceCzk">
+              <FormField label="Cena (Kč)" htmlFor="priceCzk" required>
                 <Input
                   id="priceCzk"
                   name="priceCzk"
@@ -286,7 +286,7 @@ export function CreatorPackageEditor({
               </FormField>
             </div>
 
-            <FormField label="Licence pro reklamu" htmlFor="licenseDays">
+            <FormField label="Licence pro reklamu" htmlFor="licenseDays" required>
               <FieldSelect
                 id="licenseDays"
                 name="licenseDays"
@@ -299,6 +299,7 @@ export function CreatorPackageEditor({
             <FormField
               label="Popis"
               htmlFor="description"
+              required
               hint="Markdown: nadpisy, seznamy, tučné, odkazy"
             >
               <MarkdownTextarea
@@ -334,7 +335,7 @@ export function CreatorPackageEditor({
             <FormField
               label="Odkaz na ukázkové video"
               htmlFor="previewVideoUrl"
-              hint="YouTube se na stránce balíčku přehraje přímo. Jiné hostitele otevřou odkaz."
+              hint="YouTube přehrajeme v detailu balíčku. U Vimeo a ostatních služeb zákazník otevře odkaz v novém okně."
             >
               <Input
                 id="previewVideoUrl"

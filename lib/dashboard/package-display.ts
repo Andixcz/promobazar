@@ -48,10 +48,10 @@ export function packagePreviewMeta(fields: PackagePreviewFields) {
 }
 
 export const PACKAGE_META_CHIP =
-  "inline-flex items-center rounded-sm border border-white/[0.09] bg-white/[0.04] px-2 py-0.5 text-[11px] font-medium text-mist";
+  "inline-flex items-center rounded-sm bg-white/[0.1] px-2 py-0.5 text-[11px] font-medium text-zinc-200";
 
 export const PACKAGE_META_CHIP_ACCENT =
-  "inline-flex items-center rounded-sm border border-cyan/25 bg-cyan/[0.07] px-2 py-0.5 text-[11px] font-medium text-cyan";
+  "inline-flex items-center rounded-sm bg-cyan px-2 py-0.5 text-[11px] font-medium text-void";
 
 import type { CreatorPackageStatus } from "@/lib/db/schema";
 

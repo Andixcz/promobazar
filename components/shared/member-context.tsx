@@ -18,20 +18,30 @@ type LandingMemberContextValue = {
   isCreator: boolean;
   role: MemberRole | null;
   email: string | null;
+  avatarUrl: string | null;
 };
 
 const LandingMemberContext = createContext<LandingMemberContextValue | null>(
   null,
 );
 
-async function fetchMemberRole(): Promise<MemberRole | null> {
+async function fetchMemberSummary(): Promise<{
+  role: MemberRole | null;
+  avatarUrl: string | null;
+}> {
   try {
     const res = await fetch("/api/me/member-role", { credentials: "include" });
-    if (!res.ok) return null;
-    const data = (await res.json()) as { role: MemberRole | null };
-    return data.role ?? null;
+    if (!res.ok) return { role: null, avatarUrl: null };
+    const data = (await res.json()) as {
+      role: MemberRole | null;
+      avatarUrl?: string | null;
+    };
+    return {
+      role: data.role ?? null,
+      avatarUrl: data.avatarUrl ?? null,
+    };
   } catch {
-    return null;
+    return { role: null, avatarUrl: null };
   }
 }
 
@@ -39,6 +49,7 @@ async function fetchMemberRole(): Promise<MemberRole | null> {
 export function MemberProvider({ children }: { children: ReactNode }) {
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const [role, setRole] = useState<MemberRole | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [rolePending, setRolePending] = useState(false);
 
   useEffect(() => {
@@ -47,14 +58,18 @@ export function MemberProvider({ children }: { children: ReactNode }) {
     const userId = session?.user?.id;
     if (!userId) {
       setRole(null);
+      setAvatarUrl(null);
       return;
     }
 
     let cancelled = false;
     setRolePending(true);
-    void fetchMemberRole()
-      .then((nextRole) => {
-        if (!cancelled) setRole(nextRole);
+    void fetchMemberSummary()
+      .then((summary) => {
+        if (!cancelled) {
+          setRole(summary.role);
+          setAvatarUrl(summary.avatarUrl);
+        }
       })
       .finally(() => {
         if (!cancelled) setRolePending(false);
@@ -73,8 +88,9 @@ export function MemberProvider({ children }: { children: ReactNode }) {
       isCreator: role === "creator",
       role,
       email: session?.user?.email ?? null,
+      avatarUrl,
     };
-  }, [sessionPending, session?.user, rolePending, role]);
+  }, [sessionPending, session?.user, rolePending, role, avatarUrl]);
 
   return (
     <LandingMemberContext.Provider value={value}>

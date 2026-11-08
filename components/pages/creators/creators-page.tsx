@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { IllustrationIcon } from "@/components/ui/illustration-icon";
 import { StepIllustration } from "@/components/ui/step-illustration";
 import { PricingSvgAmount } from "@/components/ui/pricing-svg-amount";
+import { subscriptionCheckoutHref } from "@/lib/billing/subscription-checkout-url";
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from "@/lib/auth-routes";
 import { DASHBOARD_HOME_PATH, dashboardPath } from "@/lib/dashboard-routes";
 import { landingHref } from "@/lib/landing-routes";
@@ -295,9 +296,12 @@ export function CreatorsPage() {
                 <PricingCheckItem>Statistiky zobrazení profilu</PricingCheckItem>
                 <PricingCheckItem>Prioritní upozornění na poptávky</PricingCheckItem>
               </ul>
-              <Link href={creatorRegisterHref} className={cn(htmlButtonCta, "mt-8 w-full text-center")}>
-                Chci PRO po registraci
-              </Link>
+              <a
+                href={subscriptionCheckoutHref("creator_pro")}
+                className={cn(htmlButtonCta, "mt-8 w-full text-center")}
+              >
+                Zapnout Creator PRO
+              </a>
             </div>
           </div>
         </div>

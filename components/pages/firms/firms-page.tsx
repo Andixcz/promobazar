@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Check } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { FaqSection } from "@/components/pages/faq-section";
@@ -13,6 +14,8 @@ import { StepIllustration } from "@/components/ui/step-illustration";
 import { PricingSvgAmount } from "@/components/ui/pricing-svg-amount";
 import type { MarketplaceCreator } from "@/lib/marketplace";
 import { MARKETPLACE_BROWSE_PATH } from "@/lib/marketplace/browse-url";
+import { userFacingCheckoutError } from "@/lib/billing/subscription-checkout-errors";
+import { subscriptionCheckoutHref } from "@/lib/billing/subscription-checkout-url";
 import { landingHref } from "@/lib/landing-routes";
 import {
   htmlButtonCta,
@@ -25,32 +28,37 @@ import {
 import { cn } from "@/lib/utils";
 
 type BrandPlanId = "starter" | "growth";
-const BRAND_PLAN_STORAGE_KEY = "pb_brand_plan";
+const GROWTH_CHECKOUT_HREF = subscriptionCheckoutHref("growth");
 const activePlanButtonClass =
   "mt-8 flex w-full cursor-default items-center justify-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] py-3.5 text-sm font-semibold text-mist";
 
-function readBrandPlan(): BrandPlanId {
-  if (typeof window === "undefined") return "starter";
-  return localStorage.getItem(BRAND_PLAN_STORAGE_KEY) === "growth"
-    ? "growth"
-    : "starter";
-}
-
 function BrandPlanCta({ plan }: { plan: BrandPlanId }) {
   const [currentPlan, setCurrentPlan] = useState<BrandPlanId>("starter");
+  const [memberRole, setMemberRole] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setCurrentPlan(readBrandPlan());
-    const sync = () => setCurrentPlan(readBrandPlan());
-    window.addEventListener("pb-brand-plan-change", sync);
-    window.addEventListener("storage", sync);
+    let cancelled = false;
+    void fetch("/api/me/billing-plan", { credentials: "include" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then(
+        (
+          data: { plan?: string; role?: string; authenticated?: boolean } | null,
+        ) => {
+          if (cancelled) return;
+          setCurrentPlan(data?.plan === "growth" ? "growth" : "starter");
+          setMemberRole(data?.authenticated ? (data.role ?? null) : null);
+        },
+      )
+      .finally(() => {
+        if (!cancelled) setLoaded(true);
+      });
     return () => {
-      window.removeEventListener("pb-brand-plan-change", sync);
-      window.removeEventListener("storage", sync);
+      cancelled = true;
     };
   }, []);
 
-  if (currentPlan === plan) {
+  if (currentPlan === plan && loaded) {
     return (
       <button type="button" disabled className={activePlanButtonClass}>
         <IllustrationIcon name="Checkmark" className="h-3.5 w-auto" />
@@ -61,18 +69,20 @@ function BrandPlanCta({ plan }: { plan: BrandPlanId }) {
   if (plan === "starter") {
     return <div className="mt-8 h-12" aria-hidden />;
   }
+  if (loaded && memberRole === "creator") {
+    return (
+      <a
+        href="/pro-tvurce#creator-pro"
+        className={`${htmlButtonOutline} w-full mt-8 text-center`}
+      >
+        Growth je pro značky · Creator PRO
+      </a>
+    );
+  }
   return (
-    <button
-      type="button"
-      onClick={() => {
-        localStorage.setItem(BRAND_PLAN_STORAGE_KEY, "growth");
-        window.dispatchEvent(new Event("pb-brand-plan-change"));
-        setCurrentPlan("growth");
-      }}
-      className={`${htmlButtonCta} w-full mt-8`}
-    >
+    <a href={GROWTH_CHECKOUT_HREF} className={`${htmlButtonCta} w-full mt-8 text-center`}>
       Vybrat Growth
-    </button>
+    </a>
   );
 }
 
@@ -92,6 +102,21 @@ const PRICING_PLAN_SVG = {
   growth: { file: "Growth", width: 36, height: 40, imgClass: "h-14 w-auto" },
   scale: { file: "Scale", width: 44, height: 44, imgClass: "h-14 w-auto" },
 } as const;
+
+function BillingCheckoutNotice() {
+  const params = useSearchParams();
+  const chyba = params.get("predplatne") === "chyba";
+  const msg = params.get("msg");
+  if (!chyba || !msg) return null;
+  return (
+    <p
+      className="mx-auto mb-8 max-w-2xl border border-white/[0.09] bg-panel px-4 py-3 text-sm text-zinc-200"
+      role="alert"
+    >
+      {userFacingCheckoutError(msg)}
+    </p>
+  );
+}
 
 function PricingPlanIcon({
   plan,
@@ -165,6 +190,7 @@ export function FirmsPage({ creators }: { creators: MarketplaceCreator[] }) {
 
       <section id="cenik" className="px-5 py-16 md:px-8 md:py-12">
         <div className="mx-auto max-w-7xl">
+          <BillingCheckoutNotice />
           <h2 className="text-center font-display text-3xl font-bold md:text-4xl">
             Ceníkové balíčky pro značky
           </h2>

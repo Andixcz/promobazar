@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { ContactSection } from "@/components/pages/contact-section";
 import { FirmsPage } from "@/components/pages/firms/firms-page";
 import { SiteShell } from "@/components/shared/site-shell";
@@ -8,7 +10,9 @@ export default async function HomePage() {
 
   return (
     <SiteShell>
-      <FirmsPage creators={creators} />
+      <Suspense fallback={null}>
+        <FirmsPage creators={creators} />
+      </Suspense>
       <ContactSection />
     </SiteShell>
   );
