@@ -13,6 +13,7 @@ import {
   landingHref,
   LANDING_FIRMS_PATH,
 } from "@/lib/landing-routes";
+import { MARKETPLACE_BROWSE_PATH } from "@/lib/marketplace/browse-url";
 import {
   audienceSwitcherActive,
   dropdownOption,
@@ -216,7 +217,7 @@ function FirmsNav({
     return (
       <nav className="space-y-1" aria-label="Pro značky">
         <Link
-          href="#marketplace"
+          href={MARKETPLACE_BROWSE_PATH}
           className={mobileHeaderMenuLink}
           onClick={close}
         >
@@ -241,7 +242,7 @@ function FirmsNav({
       className="flex items-center gap-5 text-sm font-medium text-mist overflow-visible"
     >
       <Button asChild variant="ghost" className={headerNavItemClass}>
-        <a href="#marketplace">Tržiště</a>
+        <Link href={MARKETPLACE_BROWSE_PATH}>Tržiště</Link>
       </Button>
       <NavMoreDropdown id="nav-more-firms-dd">
         <a href="#cenik" className={cn(dropdownOption, "block")}>

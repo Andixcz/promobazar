@@ -12,6 +12,7 @@ import { IllustrationIcon } from "@/components/ui/illustration-icon";
 import { StepIllustration } from "@/components/ui/step-illustration";
 import { PricingSvgAmount } from "@/components/ui/pricing-svg-amount";
 import type { MarketplaceCreator } from "@/lib/marketplace";
+import { MARKETPLACE_BROWSE_PATH } from "@/lib/marketplace/browse-url";
 import { landingHref } from "@/lib/landing-routes";
 import {
   htmlButtonCta,
@@ -263,9 +264,12 @@ export function FirmsPage({ creators }: { creators: MarketplaceCreator[] }) {
             Tvůj produkt si zaslouží správné publikum. Zadej platformu, obor a rozpočet a za
             chvilku uvidíš tvůrce, kteří ho umí prodat.
           </p>
-          <a href="#marketplace" className={cn(htmlButtonCta, "mt-8 inline-block px-8 py-4")}>
+          <Link
+            href={MARKETPLACE_BROWSE_PATH}
+            className={cn(htmlButtonCta, "mt-8 inline-block px-8 py-4")}
+          >
             Otevřít tržiště
-          </a>
+          </Link>
         </div>
       </section>
     </main>

@@ -82,9 +82,7 @@ export function SiteFooter() {
             <div className="grid gap-10 sm:grid-cols-3">
               <FooterColumn title="Pro značky">
                 <li>
-                  <FooterLink href={landingHref("firms", "marketplace")}>
-                    Tržiště tvůrců
-                  </FooterLink>
+                  <FooterLink href="/trziste">Tržiště tvůrců</FooterLink>
                 </li>
                 <li>
                   <FooterLink href={landingHref("firms", "cenik")}>Ceník</FooterLink>

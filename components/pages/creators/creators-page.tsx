@@ -316,7 +316,7 @@ export function CreatorsPage() {
             <Link href={creatorRegisterHref} className={cn(htmlButtonCta, "inline-flex px-8 py-4")}>
               Chci profil tvůrce
             </Link>
-            <Link href={landingHref("firms", "marketplace")} className={htmlButtonOutline}>
+            <Link href="/trziste" className={htmlButtonOutline}>
               Kdo už tu je?
               <ArrowRight className="size-4 shrink-0" aria-hidden />
             </Link>
