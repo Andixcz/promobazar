@@ -13,7 +13,9 @@ import {
   firstZodErrorMessage,
   orderBriefTextSchema,
 } from "@/lib/orders/order-brief-schema";
-import { PLATFORM_FEE_BPS } from "@/lib/orders/money";
+import { platformFeeBpsForClient } from "@/lib/billing/plans";
+import { starterOrderLimitError } from "@/lib/billing/limits";
+import { getProfileByUserId } from "@/lib/dashboard/profile-server";
 import { getStripe, stripeMissingMessage } from "@/lib/stripe";
 
 type CheckoutResult =
@@ -130,6 +132,21 @@ async function insertAndPay(input: {
     return { ok: false as const, error: "Částka musí být mezi 100 a 500 000 Kč." };
   }
 
+  const clientProfile = await getProfileByUserId(input.clientUserId);
+  if (clientProfile) {
+    const limitError = await starterOrderLimitError(
+      clientProfile,
+      input.clientUserId,
+    );
+    if (limitError) {
+      return { ok: false as const, error: limitError };
+    }
+  }
+
+  const feeBps = clientProfile
+    ? platformFeeBpsForClient(clientProfile)
+    : 1200;
+
   const id = crypto.randomUUID();
   await db.insert(marketplaceOrder).values({
     id,
@@ -139,7 +156,7 @@ async function insertAndPay(input: {
     brief: input.brief,
     briefAttachments: input.briefAttachments,
     amountCzk: input.amountCzk,
-    platformFeeBps: PLATFORM_FEE_BPS,
+    platformFeeBps: feeBps,
     deliveryDays: input.deliveryDays,
     revisionsAllowed: input.revisionsAllowed,
     packageId: input.packageId,

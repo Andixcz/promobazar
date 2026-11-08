@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:doppler": "doppler run -- next dev",
+    "dev:doppler": "doppler run -c dev -- bun dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -12,6 +12,9 @@
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
     "db:migrate": "drizzle-kit migrate",
+    "db:migrate:doppler": "doppler run -c dev -- bun run db:migrate",
+    "db:verify-billing": "bun run scripts/verify-billing-columns.ts",
+    "db:verify-billing:doppler": "doppler run -c dev -- bun run db:verify-billing",
     "db:baseline": "bun scripts/db-baseline.ts",
     "db:studio": "drizzle-kit studio",
     "auth:schema": "bunx @better-auth/cli@latest generate --config lib/auth.config.ts --output lib/db/auth-schema.ts -y",
