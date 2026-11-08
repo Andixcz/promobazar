@@ -59,9 +59,9 @@ export default async function DashboardOrdersPage({
       {heldForCreator ? (
         <p className="mb-5 text-sm text-zinc-200">
           Máš tu peníze.{" "}
-          <Link href="/api/stripe/connect" className="text-cyan hover:underline">
+          <a href="/api/stripe/connect" className="text-cyan hover:underline">
             Zadej číslo účtu
-          </Link>
+          </a>
           , ať ti je můžeme poslat.
         </p>
       ) : null}

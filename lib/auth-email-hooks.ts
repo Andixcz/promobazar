@@ -1,5 +1,8 @@
 import "server-only";
 
+import { APIError } from "@better-auth/core/error";
+
+import { assertCanDeleteAccount } from "@/lib/dashboard/account-deletion-guard";
 import {
   sendChangeEmailConfirmMessage,
   sendChangeEmailVerifyMessage,
@@ -12,7 +15,7 @@ import {
 import { isResendConfigured } from "@/lib/email/resend";
 import { readVerificationTokenMeta } from "@/lib/email/verification-token";
 
-type AuthUser = { email: string; name: string };
+type AuthUser = { id: string; email: string; name: string };
 
 export const authEmailVerification = {
   sendOnSignUp: true,
@@ -65,6 +68,12 @@ export const authUserEmailOptions = {
   },
   deleteUser: {
     enabled: true,
+    async beforeDelete(user: AuthUser) {
+      const check = await assertCanDeleteAccount(user.id);
+      if (!check.ok) {
+        throw APIError.fromStatus("BAD_REQUEST", { message: check.message });
+      }
+    },
     async sendDeleteAccountVerification({
       user,
       url,
@@ -73,6 +82,10 @@ export const authUserEmailOptions = {
       url: string;
       token: string;
     }) {
+      const check = await assertCanDeleteAccount(user.id);
+      if (!check.ok) {
+        throw APIError.fromStatus("BAD_REQUEST", { message: check.message });
+      }
       if (!isResendConfigured()) {
         throw new Error("Odesílání e-mailů není nakonfigurované.");
       }

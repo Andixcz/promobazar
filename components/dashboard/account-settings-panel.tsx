@@ -4,11 +4,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { AccountLoginMethods } from "@/components/dashboard/account-login-methods";
 import { ProfileSettingsSection } from "@/components/dashboard/profile-settings-section";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import type { SocialAuthProviderId } from "@/lib/auth-social";
 import { AUTH_FORGOT_PASSWORD_PATH } from "@/lib/auth-routes";
 import { dashboardPath } from "@/lib/dashboard-routes";
 import { LANDING_FIRMS_PATH } from "@/lib/landing-routes";
@@ -18,27 +20,18 @@ type AccountSettingsPanelProps = {
   email: string;
   emailVerified: boolean;
   hasCredential: boolean;
-  providers: string[];
+  accounts: { id: string; providerId: string }[];
+  configuredSocialProviders: SocialAuthProviderId[];
+  deleteBlockReason?: string | null;
 };
-
-function providerLabel(id: string): string {
-  switch (id) {
-    case "credential":
-      return "E-mail a heslo";
-    case "google":
-      return "Google";
-    case "discord":
-      return "Discord";
-    default:
-      return id;
-  }
-}
 
 export function AccountSettingsPanel({
   email,
   emailVerified,
   hasCredential,
-  providers,
+  accounts,
+  configuredSocialProviders,
+  deleteBlockReason = null,
 }: AccountSettingsPanelProps) {
   const router = useRouter();
   const settingsUrl = dashboardPath("nastaveni");
@@ -133,6 +126,9 @@ export function AccountSettingsPanel({
 
   async function onDeleteAccount(e: React.FormEvent) {
     e.preventDefault();
+    if (deleteBlockReason) {
+      return;
+    }
     setDeleteError(null);
     setDeleteMessage(null);
     setDeletePending(true);
@@ -141,8 +137,8 @@ export function AccountSettingsPanel({
       typeof window !== "undefined" ? `${window.location.origin}${LANDING_FIRMS_PATH}` : "/";
 
     const { error } = await authClient.deleteUser({
-      password: deletePassword,
       callbackURL,
+      ...(hasCredential ? { password: deletePassword } : {}),
     });
 
     setDeletePending(false);
@@ -158,21 +154,12 @@ export function AccountSettingsPanel({
 
   return (
     <div className="space-y-8">
-      <ProfileSettingsSection
-        title="Přihlášení"
-        description="Způsoby, jak se přihlašuješ k účtu."
-      >
-        <ul className="flex flex-wrap gap-2">
-          {providers.map((id) => (
-            <li
-              key={id}
-              className="rounded-full bg-white/[0.06] px-2.5 py-0.5 text-xs text-mist"
-            >
-              {providerLabel(id)}
-            </li>
-          ))}
-        </ul>
-      </ProfileSettingsSection>
+      <AccountLoginMethods
+        email={email}
+        hasCredential={hasCredential}
+        accounts={accounts}
+        configuredSocialProviders={configuredSocialProviders}
+      />
 
       <ProfileSettingsSection title="E-mail" description="Adresa pro přihlášení.">
         {!emailVerified ? (
@@ -312,6 +299,22 @@ export function AccountSettingsPanel({
           <p className="text-sm text-zinc-200">
             Po potvrzení v e-mailu se účet smaže včetně profilu v tržišti.
           </p>
+          {deleteBlockReason ? (
+            <p className="text-sm text-rose" role="alert">
+              {deleteBlockReason}
+              {deleteBlockReason.includes("objednávk") ? (
+                <>
+                  {" "}
+                  <Link
+                    href={dashboardPath("objednavky")}
+                    className="font-medium text-rose underline underline-offset-2 hover:text-rose/85"
+                  >
+                    Objednávky
+                  </Link>
+                </>
+              ) : null}
+            </p>
+          ) : null}
           {hasCredential ? (
             <FormField label="Heslo pro potvrzení" htmlFor="account-delete-password">
               <Input
@@ -325,23 +328,29 @@ export function AccountSettingsPanel({
             </FormField>
           ) : (
             <p className="text-sm text-mist">
-              U účtu bez hesla nejdřív nastav heslo přes zapomenuté heslo, pak můžeš smazání
-              potvrdit.
+              Přihlašuješ se přes Google nebo Discord? Klikni na Smazat účet. Na{" "}
+              <span className="text-zinc-200">{email}</span> pošleme odkaz k potvrzení. Heslo
+              nepotřebuješ.
             </p>
           )}
           {deleteError ? (
-            <p className="text-sm text-destructive" role="alert">{deleteError}</p>
+            <p className="text-sm text-rose" role="alert">
+              {deleteError}
+            </p>
           ) : null}
           {deleteMessage ? (
             <p className="text-sm text-cyan" role="status">{deleteMessage}</p>
           ) : null}
-          <div className="flex justify-end border-t border-white/[0.08] pt-4">
+          <div className="flex justify-end border-t border-rose/15 pt-4">
             <Button
               type="submit"
-              variant="outline"
+              variant="destructive"
               size="sm"
-              disabled={deletePending || !hasCredential}
-              className="border-rose/40 text-rose hover:border-rose/55 hover:bg-rose/10"
+              disabled={
+                Boolean(deleteBlockReason) ||
+                deletePending ||
+                (hasCredential && deletePassword.trim().length === 0)
+              }
             >
               {deletePending ? "Odesílám…" : "Smazat účet"}
             </Button>
