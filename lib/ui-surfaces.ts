@@ -19,7 +19,7 @@ export const modalScrim =
   "bg-[rgba(4,3,8,0.72)] backdrop-blur-[6px]";
 
 export const resultCount =
-  "self-start rounded-sm border border-white/[0.09] bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-mist tabular-nums";
+  "self-start rounded-sm border border-white/[0.09] bg-panel px-3 py-1.5 text-xs font-medium text-mist tabular-nums";
 
 export const emptyState = `${landingCardStack} flex flex-col items-center rounded-2xl border border-white/[0.05] px-6 py-14 text-center md:px-12 md:py-16`;
 
@@ -65,9 +65,9 @@ export const htmlButtonCta = `${btnBase} text-sm border-transparent bg-cyan text
 
 export const htmlButtonCtaSm = `${btnBase} text-xs border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1 px-4 py-2.5`;
 
-export const htmlButtonOutline = `${btnBase} text-sm border-white/[0.14] bg-white/[0.04] text-white/85 hover:bg-white/[0.09] hover:border-white/[0.24] h-auto gap-1.5 px-7 py-3.5`;
+export const htmlButtonOutline = `${btnBase} text-sm border-white/[0.14] bg-panel text-white/85 hover:border-white/[0.24] hover:bg-[#222128] h-auto gap-1.5 px-7 py-3.5`;
 
-export const htmlButtonOutlineSm = `${btnBase} text-xs border-white/[0.14] bg-white/[0.04] text-white/85 hover:bg-white/[0.09] hover:border-white/[0.24] h-auto gap-1 px-4 py-2`;
+export const htmlButtonOutlineSm = `${btnBase} text-xs border-white/[0.14] bg-panel text-white/85 hover:border-white/[0.24] hover:bg-[#222128] h-auto gap-1 px-4 py-2`;
 
 export const htmlButtonPill = `${btnBase} text-xs border-transparent bg-transparent h-auto gap-1 px-4 py-2 text-mist hover:text-white [&.active]:bg-cyan [&.active]:text-void`;
 
@@ -81,7 +81,7 @@ export const mobileHeaderMenuLink =
 
 /** Pole formuláře v landing sekcích */
 export const fieldControl =
-  "w-full min-w-0 rounded-lg border border-white/[0.09] bg-white/[0.065] text-sm text-white transition-all duration-200 placeholder:text-white/40 outline-none focus:border-cyan/40 focus:bg-white/[0.12] focus:shadow-[0_0_0_2px_rgba(125,188,255,0.4)] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(125,188,255,0.4)] disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-white/[0.03] disabled:opacity-50 aria-invalid:border-destructive/50 aria-invalid:ring-2 aria-invalid:ring-destructive/35 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-white";
+  "w-full min-w-0 rounded-lg border border-white/[0.09] bg-panel text-sm text-white transition-all duration-200 placeholder:text-white/40 outline-none focus:border-cyan/40 focus:bg-[#222128] focus:shadow-[0_0_0_2px_rgba(125,188,255,0.4)] focus-visible:border-cyan/40 focus-visible:bg-[#222128] focus-visible:shadow-[0_0_0_2px_rgba(125,188,255,0.4)] disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-panel disabled:opacity-50 aria-invalid:border-destructive/50 aria-invalid:ring-2 aria-invalid:ring-destructive/35 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-white";
 
 /** Stejná výška jako `Input` (default size). */
 export const fieldControlSizeDefault = "h-auto px-4 py-3";
@@ -90,7 +90,7 @@ export const fieldControlSizeSm = "h-auto px-3 py-2.5";
 
 /** React `FieldSelect` trigger: bez velikosti (viz `fieldSelectTrigger`). */
 export const fieldSelectTriggerExtras =
-  "dd-trigger flex cursor-pointer items-center justify-between gap-2 text-left font-medium shadow-none backdrop-blur-[10px] hover:bg-white/[0.09] [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(125,188,255,0.4)]";
+  "dd-trigger flex cursor-pointer items-center justify-between gap-2 text-left font-medium shadow-none hover:bg-[#222128] [.open_&]:border-cyan/40 [.open_&]:bg-[#222128] [.open_&]:shadow-[0_0_0_2px_rgba(125,188,255,0.4)]";
 
 /** React `FieldSelect`: stejný box jako Input, chování jako hero dropdown. */
 export const fieldSelectTrigger = `${fieldControl} ${fieldControlSizeDefault} ${fieldSelectTriggerExtras}`;
@@ -100,7 +100,7 @@ export const fieldLabel =
 
 /** Custom dropdown panely (FieldSelect, header menu). */
 export const dropdownTrigger =
-  "dd-trigger flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-white/[0.09] bg-white/[0.065] px-3 py-2 text-left text-sm font-medium text-white shadow-none backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.09] focus-visible:border-cyan/40 focus-visible:bg-white/[0.12] focus-visible:shadow-[0_0_0_2px_rgba(125,188,255,0.4)] focus-visible:outline-none [.open_&]:border-cyan/40 [.open_&]:bg-white/[0.12] [.open_&]:shadow-[0_0_0_2px_rgba(125,188,255,0.4)]";
+  "dd-trigger flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-white/[0.09] bg-panel px-3 py-2 text-left text-sm font-medium text-white shadow-none transition-all duration-200 hover:bg-[#222128] focus-visible:border-cyan/40 focus-visible:bg-[#222128] focus-visible:shadow-[0_0_0_2px_rgba(125,188,255,0.4)] focus-visible:outline-none [.open_&]:border-cyan/40 [.open_&]:bg-[#222128] [.open_&]:shadow-[0_0_0_2px_rgba(125,188,255,0.4)]";
 
 const dropdownPanelBase =
   "dd-panel absolute top-[calc(100%+6px)] z-[100] flex max-h-[280px] flex-col gap-1 overflow-y-auto rounded-xl border border-white/[0.09] bg-[var(--color-panel)] p-1.5 opacity-0 pointer-events-none -translate-y-1 scale-[0.99] transition-all duration-200 [&.open]:pointer-events-auto [&.open]:translate-y-0 [&.open]:scale-100 [&.open]:opacity-100";

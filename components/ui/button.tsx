@@ -11,7 +11,7 @@ const buttonVariants = cva(
         default:
           "border-transparent bg-cyan text-void hover:bg-cyan/85",
         outline:
-          "border-white/[0.14] bg-white/[0.04] text-white/85 hover:bg-white/[0.09] hover:border-white/[0.24]",
+          "border-white/[0.14] bg-panel text-white/85 hover:border-white/[0.24] hover:bg-[#222128]",
         ghost:
           "border-transparent bg-transparent text-white/80 hover:bg-white/[0.06] hover:text-white",
         destructive:
