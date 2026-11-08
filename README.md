@@ -17,8 +17,9 @@ Proměnné prostředí: zkopíruj `.env.example` → `.env.local` (nebo `.env`) 
 
 Soubor `doppler.yaml` jen **přiřadí projekt a config** (např. `platforma` / `dev`). Samotný soubor **nenačte** proměnné do Next.js.
 
-- Lokálně s Dopplerem: `bun run dev:doppler` (nebo `doppler run -- bun dev`)
-- Bez Doppleru: `bun run dev` + `.env.local`
+- Lokálně s Dopplerem (config **`dev`**): `doppler run -c dev -- bun dev` nebo `bun run dev:doppler`
+- Migrace na stejnou DB: `bun run db:migrate:doppler`
+- Bez Doppleru: `bun run dev` + `.env.local` (pozor — `db:migrate` bere jen `.env.local`, ne Doppler)
 
 Pro lokální přihlášení nastav **`NEXT_PUBLIC_APP_URL`** a **`BETTER_AUTH_URL`** na `http://localhost:3000` (v Doppler configu `dev` nebo v `.env.local`). Pokud `doppler run` přepíše lokální env produkční doménou, OAuth přestane fungovat. Pro vývoj používej správný Doppler config, nebo jen `.env.local`.
 
@@ -34,7 +35,7 @@ Zdroj pravdy je `lib/db/schema.ts`. SQL migrace jsou v `drizzle/` včetně `meta
 
 | Situace | Příkaz |
 |--------|--------|
-| **Nová prázdná DB** (preview, nový Neon branch) | `bun run db:migrate` |
+| **Nová prázdná DB** (preview, nový Neon branch) | `bun run db:migrate` (Doppler: `bun run db:migrate:doppler`) |
 | **Rychlý lokální sync** bez SQL souborů | `bun run db:push` |
 | **Změna schématu v kódu** | `bun run db:generate` → commit `drizzle/` → `bun run db:migrate` |
 | **DB už existuje z dřívějšího `db:push`** a `migrate` padá na „already exists“ | jednou `bun run db:baseline`, pak už jen `db:migrate` |
