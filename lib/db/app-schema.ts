@@ -45,6 +45,26 @@ export const memberProfile = pgTable(
     stripeTransfersStatus: text("stripe_transfers_status").$type<
       "pending" | "active" | "restricted"
     >(),
+    /** starter / growth / creator_basic / creator_pro … */
+    billingPlan: text("billing_plan").$type<
+      | "starter"
+      | "growth"
+      | "scale"
+      | "creator_basic"
+      | "creator_pro"
+    >(),
+    stripeCustomerId: text("stripe_customer_id"),
+    stripeSubscriptionId: text("stripe_subscription_id"),
+    subscriptionStatus: text("subscription_status").$type<
+      | "active"
+      | "trialing"
+      | "past_due"
+      | "canceled"
+      | "unpaid"
+      | "incomplete"
+      | "incomplete_expired"
+      | "paused"
+    >(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

@@ -6,4 +6,13 @@
 
 Ruční `.sql` soubory mimo `generate` sem nepřidávej: Drizzle je neuvidí.
 
+**Doppler config `dev`:** migrace musí běžet se stejným env jako `bun dev`:
+
+```bash
+doppler run -c dev -- bun run db:migrate
+# alias: bun run db:migrate:doppler
+doppler run -c dev -- bun run db:verify-billing
+# alias: bun run db:verify-billing:doppler
+```
+
 Postup při existující DB z `db:push`: viz `README.md` → `bun run db:baseline`.
