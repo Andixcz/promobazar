@@ -59,7 +59,7 @@ function BudgetRange({
   onDebouncedBudgetChange: (budget: number) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceRef = useRef<number | null>(null);
   const [draft, setDraft] = useState(budget);
 
   useEffect(() => {

@@ -1,14 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { MarketplaceFiltersPanel } from "@/components/marketplace/marketplace-filters-panel";
 import { MarketplaceGigResults } from "@/components/marketplace/marketplace-gig-results";
 import { Button } from "@/components/ui/button";
+import { FieldSelect } from "@/components/ui/field-select";
+import { Label } from "@/components/ui/label";
 import {
   defaultMarketplaceFilters,
+  marketplaceCategoryOptions,
+  marketplaceLicenseOptions,
+  marketplacePlatformOptions,
   marketplacePreviewGigLimit,
   type MarketplaceCreator,
   type MarketplaceFilters,
@@ -19,8 +23,19 @@ import {
   landingHeroTopPadding,
   section,
   sectionX,
+  surface,
 } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
+
+function syncBudgetRangeFill(el: HTMLInputElement) {
+  const min = Number(el.min);
+  const max = Number(el.max);
+  const val = Number(el.value);
+  el.style.setProperty(
+    "--range-fill",
+    `${((val - min) / (max - min)) * 100}%`,
+  );
+}
 
 function FirmsHeroSection({
   filters,
@@ -31,6 +46,18 @@ function FirmsHeroSection({
   setFilters: (patch: Partial<MarketplaceFilters>) => void;
   onSearch: () => void;
 }) {
+  const budgetRef = useRef<HTMLInputElement>(null);
+  const [budgetLabel, setBudgetLabel] = useState(
+    `${filters.budget.toLocaleString("cs-CZ")} Kč`,
+  );
+
+  useEffect(() => {
+    if (budgetRef.current) {
+      budgetRef.current.value = String(filters.budget);
+      syncBudgetRangeFill(budgetRef.current);
+    }
+  }, [filters.budget]);
+
   return (
     <section
       id="top"
@@ -83,11 +110,73 @@ function FirmsHeroSection({
         className="mx-auto mt-6 max-w-7xl scroll-mt-28 animate-fade-up"
         style={{ animationDelay: ".1s" }}
       >
-        <MarketplaceFiltersPanel
-          filters={filters}
-          onFiltersChange={setFilters}
-          onSubmit={onSearch}
-        />
+        <div className={cn(surface, "p-2.5 md:p-3")}>
+          <div className="flex flex-col items-stretch lg:flex-row">
+            <div className="relative flex-1 px-5 py-3.5 lg:py-3">
+              <Label>Kde chceš promo?</Label>
+              <FieldSelect
+                name="platform"
+                options={marketplacePlatformOptions}
+                value={filters.platform}
+                onValueChange={(platform) => setFilters({ platform })}
+              />
+            </div>
+            <div className="h-px w-full bg-white/[0.09] lg:h-auto lg:w-px" />
+            <div className="relative flex-1 px-5 py-3.5 lg:py-3">
+              <Label>Kdo má promo dělat?</Label>
+              <FieldSelect
+                name="category"
+                options={marketplaceCategoryOptions}
+                value={filters.category}
+                onValueChange={(category) => setFilters({ category })}
+              />
+            </div>
+            <div className="h-px w-full bg-white/[0.09] lg:h-auto lg:w-px" />
+            <div className="relative flex-1 px-5 py-3.5 lg:py-3">
+              <Label>Délka licence na reklamu</Label>
+              <FieldSelect
+                name="license"
+                options={marketplaceLicenseOptions}
+                value={filters.license}
+                onValueChange={(license) => setFilters({ license })}
+              />
+            </div>
+          </div>
+          <div className="h-px w-full bg-white/[0.09]" />
+          <div className="flex flex-col gap-4 px-4 py-3.5 md:px-5 lg:flex-row lg:items-end lg:gap-5">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-3">
+                <Label className="mb-0">Rozpočet do</Label>
+                <span className="font-body text-xs font-semibold tabular-nums tracking-wide text-cyan">
+                  {budgetLabel}
+                </span>
+              </div>
+              <input
+                ref={budgetRef}
+                type="range"
+                min={1000}
+                max={30000}
+                step={500}
+                defaultValue={filters.budget}
+                className="pb-range"
+                onInput={(e) => {
+                  const value = Number(e.currentTarget.value);
+                  setBudgetLabel(`${value.toLocaleString("cs-CZ")} Kč`);
+                  syncBudgetRangeFill(e.currentTarget);
+                  setFilters({ budget: value });
+                }}
+              />
+            </div>
+            <Button
+              type="button"
+              size="lg"
+              className="w-full shrink-0 lg:w-[11.5rem]"
+              onClick={onSearch}
+            >
+              Vyhledat promo
+            </Button>
+          </div>
+        </div>
       </div>
     </section>
   );
