@@ -1,5 +1,16 @@
 import type { FieldSelectOption } from "@/components/ui/field-select";
 import { MARKETPLACE_CATEGORIES } from "@/lib/dashboard/categories";
+import {
+  defaultMarketplaceGigSort,
+  type MarketplaceGigSort,
+} from "@/lib/marketplace/gig-sort";
+
+export type { MarketplaceGigSort } from "@/lib/marketplace/gig-sort";
+export {
+  defaultMarketplaceGigSort,
+  marketplaceGigSortValues,
+  sortMarketplaceGigs,
+} from "@/lib/marketplace/gig-sort";
 
 export const marketplacePlatformOptions: FieldSelectOption[] = [
   { value: "all", label: "Všechny formáty" },
@@ -23,11 +34,21 @@ export const marketplaceLicenseOptions: FieldSelectOption[] = [
   { value: "unlimited", label: "Neomezeně" },
 ];
 
+export const marketplaceSortOptions: FieldSelectOption[] = [
+  { value: "newest", label: "Nejnovější" },
+  { value: "oldest", label: "Nejstarší" },
+  { value: "price-desc", label: "Nejdražší" },
+  { value: "price-asc", label: "Nejlevnější" },
+  { value: "name-asc", label: "Název A–Z" },
+];
+
 export type MarketplaceFilters = {
   platform: string;
   category: string;
   license: string;
   budget: number;
+  query: string;
+  sort: MarketplaceGigSort;
 };
 
 export const defaultMarketplaceFilters: MarketplaceFilters = {
@@ -35,7 +56,15 @@ export const defaultMarketplaceFilters: MarketplaceFilters = {
   category: "all",
   license: "all",
   budget: 15_000,
+  query: "",
+  sort: defaultMarketplaceGigSort,
 };
+
+/** Náhled na homepage před otevřením celého tržiště. */
+export const marketplacePreviewGigLimit = 4;
+
+/** Počet karet na jednu dávku na stránce /trziste. */
+export const marketplaceBrowsePageSize = 24;
 
 /** Veřejný profil tvůrce v landing tržišti (zdroj: DB). */
 export type MarketplaceCreator = {
@@ -56,6 +85,7 @@ export type MarketplaceCreator = {
     format?: string;
     bannerUrl?: string | null;
     showcaseUrls?: string[];
+    createdAt: string;
   }[];
   isPro?: boolean;
   grad?: string;
@@ -112,7 +142,6 @@ export function filterMarketplaceCreators(
     const budgetOk = minCreatorPrice(c) <= filters.budget;
     return platformOk && categoryOk && licenseOk && budgetOk;
   });
-  filtered.sort((a, b) => (b.isPro ? 1 : 0) - (a.isPro ? 1 : 0));
   return filtered;
 }
 

@@ -162,6 +162,7 @@ export async function listMarketplaceCreatorsFromDb(): Promise<
       format: creatorPackage.format,
       bannerUrl: creatorPackage.bannerUrl,
       showcaseUrls: creatorPackage.showcaseUrls,
+      createdAt: creatorPackage.createdAt,
     })
     .from(creatorPackage)
     .where(
@@ -207,6 +208,7 @@ export async function listMarketplaceCreatorsFromDb(): Promise<
         format: p.format,
         bannerUrl: p.bannerUrl,
         showcaseUrls: p.showcaseUrls ?? [],
+        createdAt: p.createdAt.toISOString(),
       })),
       avatarUrl: profile.avatarUrl,
     });

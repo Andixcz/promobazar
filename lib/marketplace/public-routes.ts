@@ -1,3 +1,5 @@
+export { MARKETPLACE_BROWSE_PATH } from "@/lib/marketplace/browse-url";
+
 export function creatorPublicPath(slug: string) {
   return `/tvurce/${encodeURIComponent(slug)}`;
 }
