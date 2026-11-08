@@ -61,6 +61,9 @@ export const pricingListCheckBox =
 const btnBase =
   "inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-cyan/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-55 disabled:transform-none";
 
+const btnBaseDestructive =
+  "inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg border bg-clip-padding font-semibold whitespace-nowrap transition-all duration-300 outline-none select-none focus-visible:ring-3 focus-visible:ring-danger/45 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-55 disabled:transform-none";
+
 export const htmlButtonCta = `${btnBase} text-sm border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1.5 px-7 py-3.5`;
 
 export const htmlButtonCtaSm = `${btnBase} text-xs border-transparent bg-cyan text-void hover:bg-cyan/85 h-auto gap-1 px-4 py-2.5`;
@@ -68,6 +71,11 @@ export const htmlButtonCtaSm = `${btnBase} text-xs border-transparent bg-cyan te
 export const htmlButtonOutline = `${btnBase} text-sm border-white/[0.14] bg-panel text-white/85 hover:border-white/[0.24] hover:bg-[#222128] h-auto gap-1.5 px-7 py-3.5`;
 
 export const htmlButtonOutlineSm = `${btnBase} text-xs border-white/[0.14] bg-panel text-white/85 hover:border-white/[0.24] hover:bg-[#222128] h-auto gap-1 px-4 py-2`;
+
+/** Destruktivní CTA (smazání, trvalé akce) — stejné jako `Button variant="destructive"`. */
+export const htmlButtonDestructive = `${btnBaseDestructive} text-sm border-transparent bg-danger text-white hover:bg-danger/90 active:bg-danger/85 disabled:bg-danger/40 disabled:text-white/85 h-auto gap-1.5 px-7 py-3.5`;
+
+export const htmlButtonDestructiveSm = `${btnBaseDestructive} text-xs border-transparent bg-danger text-white hover:bg-danger/90 active:bg-danger/85 disabled:bg-danger/40 disabled:text-white/85 h-auto gap-1 px-4 py-2.5`;
 
 export const htmlButtonPill = `${btnBase} text-xs border-transparent bg-transparent h-auto gap-1 px-4 py-2 text-mist hover:text-white [&.active]:bg-cyan [&.active]:text-void`;
 

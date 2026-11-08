@@ -14,6 +14,9 @@ import {
 } from "@/lib/ui-surfaces";
 import { cn } from "@/lib/utils";
 
+/** Shodné s `duration-200` v `dropdownPanel` (`ui-surfaces.ts`). */
+const DROPDOWN_TRANSITION_MS = 200;
+
 export type FieldSelectOption = {
   value: string;
   label: string;
@@ -52,9 +55,12 @@ function FieldSelect({
       : (options[0]?.value ?? "");
 
   const [open, setOpen] = React.useState(false);
+  const [panelMounted, setPanelMounted] = React.useState(false);
+  const [panelAnimOpen, setPanelAnimOpen] = React.useState(false);
   const [value, setValue] = React.useState(initial);
   const rootRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const panelRef = React.useRef<HTMLDivElement>(null);
   const [panelRect, setPanelRect] = React.useState<{
     top: number;
     left: number;
@@ -77,11 +83,34 @@ function FieldSelect({
     setValue(String(valueProp));
   }, [valueProp]);
 
+  const panelReady = panelMounted && panelRect !== null;
+
   React.useLayoutEffect(() => {
     if (!open) {
-      setPanelRect(null);
-      return;
+      setPanelAnimOpen(false);
+      const closeTimer = window.setTimeout(() => {
+        setPanelMounted(false);
+        setPanelRect(null);
+      }, DROPDOWN_TRANSITION_MS);
+      return () => window.clearTimeout(closeTimer);
     }
+
+    syncPanelRect();
+    setPanelMounted(true);
+  }, [open, syncPanelRect]);
+
+  React.useLayoutEffect(() => {
+    if (!open || !panelReady) return;
+
+    setPanelAnimOpen(false);
+    const openFrame = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setPanelAnimOpen(true));
+    });
+    return () => cancelAnimationFrame(openFrame);
+  }, [open, panelReady]);
+
+  React.useEffect(() => {
+    if (!panelMounted) return;
     syncPanelRect();
     window.addEventListener("scroll", syncPanelRect, true);
     window.addEventListener("resize", syncPanelRect);
@@ -89,13 +118,18 @@ function FieldSelect({
       window.removeEventListener("scroll", syncPanelRect, true);
       window.removeEventListener("resize", syncPanelRect);
     };
-  }, [open, syncPanelRect]);
+  }, [panelMounted, syncPanelRect]);
 
   React.useEffect(() => {
     function onDocumentClick(event: MouseEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setOpen(false);
+      const target = event.target as Node;
+      if (
+        rootRef.current?.contains(target) ||
+        panelRef.current?.contains(target)
+      ) {
+        return;
       }
+      setOpen(false);
     }
     document.addEventListener("click", onDocumentClick);
     return () => document.removeEventListener("click", onDocumentClick);
@@ -106,11 +140,12 @@ function FieldSelect({
 
   const listbox = (
     <div
+      ref={panelRef}
       role="listbox"
       className={cn(
         dropdownPanel,
         "left-auto right-auto max-h-[min(280px,50vh)]",
-        open && panelRect && "open",
+        panelAnimOpen && "open",
       )}
       style={
         panelRect
@@ -191,7 +226,7 @@ function FieldSelect({
           aria-hidden
         />
       </button>
-      {open && panelRect && typeof document !== "undefined"
+      {panelMounted && panelRect && typeof document !== "undefined"
         ? createPortal(listbox, document.body)
         : null}
     </div>

@@ -24,7 +24,7 @@ Layout: `app/layout.tsx`: fonty (Strichpunkt Sans, Inter, JetBrains, Geist), `ht
 | `emptyState`, `emptyStateIcon`, … | prázdné stavy |
 | `pricingCard`, `pricingIcon`, … | ceník |
 | `fieldControl`, `fieldLabel`, `fieldSelectTrigger` | formuláře |
-| `htmlButtonCta`, `htmlButtonOutline`, … | marketing CTA (Link / button className) |
+| `htmlButtonCta`, `htmlButtonOutline`, `htmlButtonDestructive`, … | marketing CTA (Link / button className) |
 | `audienceSwitcherActive` | header switcher (`.active`) |
 | `mobileHeaderMenuLink` | mobilní menu headeru |
 | `dropdownPanel`, `dropdownPanelNav`, `dropdownOption` | FieldSelect, účet v headeru |
@@ -37,7 +37,7 @@ Hloubku řeš **`surface`**, **`border-white/[0.09]`**, **`bg-panel`** / **`bg-d
 
 ## Tlačítka
 
-Marketing CTA: exporty `htmlButton*` v `ui-surfaces.ts`. Dashboard a formuláře: `components/ui/button.tsx`.
+Marketing CTA: exporty `htmlButton*` v `ui-surfaces.ts`. Dashboard a formuláře: `components/ui/button.tsx`. Destruktivní akce: `variant="destructive"` nebo `htmlButtonDestructive` (plná `danger`, bílý text).
 
 ## Ikony
 

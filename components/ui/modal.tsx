@@ -37,7 +37,12 @@ function Modal({
       <DialogContent
         className={contentClassName}
         showCloseButton={dismissible && showCloseButton}
-        onPointerDownOutside={dismissible ? undefined : (event) => event.preventDefault()}
+        onPointerDownOutside={
+          dismissible ? undefined : (event) => event.preventDefault()
+        }
+        onInteractOutside={
+          dismissible ? undefined : (event) => event.preventDefault()
+        }
         onEscapeKeyDown={dismissible ? undefined : (event) => event.preventDefault()}
       >
         {(title || description) && (

@@ -60,29 +60,31 @@ function DialogContent({
   return (
     <DialogPortal>
       <DialogOverlay />
-      <DialogPrimitive.Content
-        data-slot="dialog-content"
-        className={cn(
-          "fixed top-1/2 left-1/2 z-[101] grid w-full max-w-[calc(100%-2rem)] max-h-[88vh] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-3xl p-6 text-sm text-foreground duration-200 outline-none sm:max-w-2xl md:p-8 md:pt-10 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
-          glassPanel,
-          className
-        )}
-        {...props}
-      >
-        {children}
-        {showCloseButton && (
-          <DialogPrimitive.Close data-slot="dialog-close" asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute top-5 right-5 z-10"
-            >
-              <XIcon className="size-4" aria-hidden />
-              <span className="sr-only">Zavřít</span>
-            </Button>
-          </DialogPrimitive.Close>
-        )}
-      </DialogPrimitive.Content>
+      <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 sm:p-6 pointer-events-none">
+        <DialogPrimitive.Content
+          data-slot="dialog-content"
+          className={cn(
+            "pointer-events-auto relative grid w-full max-w-[calc(100%-2rem)] max-h-[min(88vh,calc(100vh-2rem))] gap-5 overflow-y-auto rounded-2xl border border-white/[0.08] p-6 text-sm text-foreground duration-200 outline-none sm:max-w-md data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+            glassPanel,
+            className
+          )}
+          {...props}
+        >
+          {children}
+          {showCloseButton && (
+            <DialogPrimitive.Close data-slot="dialog-close" asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-3 right-3 z-10 size-8 text-mist hover:text-white"
+              >
+                <XIcon className="size-4" strokeWidth={1.75} aria-hidden />
+                <span className="sr-only">Zavřít</span>
+              </Button>
+            </DialogPrimitive.Close>
+          )}
+        </DialogPrimitive.Content>
+      </div>
     </DialogPortal>
   )
 }
@@ -91,7 +93,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-2 pr-10", className)}
+      className={cn("flex flex-col gap-1.5 pr-11 text-left", className)}
       {...props}
     />
   )
@@ -109,7 +111,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "flex flex-col-reverse gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-end",
+        "flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:items-center sm:justify-end sm:gap-2.5",
         className
       )}
       {...props}
@@ -131,7 +133,10 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn("font-display text-xl font-bold leading-tight tracking-tight", className)}
+      className={cn(
+        "font-display text-lg font-semibold leading-snug tracking-tight text-white md:text-xl",
+        className,
+      )}
       {...props}
     />
   )
@@ -144,7 +149,10 @@ function DialogDescription({
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={cn("text-sm text-zinc-200", className)}
+      className={cn(
+        "text-sm leading-relaxed text-zinc-300",
+        className,
+      )}
       {...props}
     />
   )

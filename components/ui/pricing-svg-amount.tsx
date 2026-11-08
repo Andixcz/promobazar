@@ -1,24 +1,15 @@
 import Image from "next/image";
 
+import {
+  ILLUSTRATION_DIGIT_SIZE,
+  type IllustrationDigit,
+} from "@/components/ui/illustration-digits";
 import { cn } from "@/lib/utils";
 
-const DIGIT_SIZE = {
-  "0": { width: 5, height: 11 },
-  "1": { width: 5, height: 11 },
-  "2": { width: 5, height: 11 },
-  "3": { width: 5, height: 11 },
-  "4": { width: 7, height: 11 },
-  "5": { width: 5, height: 11 },
-  "6": { width: 5, height: 11 },
-  "7": { width: 5, height: 11 },
-  "8": { width: 5, height: 11 },
-  "9": { width: 5, height: 11 },
-} as const;
-
-type Digit = keyof typeof DIGIT_SIZE;
-
 function parsePriceDisplay(value: string) {
-  const parts: Array<{ kind: "digit"; digit: Digit } | { kind: "space" }> = [];
+  const parts: Array<
+    { kind: "digit"; digit: IllustrationDigit } | { kind: "space" }
+  > = [];
   let needSpace = false;
 
   for (const segment of value.split(" ")) {
@@ -27,8 +18,8 @@ function parsePriceDisplay(value: string) {
     needSpace = true;
 
     for (const char of segment) {
-      if (char in DIGIT_SIZE) {
-        parts.push({ kind: "digit", digit: char as Digit });
+      if (char in ILLUSTRATION_DIGIT_SIZE) {
+        parts.push({ kind: "digit", digit: char as IllustrationDigit });
       }
     }
   }
@@ -63,8 +54,8 @@ export function PricingSvgAmount({
               key={`${part.digit}-${index}`}
               src={`/illustrations/${part.digit}.svg`}
               alt=""
-              width={DIGIT_SIZE[part.digit].width}
-              height={DIGIT_SIZE[part.digit].height}
+              width={ILLUSTRATION_DIGIT_SIZE[part.digit].width}
+              height={ILLUSTRATION_DIGIT_SIZE[part.digit].height}
               className="h-11 w-auto"
             />
           ),

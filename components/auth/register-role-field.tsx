@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import type { AuthRegisterRole } from "@/lib/auth-register";
 import { cn } from "@/lib/utils";
@@ -22,24 +23,32 @@ export function RegisterRoleField({
 }: RegisterRoleFieldProps) {
   return (
     <FormField label="Typ účtu">
-      <div className="flex gap-2">
-        {options.map((opt) => (
-          <button
-            key={opt.id}
-            type="button"
-            disabled={disabled}
-            onClick={() => onChange(opt.id)}
-            className={cn(
-              "flex-1 rounded-xl border py-2.5 text-sm font-semibold transition-all duration-200",
-              "border-white/[0.09] bg-gradient-to-b from-white/[0.055] to-white/[0.02] backdrop-blur-[10px]",
-              "hover:bg-white/[0.08] disabled:opacity-55",
-              value === opt.id &&
-                "border-transparent bg-gradient-to-r from-violet via-magenta to-cyan text-white",
-            )}
-          >
-            {opt.label}
-          </button>
-        ))}
+      <div
+        role="radiogroup"
+        aria-label="Typ účtu"
+        className="flex gap-1 rounded-lg border border-white/[0.09] bg-panel p-1"
+      >
+        {options.map((opt) => {
+          const selected = value === opt.id;
+          return (
+            <Button
+              key={opt.id}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              disabled={disabled}
+              variant={selected ? "default" : "ghost"}
+              onClick={() => onChange(opt.id)}
+              className={cn(
+                "h-auto min-h-[2.75rem] flex-1 px-2 py-2.5 text-xs sm:px-3 sm:text-sm",
+                !selected &&
+                  "text-white/85 hover:bg-white/[0.06] hover:text-white",
+              )}
+            >
+              {opt.label}
+            </Button>
+          );
+        })}
       </div>
     </FormField>
   );
